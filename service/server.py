@@ -169,6 +169,15 @@ def run_smoke_tests(verbose: bool = True, only: list[str] | None = None) -> dict
             continue
         if not spec.smoke:
             continue
+        if not spec.available:
+            # Un modelo cuyos pesos no están en esta máquina no es un fallo: es una entrada del
+            # registro que acá no aplica. Darlo por fallado hacía que una instalación limpia
+            # reportara self-test roto por modelos que nunca se propuso servir.
+            out[mid] = [{"skipped": True, "reason": spec.unavailable_reason}]
+            STATE["smoke_ok"][mid] = None
+            if verbose:
+                print(f"  [selftest:{mid}] OMITIDO ({spec.unavailable_reason})", flush=True)
+            continue
         try:
             backend = get_backend(spec)
         except Exception as exc:  # noqa: BLE001
@@ -285,8 +294,11 @@ def selftest():
     if not STATE["backends"]:
         raise HTTPException(status_code=503, detail=STATE["errors"] or "sin modelos cargados")
     results = run_smoke_tests(verbose=False)
+    evaluados = [r for recs in results.values() for r in recs if "ok" in r]
+    omitidos = [mid for mid, recs in results.items() if recs and recs[0].get("skipped")]
     return {"active": CONFIG.active, "results": results,
-            "passed": all(r["ok"] for recs in results.values() for r in recs)}
+            "passed": all(r["ok"] for r in evaluados),
+            "tested": len(evaluados), "skipped_models": omitidos}
 
 
 @app.post("/decide", response_model=DecideResponse)

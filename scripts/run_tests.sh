@@ -36,10 +36,15 @@ import json, sys, urllib.request
 url = sys.argv[1]
 req = urllib.request.Request(url + "/selftest", data=b"{}", headers={"Content-Type": "application/json"})
 d = json.load(urllib.request.urlopen(req, timeout=600))
-print(f"  passed: {d['passed']}")
+print(f"  passed: {d['passed']} | casos evaluados: {d.get('tested')} | "
+      f"modelos omitidos (no están en esta máquina): {d.get('skipped_models') or 'ninguno'}")
 for mid, recs in d["results"].items():
     for r in recs:
-        print(f"   {'OK ' if r['ok'] else 'FALLA'} [{mid}] esperado={r['expected']} obtenido={r.get('got')}")
+        if r.get("skipped"):
+            print(f"   OMITIDO [{mid}] {r.get('reason')}")
+        else:
+            print(f"   {'OK ' if r.get('ok') else 'FALLA'} [{mid}] esperado={r.get('expected')} "
+                  f"obtenido={r.get('got')} {r.get('error') or ''}")
 sys.exit(0 if d["passed"] else 1)
 PYEOF
 

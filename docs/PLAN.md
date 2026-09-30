@@ -7,10 +7,18 @@
 | 0 Decisiones | ✅ repo público, **Apache-2.0**, Cardiff en el demo, log en `excerpt`, plugin incluido |
 | 1 Empaquetado | ✅ git, `pyproject` con extras, `Makefile`, `LICENSE`, `LICENCIAS.md`, `.env.example` |
 | 2 Quickstart y demo | ✅ `make demo` + `docs/DEMO.md` con la salida real |
-| 3 Verificación en limpio | ⏳ pendiente — **es el gate** |
-| 4 Documentación | ⏳ pendiente (`ARQUITECTURA`, `DECISIONES`, `OPERACION`) |
+| 3 Verificación en limpio | 🔄 en curso — encontró un fallo real de instalación (ver abajo) |
+| 4 Documentación | ✅ `ARQUITECTURA`, `DECISIONES`, `OPERACION` |
 | 5 Publicación | ⏳ pendiente |
 | 6 Presentación (opcional) | ⏳ pendiente |
+
+### Lo que encontró la Fase 3
+
+La prueba en limpio (`tests/quickstart_clean.sh`) falló en la primera corrida: el extra `[demo]` no
+declaraba **`protobuf`**, que el extractor de tokenizers SentencePiece necesita. El error que da
+transformers (`tiktoken is required to read a tiktoken file`) nombra a otro paquete y despista. En
+el entorno del autor llegaba como dependencia transitiva de `coremltools`, así que **sólo se veía en
+una instalación nueva**: exactamente el fallo que esta fase existe para encontrar.
 
 Nota sobre la licencia: la decisión inicial fue GPL-2.0 «para seguir el camino de Laya», pero al
 verificar resultó que **Laya es Apache-2.0** (su repo en GitHub y los paquetes `laya`/`laya-coreml`),

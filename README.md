@@ -24,9 +24,9 @@ Mapa de la documentación:
 | Documento | Para qué |
 |---|---|
 | `docs/DEMO.md` | la demostración, con su salida real |
-| `docs/ARQUITECTURA.md` | cómo está armado y por qué (pendiente) |
-| `docs/DECISIONES.md` | cada decisión con su evidencia (pendiente) |
-| `docs/OPERACION.md` | desplegarlo, observarlo, cambiarlo (pendiente) |
+| `docs/ARQUITECTURA.md` | cómo está armado y por qué |
+| `docs/DECISIONES.md` | cada decisión con su evidencia |
+| `docs/OPERACION.md` | desplegarlo, observarlo, cambiarlo, troubleshooting |
 | `docs/LICENCIAS.md` | terceros, verificado |
 | `docs/PLAN.md` | el plan de trabajo por fases |
 | `results/RESUMEN_*.md` | **la evidencia**: cada número con su método |

@@ -3,31 +3,31 @@ Downloading cpython-3.11.16-macos-aarch64-none (download) (25.7MiB)
 Using CPython 3.11.16
 Creating virtual environment at: .venv
 Activate with: source .venv/bin/activate
-Resolved 44 packages in 5.19s
+Resolved 45 packages in 2.09s
    Building laya-hybrid-harness @ file:///private/tmp/quickstart-clean/harness
-Downloading torch (121.4MiB)
-Downloading sympy (6.0MiB)
-Downloading numpy (5.2MiB)
-Downloading transformers (12.0MiB)
-Downloading sentencepiece (1.3MiB)
-Downloading networkx (2.0MiB)
 Downloading pygments (1.2MiB)
+Downloading numpy (5.2MiB)
 Downloading tokenizers (3.0MiB)
+Downloading transformers (12.0MiB)
 Downloading pydantic-core (1.8MiB)
+Downloading networkx (2.0MiB)
+Downloading sentencepiece (1.3MiB)
+Downloading sympy (6.0MiB)
 Downloading hf-xet (3.7MiB)
-      Built laya-hybrid-harness @ file:///private/tmp/quickstart-clean/harness
- Downloaded sentencepiece
+Downloading torch (121.4MiB)
  Downloaded pygments
- Downloaded networkx
+ Downloaded sentencepiece
+      Built laya-hybrid-harness @ file:///private/tmp/quickstart-clean/harness
  Downloaded pydantic-core
+ Downloaded networkx
  Downloaded tokenizers
  Downloaded hf-xet
  Downloaded numpy
  Downloaded sympy
  Downloaded transformers
  Downloaded torch
-Prepared 44 packages in 59.05s
-Installed 44 packages in 196ms
+Prepared 45 packages in 24.64s
+Installed 45 packages in 194ms
  + annotated-doc==0.0.5
  + annotated-types==0.8.0
  + anyio==4.15.1
@@ -52,6 +52,7 @@ Installed 44 packages in 196ms
  + numpy==2.4.6
  + opentelemetry-api==1.45.0
  + packaging==26.3
+ + protobuf==7.36.2
  + pydantic==2.13.5
  + pydantic-core==2.46.5
  + pygments==2.21.0
@@ -76,54 +77,56 @@ listo. Ahora: make demo
 bash scripts/demo.sh
 === arrancando el servicio en 8091 con config.demo.yaml
     la primera vez descarga Cardiff XLM-R (~1,1 GB) desde Hugging Face
-el servicio no arrancó. Últimas líneas del log:
-  File "/private/tmp/quickstart-clean/harness/service/server.py", line 63, in get_backend
-    candidate.load()
-  File "/private/tmp/quickstart-clean/harness/service/backends.py", line 203, in load
-    self.tok = AutoTokenizer.from_pretrained(self.spec.weights, revision=rev)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/private/tmp/quickstart-clean/harness/.venv/lib/python3.11/site-packages/transformers/models/auto/tokenization_auto.py", line 990, in from_pretrained
-    return tokenizer_class.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/private/tmp/quickstart-clean/harness/.venv/lib/python3.11/site-packages/transformers/tokenization_utils_base.py", line 1739, in from_pretrained
-    return cls._from_pretrained(
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/private/tmp/quickstart-clean/harness/.venv/lib/python3.11/site-packages/transformers/tokenization_utils_base.py", line 1930, in _from_pretrained
-    init_kwargs = cls.convert_to_native_format(**init_kwargs)
-                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/private/tmp/quickstart-clean/harness/.venv/lib/python3.11/site-packages/transformers/tokenization_utils_tokenizers.py", line 225, in convert_to_native_format
-    local_kwargs = cls._convert_from_tiktoken(vocab_file, local_kwargs)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/private/tmp/quickstart-clean/harness/.venv/lib/python3.11/site-packages/transformers/tokenization_utils_tokenizers.py", line 286, in _convert_from_tiktoken
-    base_vocab_size = len(TikTokenConverter.load_tiktoken_bpe(vocab_file))
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/private/tmp/quickstart-clean/harness/.venv/lib/python3.11/site-packages/transformers/convert_slow_tokenizer.py", line 1939, in load_tiktoken_bpe
-    raise ValueError(
-ValueError: `tiktoken` is required to read a `tiktoken` file. Install it with `pip install tiktoken`.
 
-ERROR:    Application startup failed. Exiting.
-make: *** [demo] Error 1
+modelo servido: cardiff-xlmr (transformers) | routing: {'noul': 'cardiff-xlmr'}
+umbral de confianza: {'noul': 0.75, 'choice': 0.75, 'score': 0.75} | masa neutral: 0.7
+
+  [ok] positivo claro                     local  value=True     conf=0.985 (cruda) neutral=0.05 modelo=cardiff-xlmr
+  [ok] negativo claro                     local  value=False    conf=0.988 (cruda) neutral=0.05 modelo=cardiff-xlmr
+  [·] sarcasmo                           DERIVA value=True     conf=0.680 (cruda) neutral=0.21 modelo=cardiff-xlmr
+        motivo: raw_confidence_below_0.75(0.680);no_temperature_for_noul
+  [ok] neutro (masa neutral alta)         DERIVA value=True     conf=0.768 (cruda) neutral=0.81 modelo=cardiff-xlmr
+        motivo: high_neutral_mass(0.809>0.7)
+  [ok] sin contenido                      DERIVA value=False    conf=0.527 (cruda) neutral=0.34 modelo=cardiff-xlmr
+        motivo: raw_confidence_below_0.75(0.527);no_temperature_for_noul
+  [ok] largo: el final cambia el sentido  DERIVA value=True     conf=0.622 (cruda) neutral=0.51 modelo=cardiff-xlmr
+        motivo: input_truncated(536 tokens > 512);raw_confidence_below_0.75(0.622);no_temperature_for_noul
+  [ok] primitiva que el modelo no soporta DERIVA value=None     conf=0.000 (cruda) neutral=  -  modelo=cardiff-xlmr
+        motivo: unsupported_by_model(cardiff-xlmr)
+
+=== lo que quedó registrado (observabilidad)
+  peticiones 7 | respuestas 7 | derivadas 5 (71.4 %)
+  motivos: {'raw_confidence_below_0.75': 2, 'high_neutral_mass': 1, 'input_truncated': 1, 'unsupported_by_model': 1}
+  modelos: {'cardiff-xlmr': 7}
+  latencia: p50 102.58 ms | p95 334.85 ms
+  registro en: /private/tmp/quickstart-clean/harness/logs/decisions (nivel excerpt, 7 escritos, 0 errores)
+
+=== demo terminado. Para dejarlo corriendo de verdad:  make serve
+    (o 'bash scripts/demo.sh --keep' para que no lo apague al terminar)
 bash scripts/run_tests.sh
 === arrancando una instancia de prueba en 8099
-FALLA: el servicio no arrancó (ver /tmp/harness-test.log)
-  File "/private/tmp/quickstart-clean/harness/.venv/lib/python3.11/site-packages/transformers/models/auto/tokenization_auto.py", line 990, in from_pretrained
-    return tokenizer_class.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/private/tmp/quickstart-clean/harness/.venv/lib/python3.11/site-packages/transformers/tokenization_utils_base.py", line 1739, in from_pretrained
-    return cls._from_pretrained(
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/private/tmp/quickstart-clean/harness/.venv/lib/python3.11/site-packages/transformers/tokenization_utils_base.py", line 1930, in _from_pretrained
-    init_kwargs = cls.convert_to_native_format(**init_kwargs)
-                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/private/tmp/quickstart-clean/harness/.venv/lib/python3.11/site-packages/transformers/tokenization_utils_tokenizers.py", line 225, in convert_to_native_format
-    local_kwargs = cls._convert_from_tiktoken(vocab_file, local_kwargs)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/private/tmp/quickstart-clean/harness/.venv/lib/python3.11/site-packages/transformers/tokenization_utils_tokenizers.py", line 286, in _convert_from_tiktoken
-    base_vocab_size = len(TikTokenConverter.load_tiktoken_bpe(vocab_file))
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/private/tmp/quickstart-clean/harness/.venv/lib/python3.11/site-packages/transformers/convert_slow_tokenizer.py", line 1939, in load_tiktoken_bpe
-    raise ValueError(
-ValueError: `tiktoken` is required to read a `tiktoken` file. Install it with `pip install tiktoken`.
 
-ERROR:    Application startup failed. Exiting.
+=== self-test de los modelos declarados
+  passed: False
+   OK  [cardiff-xlmr] esperado=True obtenido=True
+   OK  [cardiff-xlmr] esperado=False obtenido=False
+Traceback (most recent call last):
+  File "<stdin>", line 8, in <module>
+KeyError: 'expected'
+
+=== casos límite
+
+MAL: 0 | raros/errores: 0 | OK o sin verdad: 19
+
+guardado: /tmp/probe.json
+
+=== concurrencia (es lo que tumbaba el servicio antes del candado de inferencia)
+=== 2 concurrentes | pared 25 ms | completadas 2/2
+    agente: runs 12 -> 12 (pid 2714 -> 2714) -> SOBREVIVIÓ
+=== 4 concurrentes | pared 106 ms | completadas 4/4
+    agente: runs 12 -> 12 (pid 2714 -> 2714) -> SOBREVIVIÓ
+=== 8 concurrentes | pared 152 ms | completadas 8/8
+    agente: runs 12 -> 12 (pid 2714 -> 2714) -> SOBREVIVIÓ
+
+HUBO FALLAS
 make: *** [test] Error 1
