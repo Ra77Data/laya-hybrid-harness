@@ -87,9 +87,9 @@ models:
     label: "Laya sentiment v1 (fine-tune validado, CoreML FP16)"
     adapter: coreml
     supports: [noul]
-    weights: /Users/cesarmg.data/Projects/ml/Hybrid_Harness_V5/laya-service/models/laya-sentiment-v1-coreml
+    weights: ~/modelos/laya-sentiment-v1-coreml   # EDITAR: ruta al paquete CoreML (make setup-full)
     expect_sha256: 1701a2f936d82eaa7a5e3f4da8c236d6f0fe47d03fad9a49f9e5f5a2483d08c9
-    calibration: /Users/cesarmg.data/Projects/ml/Hybrid_Harness_V5/laya-service/calibration.json
+    calibration: ~/modelos/calibration-v1.json        # EDITAR
     smoke:
       - text: "I love this product, it changed my life!"
         type: noul
@@ -100,9 +100,9 @@ models:
     label: "Laya sentiment v2 (experimento 4.8x datos, safetensors)"
     adapter: laya
     supports: [noul]
-    weights: /Users/cesarmg.data/Documents/deepseek-harness/Default workspace/etapa4/models/laya_sentiment_v2
+    weights: ~/modelos/laya_sentiment_v2          # EDITAR: checkpoint en safetensors
     expect_sha256: 9f79ac8f9e518d210af4f6f51458d3562d8149935e63c9623831cf4d20fb8142
-    calibration: /Users/cesarmg.data/Documents/deepseek-harness/Default workspace/etapa4/models/laya_sentiment_v2/calibration.json
+    calibration: ~/modelos/laya_sentiment_v2          # EDITAR: checkpoint en safetensors/calibration.json
     smoke:
       - text: "I love this product, it changed my life!"
         type: noul
@@ -113,7 +113,7 @@ models:
     label: "PoC organizacional (fine-tune de V3, CoreML, 4 clases)"
     adapter: coreml
     supports: [noul, choice, score]
-    weights: /Users/cesarmg.data/Projects/ml/Hybrid_Harness_V3/laya-service/models/laya-multilingual-coreml
+    weights: ~/modelos/laya-multilingual-coreml   # EDITAR
     expect_sha256: 587e4ac81f74c55da0e2c323be47f9a4f901e2dcac3a0fce240f88af91da2af5
     calibration: null
     smoke:

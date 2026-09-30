@@ -23,5 +23,8 @@ results/real_traffic_eval.jsonl
 .DS_Store
 Thumbs.db
 
+# Config local (la plantilla es config.example.yaml)
+config.yaml
+
 # Generado por `make cordis`
 dsh-laya-plugin/laya.cordis.yml

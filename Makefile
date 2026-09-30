@@ -26,7 +26,10 @@ setup-full:  ## Igual que setup, más los adaptadores de Laya (CoreML: macOS App
 		python3 -m venv .venv && $(PY) -m pip install -U pip && $(PY) -m pip install -e ".[full]"; \
 	fi
 
-serve:  ## Arranca el servicio en primer plano
+config:  ## Crea config.yaml desde la plantilla si no existe
+	@[ -f config.yaml ] || (cp config.example.yaml config.yaml && echo "creado config.yaml desde config.example.yaml (editá las rutas marcadas EDITAR)")
+
+serve: config  ## Arranca el servicio en primer plano
 	LAYA_PORT=$(PORT) $(PY) -m uvicorn service.server:app --host 127.0.0.1 --port $(PORT)
 
 demo:  ## Demostración completa de un comando: arranca, muestra casos y métricas, apaga
@@ -42,7 +45,7 @@ metrics:  ## Métricas del tráfico registrado (por defecto 24 h)
 report:  ## Informe legible del tráfico registrado
 	$(PY) scripts/report_decisions.py --hours 24
 
-test:  ## Self-test del servicio y sondas de robustez y concurrencia
+test: config  ## Self-test del servicio y sondas de robustez y concurrencia
 	bash scripts/run_tests.sh
 
 cordis:  ## Genera el plugin de DSH con la ruta absoluta de este repo
