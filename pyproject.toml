@@ -49,7 +49,7 @@ full = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Ramg77/laya-hybrid-harness"
+Homepage = "https://github.com/Ra77Data/laya-hybrid-harness"
 "Resultados medidos" = "https://huggingface.co/Ramg77/laya-sentiment-multilingual"
 
 [tool.setuptools.packages.find]
