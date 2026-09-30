@@ -257,7 +257,8 @@ def health():
         calibration=(STATE["calibrations"][CONFIG.active].as_dict()
                      if CONFIG.active in STATE["calibrations"] else {"configured": False}),
         delegation={"default": CONFIG.default_threshold,
-                    "per_type": {t: CONFIG.threshold_for(t) for t in PRIMITIVES}},
+                    "per_type": {t: CONFIG.threshold_for(t) for t in PRIMITIVES},
+                    "neutral_mass_threshold": CONFIG.neutral_mass_threshold},
         smoke_ok=(all(STATE["smoke_ok"].get(m) for m in CONFIG.preload
                       if STATE["smoke_ok"].get(m) is not None) if STATE["smoke_ok"] else None),
         routing=CONFIG.routing, models=models)

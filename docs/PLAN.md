@@ -1,5 +1,22 @@
 # Plan de acción — documentar y hacer demostrable el harness híbrido
 
+## Estado
+
+| Fase | Estado |
+|---|---|
+| 0 Decisiones | ✅ repo público, **Apache-2.0**, Cardiff en el demo, log en `excerpt`, plugin incluido |
+| 1 Empaquetado | ✅ git, `pyproject` con extras, `Makefile`, `LICENSE`, `LICENCIAS.md`, `.env.example` |
+| 2 Quickstart y demo | ✅ `make demo` + `docs/DEMO.md` con la salida real |
+| 3 Verificación en limpio | ⏳ pendiente — **es el gate** |
+| 4 Documentación | ⏳ pendiente (`ARQUITECTURA`, `DECISIONES`, `OPERACION`) |
+| 5 Publicación | ⏳ pendiente |
+| 6 Presentación (opcional) | ⏳ pendiente |
+
+Nota sobre la licencia: la decisión inicial fue GPL-2.0 «para seguir el camino de Laya», pero al
+verificar resultó que **Laya es Apache-2.0** (su repo en GitHub y los paquetes `laya`/`laya-coreml`),
+y la FSF considera Apache-2.0 incompatible con GPL-2.0. Se adoptó **Apache-2.0**.
+
+
 Objetivo: que **otra persona pueda probar el harness en minutos**, entendiendo qué hace, qué no hace
 y cómo se verifica, sin depender de tu máquina ni de tu árbol de proyecto.
 

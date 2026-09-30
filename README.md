@@ -1,4 +1,37 @@
-# Harness de decisión local — servicio agnóstico del modelo
+# Harness híbrido de decisión local
+
+Un servicio de decisión que corre **local**, responde con una confianza honesta y **deriva al cloud
+cuando no está seguro**. El modelo que sirve es configuración, no código.
+
+```bash
+make setup    # entorno virtual + dependencias (una vez)
+make demo     # arranca el servicio, muestra los casos y las métricas, y lo apaga
+```
+
+Funciona en cualquier sistema operativo con el camino por defecto (`transformers`). Los adaptadores
+de Laya/CoreML —el motor para el que se construyó— son la variante `make setup-full`, en macOS con
+Apple Silicon.
+
+**Qué es y qué no es.** Lo que sigue es el patrón híbrido y su medición, no un modelo ganador: en
+esta tarea el modelo local pierde contra un baseline que se descarga con dos líneas (86,0 % contra
+89,7 %), y hasta un motor zero-shot lo supera. Lo que sí está medido y no es común tenerlo es el
+resto: la curva de derivación, que el modelo se equivoca **5,86× más** en lo que deriva, y que el
+patrón completo gana **+2,76 puntos** enviando el 13 % del tráfico al cloud. Nada de eso se afirma
+sin el script que lo reproduce.
+
+Mapa de la documentación:
+
+| Documento | Para qué |
+|---|---|
+| `docs/DEMO.md` | la demostración, con su salida real |
+| `docs/ARQUITECTURA.md` | cómo está armado y por qué (pendiente) |
+| `docs/DECISIONES.md` | cada decisión con su evidencia (pendiente) |
+| `docs/OPERACION.md` | desplegarlo, observarlo, cambiarlo (pendiente) |
+| `docs/LICENCIAS.md` | terceros, verificado |
+| `docs/PLAN.md` | el plan de trabajo por fases |
+| `results/RESUMEN_*.md` | **la evidencia**: cada número con su método |
+
+## El servicio en detalle
 
 Servicio FastAPI que expone decisiones tipadas (`noul`, `choice`, `score`) sobre un modelo local,
 con política de derivación al cloud. **El modelo servido es configuración, no código**: se cambia
