@@ -32,6 +32,12 @@ demo = [
   "transformers>=4.40",
   "safetensors>=0.4",
   "sentencepiece>=0.2",
+  # protobuf es necesario para que transformers pueda extraer el vocabulario de un tokenizer
+  # SentencePiece. En el entorno del autor llegaba como dependencia transitiva de coremltools,
+  # así que su ausencia sólo se notaba en una instalación limpia: el demo fallaba con
+  # "tiktoken is required to read a tiktoken file", que es un mensaje engañoso -- el problema
+  # no era tiktoken. Lo encontró la prueba de quickstart en limpio (tests/quickstart_clean.sh).
+  "protobuf>=4",
 ]
 # Camino completo: agrega los adaptadores de Laya (CoreML necesita macOS Apple Silicon).
 full = [
