@@ -51,11 +51,11 @@ umbral de confianza: {'noul': 0.75, 'choice': 0.75, 'score': 0.75} | masa neutra
         motivo: unsupported_by_model(cardiff-xlmr)
 
 === lo que quedó registrado (observabilidad)
-  peticiones 21 | respuestas 21 | derivadas 15 (71.4 %)
-  motivos: {'raw_confidence_below_0.75': 6, 'high_neutral_mass': 3, 'input_truncated': 3, 'unsupported_by_model': 3}
-  modelos: {'cardiff-xlmr': 21}
-  latencia: p50 99.98 ms | p95 310.09 ms
-  registro en: /Users/cesarmg.data/Documents/deepseek-harness/Default workspace/harness/logs/decisions (nivel excerpt, 7 escritos, 0 errores)
+  peticiones 35 | respuestas 35 | derivadas 25 (71.4 %)
+  motivos: {'raw_confidence_below_0.75': 10, 'high_neutral_mass': 5, 'input_truncated': 5, 'unsupported_by_model': 5}
+  modelos: {'cardiff-xlmr': 35}
+  latencia: p50 100.09 ms | p95 310.7 ms
+  registro en: logs/decisions (nivel excerpt, 7 escritos, 0 errores)
 
 === demo terminado. Para dejarlo corriendo de verdad:  make serve
     (o 'bash scripts/demo.sh --keep' para que no lo apague al terminar)
