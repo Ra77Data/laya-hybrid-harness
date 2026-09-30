@@ -27,9 +27,17 @@ instalación nueva** — que es exactamente para lo que existe esta fase:
    distinguir **tres** cosas —los pesos existen, el adaptador está instalado, el modelo es
    servible— y los omitidos se reportan con la razón accionable.
 
-Números de la corrida en limpio: clon 0 s, `make setup` 30-70 s, `make demo` 136 s (incluida la
-descarga de 1,1 GB del modelo), `make test` 25 s. Todo desde un clon, sin cachés y sin nada
-instalado.
+Números de la corrida en limpio, con cachés de uv y de modelos **vacías**:
+
+| Paso | Tiempo | Qué implica |
+|---|---|---|
+| `git clone` | 0 s | 66 archivos; ningún venv ni log viaja en el repo |
+| `make setup` | 75 s | entorno de 766 MB |
+| `make demo` | 148 s | incluye la descarga de 1,1 GB del modelo |
+| `make test` | 25 s | self-test + 19 casos límite + concurrencia |
+
+**De cero a demo funcionando: ~4 minutos.** La prueba quedó en `tests/quickstart_clean.sh` para que
+cualquiera la repita.
 
 Nota sobre la licencia: la decisión inicial fue GPL-2.0 «para seguir el camino de Laya», pero al
 verificar resultó que **Laya es Apache-2.0** (su repo en GitHub y los paquetes `laya`/`laya-coreml`),

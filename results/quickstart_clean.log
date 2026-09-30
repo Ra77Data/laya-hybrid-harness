@@ -1,2 +1,132 @@
 Downloading cpython-3.11.16-macos-aarch64-none (download) (25.7MiB)
  Downloaded cpython-3.11.16-macos-aarch64-none (download)
+Using CPython 3.11.16
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+Resolved 45 packages in 3.33s
+   Building laya-hybrid-harness @ file:///private/tmp/quickstart-clean/harness
+Downloading torch (121.4MiB)
+Downloading pygments (1.2MiB)
+Downloading hf-xet (3.7MiB)
+Downloading networkx (2.0MiB)
+Downloading sympy (6.0MiB)
+Downloading pydantic-core (1.8MiB)
+Downloading transformers (12.0MiB)
+Downloading numpy (5.2MiB)
+Downloading tokenizers (3.0MiB)
+Downloading sentencepiece (1.3MiB)
+      Built laya-hybrid-harness @ file:///private/tmp/quickstart-clean/harness
+ Downloaded pygments
+ Downloaded sentencepiece
+ Downloaded pydantic-core
+ Downloaded networkx
+ Downloaded tokenizers
+ Downloaded hf-xet
+ Downloaded numpy
+ Downloaded sympy
+ Downloaded transformers
+ Downloaded torch
+Prepared 45 packages in 1m 07s
+Installed 45 packages in 182ms
+ + annotated-doc==0.0.5
+ + annotated-types==0.8.0
+ + anyio==4.15.1
+ + certifi==2026.7.22
+ + click==8.5.0
+ + fastapi==0.142.2
+ + filelock==4.0.7
+ + fsspec==2026.9.0
+ + h11==0.16.0
+ + hf-xet==1.6.0
+ + httpcore==1.0.9
+ + httpx==0.28.1
+ + huggingface-hub==1.33.0
+ + idna==3.20
+ + jinja2==3.1.6
+ + laya-hybrid-harness==1.0.0 (from file:///private/tmp/quickstart-clean/harness)
+ + markdown-it-py==4.2.0
+ + markupsafe==3.0.3
+ + mdurl==0.1.2
+ + mpmath==1.3.0
+ + networkx==3.6.1
+ + numpy==2.4.6
+ + opentelemetry-api==1.45.0
+ + packaging==26.3
+ + protobuf==7.36.2
+ + pydantic==2.13.5
+ + pydantic-core==2.46.5
+ + pygments==2.21.0
+ + pyyaml==6.0.3
+ + regex==2026.9.29
+ + rich==15.0.0
+ + safetensors==0.8.0
+ + sentencepiece==0.2.2
+ + setuptools==84.0.0
+ + shellingham==1.5.4
+ + starlette==1.7.0
+ + sympy==1.14.0
+ + tokenizers==0.23.2
+ + torch==2.14.1
+ + tqdm==4.70.1
+ + transformers==5.18.0
+ + typer==0.27.2
+ + typing-extensions==4.16.0
+ + typing-inspection==0.4.4
+ + uvicorn==0.54.0
+listo. Ahora: make demo
+bash scripts/demo.sh
+=== arrancando el servicio en 8091 con config.demo.yaml
+    la primera vez descarga Cardiff XLM-R (~1,1 GB) desde Hugging Face
+
+modelo servido: cardiff-xlmr (transformers) | routing: {'noul': 'cardiff-xlmr'}
+umbral de confianza: {'noul': 0.75, 'choice': 0.75, 'score': 0.75} | masa neutral: 0.7
+
+  [ok] positivo claro                     local  value=True     conf=0.985 (cruda) neutral=0.05 modelo=cardiff-xlmr
+  [ok] negativo claro                     local  value=False    conf=0.988 (cruda) neutral=0.05 modelo=cardiff-xlmr
+  [·] sarcasmo                           DERIVA value=True     conf=0.680 (cruda) neutral=0.21 modelo=cardiff-xlmr
+        motivo: raw_confidence_below_0.75(0.680);no_temperature_for_noul
+  [ok] neutro (masa neutral alta)         DERIVA value=True     conf=0.768 (cruda) neutral=0.81 modelo=cardiff-xlmr
+        motivo: high_neutral_mass(0.809>0.7)
+  [ok] sin contenido                      DERIVA value=False    conf=0.527 (cruda) neutral=0.34 modelo=cardiff-xlmr
+        motivo: raw_confidence_below_0.75(0.527);no_temperature_for_noul
+  [ok] largo: el final cambia el sentido  DERIVA value=True     conf=0.622 (cruda) neutral=0.51 modelo=cardiff-xlmr
+        motivo: input_truncated(536 tokens > 512);raw_confidence_below_0.75(0.622);no_temperature_for_noul
+  [ok] primitiva que el modelo no soporta DERIVA value=None     conf=0.000 (cruda) neutral=  -  modelo=cardiff-xlmr
+        motivo: unsupported_by_model(cardiff-xlmr)
+
+=== lo que quedó registrado (observabilidad)
+  peticiones 7 | respuestas 7 | derivadas 5 (71.4 %)
+  motivos: {'raw_confidence_below_0.75': 2, 'high_neutral_mass': 1, 'input_truncated': 1, 'unsupported_by_model': 1}
+  modelos: {'cardiff-xlmr': 7}
+  latencia: p50 98.49 ms | p95 317.66 ms
+  registro en: /private/tmp/quickstart-clean/harness/logs/decisions (nivel excerpt, 7 escritos, 0 errores)
+
+=== demo terminado. Para dejarlo corriendo de verdad:  make serve
+    (o 'bash scripts/demo.sh --keep' para que no lo apague al terminar)
+bash scripts/run_tests.sh
+=== arrancando una instancia de prueba en 8099
+
+=== self-test de los modelos declarados
+  passed: True | casos evaluados: 2 | modelos omitidos (no están en esta máquina): ['laya-base', 'laya-sentiment-v1', 'laya-sentiment-v2', 'laya-poc']
+   OK  [cardiff-xlmr] esperado=True obtenido=True 
+   OK  [cardiff-xlmr] esperado=False obtenido=False 
+   OMITIDO [laya-base] el adaptador 'laya' necesita `laya`: instalá el extra completo (make setup-full)
+   OMITIDO [laya-sentiment-v1] el adaptador 'coreml' necesita `laya_coreml`: instalá el extra completo (make setup-full)
+   OMITIDO [laya-sentiment-v2] el adaptador 'laya' necesita `laya`: instalá el extra completo (make setup-full)
+   OMITIDO [laya-poc] el adaptador 'coreml' necesita `laya_coreml`: instalá el extra completo (make setup-full)
+
+=== casos límite
+
+MAL: 0 | raros/errores: 0 | OK o sin verdad: 19
+
+guardado: /tmp/probe.json
+
+=== concurrencia (es lo que tumbaba el servicio antes del candado de inferencia)
+=== 2 concurrentes | pared 27 ms | completadas 2/2
+    agente: n/a (esta instancia no la maneja launchd; se mira que las 2/2 respuestas hayan vuelto)
+=== 4 concurrentes | pared 126 ms | completadas 4/4
+    agente: n/a (esta instancia no la maneja launchd; se mira que las 4/4 respuestas hayan vuelto)
+=== 8 concurrentes | pared 190 ms | completadas 8/8
+    agente: n/a (esta instancia no la maneja launchd; se mira que las 8/8 respuestas hayan vuelto)
+
+TODO OK
