@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "laya-hybrid-harness"
+version = "1.0.0"
+description = "Servicio de decisión local agnóstico del modelo, con enrutamiento por primitiva, política de derivación al cloud y observabilidad"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["laya", "coreml", "decision-engine", "hybrid", "delegation", "observability"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache Software License",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+# Sólo lo imprescindible para el servicio en sí.
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn>=0.27",
+  "pydantic>=2",
+  "pyyaml>=6",
+  "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+# Camino del demo: funciona en cualquier SO (Linux, Windows, macOS Intel/ARM), sin CoreML.
+demo = [
+  "torch>=2.2",
+  "transformers>=4.40",
+  "safetensors>=0.4",
+  "sentencepiece>=0.2",
+]
+# Camino completo: agrega los adaptadores de Laya (CoreML necesita macOS Apple Silicon).
+full = [
+  "laya-hybrid-harness[demo]",
+  "laya",
+  "laya-coreml",
+  "pandas>=2",
+  "pyarrow>=15",
+]
+
+[project.urls]
+Homepage = "https://github.com/Ramg77/laya-hybrid-harness"
+"Resultados medidos" = "https://huggingface.co/Ramg77/laya-sentiment-multilingual"
+
+[tool.setuptools.packages.find]
+include = ["service*"]

@@ -1,0 +1,2424 @@
+{
+  "model_used": "cardiff-xlmr",
+  "question_type": "noul",
+  "options": [
+    "positive",
+    "negative"
+  ],
+  "n": 240,
+  "unmapped": 0,
+  "accuracy": 0.9166666666666666,
+  "accuracy_by_lang": {
+    "de": 0.875,
+    "en": 0.9625,
+    "es": 0.9125
+  },
+  "delegation_rate": 0.11666666666666667,
+  "local_only_accuracy": 0.9528301886792453,
+  "local_coverage": 0.8833333333333333,
+  "mean_confidence": 0.9105680333333334,
+  "latency_ms_median": 15.12,
+  "wall_seconds": 4.3,
+  "rows": [
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.986961,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 61.41
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.985428,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 22.97
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.693213,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 17.3
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.987211,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 22.35
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.988644,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.2
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.981162,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.82
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.856113,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 20.95
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.979992,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.13
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.986206,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 23.47
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.983809,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 28.27
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": true,
+      "pred": 1,
+      "conf": 0.59485,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 25.55
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.987072,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 22.7
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.984946,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.06
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.70581,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 13.83
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.974311,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.13
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.985824,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 18.93
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.970935,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 18.21
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.966359,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.55
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.962535,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.25
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.976275,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.49
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.954315,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.7
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": false,
+      "pred": 0,
+      "conf": 0.901539,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.77
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.986563,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.06
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.867309,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.22
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.985846,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 18.97
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.872337,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.54
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": true,
+      "pred": 1,
+      "conf": 0.933345,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.84
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.922297,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.59
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.622605,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 19.26
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.640533,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 15.57
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.789886,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.44
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.989813,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.2
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.974226,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.57
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": true,
+      "pred": 1,
+      "conf": 0.634584,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 16.37
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.968031,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 20.4
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.96684,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 21.37
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.981191,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 31.25
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.862619,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 21.26
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.650435,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 19.74
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.975621,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 18.95
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": true,
+      "pred": 1,
+      "conf": 0.531285,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 22.83
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": false,
+      "pred": 0,
+      "conf": 0.988279,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 18.22
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.946694,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.91
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.982881,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 23.21
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.96362,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.88
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.974218,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 22.1
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.908009,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.28
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.980122,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.47
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.972396,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.32
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.859188,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.06
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.954094,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 20.26
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.979208,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 24.17
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.955711,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.06
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.890642,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.33
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.956663,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.67
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.58655,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 14.31
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.910376,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 21.13
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.981015,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.32
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.501951,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 11.74
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.919413,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 10.48
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.987708,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.61
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.980383,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.98
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.927318,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.96
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.96905,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.86
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.926486,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.31
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.988976,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.31
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": true,
+      "pred": 1,
+      "conf": 0.947886,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.12
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": true,
+      "pred": 1,
+      "conf": 0.516046,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 10.96
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.818862,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.03
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.970636,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.14
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.951147,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.5
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.751498,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.9
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.988582,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.97
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.975862,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.14
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": true,
+      "pred": 1,
+      "conf": 0.68947,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 16.05
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.982691,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.43
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.989108,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.84
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.978012,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.99
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.975315,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.2
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": true,
+      "pred": 1,
+      "conf": 0.969549,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.68
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.96818,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.25
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.9837,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.82
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.986644,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.49
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.7678,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.32
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": false,
+      "pred": 0,
+      "conf": 0.604719,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 14.16
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.950109,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.14
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.986412,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.64
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.846629,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.05
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.887685,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.3
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.939666,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.08
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.931235,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.79
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.98639,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.08
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.983972,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.56
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.975465,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.23
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.815286,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.39
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.980926,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.71
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.964399,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.09
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.986069,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.1
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.987431,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.72
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.970528,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.51
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.972049,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.3
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.561304,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 14.54
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.956082,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.13
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.920776,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.18
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.752368,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.76
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.945758,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.2
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.982514,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.81
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.972497,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.38
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.944074,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.5
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.892019,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.44
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.979113,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.97
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.691704,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 11.75
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.926646,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.21
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.802205,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.28
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.976457,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.8
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.971215,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.06
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.985363,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.74
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.990341,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.0
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.943837,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.11
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.946591,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.22
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.766219,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.66
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.897908,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.46
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.980729,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.17
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.897333,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.85
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.900725,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.58
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.982472,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.38
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.987878,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.33
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.951498,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.08
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.952789,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.16
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.988124,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.73
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": false,
+      "pred": 0,
+      "conf": 0.917511,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.58
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.706172,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 11.82
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.984749,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.85
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.97891,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.44
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.947485,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.45
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.926851,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.36
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.983836,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.36
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.963313,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.29
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": false,
+      "pred": 0,
+      "conf": 0.512254,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 15.67
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.983464,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.54
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.976161,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.73
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.594311,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 13.75
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.965019,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.91
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.990418,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.77
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.962692,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.79
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.949615,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.11
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.9849,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.77
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.979571,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.86
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.988767,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.36
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.970357,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.6
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.980895,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.81
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.969382,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.19
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.890611,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.12
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.716857,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 15.19
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.979334,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.38
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.605834,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 12.92
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.981054,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.76
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.941974,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.41
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.952049,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.63
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.952184,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.23
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.915347,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.3
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.980958,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.71
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.78257,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.87
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.983655,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.79
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.987294,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.95
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.977511,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.74
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.957618,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.76
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.973082,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.81
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.957689,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 18.47
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.658937,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 15.18
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.96062,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.24
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.98128,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.98
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.979239,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.82
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.985793,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.01
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.989385,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 10.5
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": false,
+      "pred": 0,
+      "conf": 0.573143,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 11.59
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": false,
+      "pred": 0,
+      "conf": 0.859321,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.9
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.982746,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.41
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.990632,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.73
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.984638,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 9.69
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.977308,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.39
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.975242,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.27
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": false,
+      "pred": 0,
+      "conf": 0.920831,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.44
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.965415,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.64
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.983079,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.21
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.891341,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.13
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.936333,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.76
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": true,
+      "pred": 1,
+      "conf": 0.744014,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 12.51
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.954525,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.39
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.978781,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 10.92
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.835027,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.08
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.97879,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.34
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.986925,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.33
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.966959,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.78
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.848924,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.85
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.981728,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.61
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.548781,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 13.32
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.983138,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.26
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.985309,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.1
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.911193,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.22
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.962891,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.81
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": false,
+      "pred": 0,
+      "conf": 0.934073,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.04
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.923168,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.23
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.949679,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.18
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.982587,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.59
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.985278,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.39
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.958365,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 11.84
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.981019,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.9
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.986062,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 13.9
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.98393,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.09
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.66865,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 17.47
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.85124,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.67
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.974908,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.06
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.985473,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 12.4
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.957418,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.11
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.716332,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 18.61
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.596607,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 13.83
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": false,
+      "pred": 0,
+      "conf": 0.685954,
+      "model": "cardiff-xlmr",
+      "delegate": true,
+      "latency_ms": 23.59
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.8972,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 18.8
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.756231,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.59
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.951681,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.82
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.991411,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.9
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.941065,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.03
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.982411,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.35
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.917811,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 22.56
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.960505,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 14.4
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.940909,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.43
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.990744,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.19
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.977524,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.14
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.981451,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 29.49
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.980282,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 32.33
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.896641,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 33.31
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.828745,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 17.6
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": false,
+      "pred": 0,
+      "conf": 0.963864,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 20.74
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.986671,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 18.87
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.795385,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.86
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.969867,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 15.85
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": false,
+      "pred": 0,
+      "conf": 0.98728,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 19.14
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.930036,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 16.79
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": true,
+      "pred": 1,
+      "conf": 0.807025,
+      "model": "cardiff-xlmr",
+      "delegate": false,
+      "latency_ms": 21.55
+    }
+  ]
+}

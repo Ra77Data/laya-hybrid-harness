@@ -1,0 +1,61 @@
+[
+  {
+    "n": 1,
+    "ok": 1,
+    "wall_ms": 142.3318386077881,
+    "lat": [
+      142.1041488647461
+    ],
+    "runs_before": "2",
+    "runs_after": "2",
+    "survived": true,
+    "errores": []
+  },
+  {
+    "n": 2,
+    "ok": 0,
+    "wall_ms": 93.02592277526855,
+    "lat": [],
+    "runs_before": "2",
+    "runs_after": "3",
+    "survived": false,
+    "errores": [
+      "RemoteDisconnected: Remote end closed connection without response",
+      "RemoteDisconnected: Remote end closed connection without response"
+    ]
+  },
+  {
+    "n": 4,
+    "ok": 0,
+    "wall_ms": 2.421140670776367,
+    "lat": [],
+    "runs_before": "3",
+    "runs_after": "3",
+    "survived": true,
+    "errores": [
+      "URLError: <urlopen error [Errno 61] Connection refused>",
+      "URLError: <urlopen error [Errno 61] Connection refused>",
+      "URLError: <urlopen error [Errno 61] Connection refused>",
+      "URLError: <urlopen error [Errno 61] Connection refused>"
+    ]
+  },
+  {
+    "n": 8,
+    "ok": 0,
+    "wall_ms": 197.34692573547363,
+    "lat": [],
+    "runs_before": "3",
+    "runs_after": "3",
+    "survived": true,
+    "errores": [
+      "RemoteDisconnected: Remote end closed connection without response",
+      "RemoteDisconnected: Remote end closed connection without response",
+      "RemoteDisconnected: Remote end closed connection without response",
+      "RemoteDisconnected: Remote end closed connection without response",
+      "RemoteDisconnected: Remote end closed connection without response",
+      "RemoteDisconnected: Remote end closed connection without response",
+      "RemoteDisconnected: Remote end closed connection without response",
+      "RemoteDisconnected: Remote end closed connection without response"
+    ]
+  }
+]

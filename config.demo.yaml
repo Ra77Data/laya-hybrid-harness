@@ -1,0 +1,54 @@
+# Registro MÍNIMO para probar el harness en cualquier sistema operativo.
+#
+# Sólo Cardiff XLM-R, que viene del Hub de Hugging Face (~1,1 GB la primera vez) y corre en CPU.
+# No incluye los modelos de Laya: esos requieren las rutas locales o descargas más pesadas y, para
+# el adaptador CoreML, macOS con Apple Silicon. Para el registro completo, ver config.yaml.
+
+service:
+  host: 127.0.0.1
+  port: 8090
+
+delegation:
+  default_threshold: 0.75
+  per_type:
+    noul: 0.75
+  neutral_mass_threshold: 0.70
+
+routing:
+  noul: cardiff-xlmr
+
+preload: [cardiff-xlmr]
+
+models:
+  cardiff-xlmr:
+    label: "Cardiff XLM-R sentiment (clasificador HF, 3 clases reducidas a binario)"
+    adapter: transformers
+    supports: [noul]
+    weights: cardiffnlp/twitter-xlm-roberta-base-sentiment
+    revision: f2f1202b1bdeb07342385c3f807f9c07cd8f5cf8
+    max_length: 512          # XLM-R soporta 512; con 128 se perdía texto largo en silencio
+    expect_sha256: 93316a86051c359748c5d5453e7660c69a21a57cfb477892f95f539e3e171196
+    calibration: null
+    binary_reduction:
+      positive: 2
+      negative: 0
+    smoke:
+      - text: "I love this product, it changed my life!"
+        type: noul
+        instructions: "Does this text express positive sentiment?"
+        expect_value: true
+      - text: "El producto llegó roto y nadie responde. Una estafa."
+        type: noul
+        instructions: "Does this text express positive sentiment?"
+        expect_value: false
+
+
+observability:
+  enabled: true
+  level: excerpt
+  excerpt_chars: 160
+  directory: logs/decisions
+  window: 5000
+  retain_days: 30
+
+active: cardiff-xlmr

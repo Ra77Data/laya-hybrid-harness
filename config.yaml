@@ -1,0 +1,135 @@
+# Registro de modelos y enrutamiento del servicio de decisión.
+#
+# El servicio no sabe de modelos: sabe de adaptadores y de rutas por primitiva.
+#   * `routing` decide qué modelo sirve cada primitiva (noul / choice / score).
+#   * `preload` decide qué modelos se cargan al arrancar; el resto se carga en el primer uso.
+#   * `expect_sha256` se verifica con el sha256 REAL del archivo de pesos (no el nombre del blob
+#     de la caché de Hugging Face, que no es lo mismo). Si no coincide, ese modelo no se carga.
+
+service:
+  host: 127.0.0.1
+  port: 8090
+
+delegation:
+  # Umbral por primitiva, aplicado sobre la confianza CALIBRADA.
+  default_threshold: 0.75
+  per_type:
+    noul: 0.75
+    choice: 0.70
+    score: 0.70
+  # Además de la confianza: si el modelo cree que el texto es MÁS probablemente neutro que con
+  # sentimiento, se deriva. Medido sobre 600 neutros reales (clase 1 del dataset original) y los
+  # 1.740 no neutros: AUC 0,81. El umbral se eligió por coste/beneficio marginal:
+  #
+  #   umbral   neutros derivados   tráfico extra   error local del extra
+  #   0,50          61,7 %             +6,0 %             9,6 %
+  #   0,70          48,7 %             +1,5 %            11,5 %
+  #   0,80          38,7 %             +0,5 %             0,0 %
+  #
+  # 0,50 detecta más neutros pero cuesta cuatro veces más tráfico, y esos casos tienen el mismo
+  # error local que el promedio: no compran precisión. Con 0,70 el coste marginal es despreciable.
+  neutral_mass_threshold: 0.70
+
+# Qué modelo atiende cada primitiva. Sin entrada, cae al modelo `active`.
+routing:
+  noul: cardiff-xlmr      # sentimiento: el mejor medido (91,7 % en 240 textos)
+  choice: laya-base       # motor de decisión general, zero-shot
+  score: laya-base
+
+# Se precargan los dos modelos que sirven alguna primitiva: el resto del registro queda como
+# alternativa. La carga perezosa del modelo general tardaba ~3,7 s y el plugin de DSH corta a
+# 2,5 s, así que la primera pregunta de tipo choice habría fallado por timeout.
+preload: [cardiff-xlmr, laya-base]
+
+models:
+  cardiff-xlmr:
+    label: "Cardiff XLM-R sentiment (clasificador HF, 3 clases reducidas a binario)"
+    adapter: transformers
+    supports: [noul]
+    weights: cardiffnlp/twitter-xlm-roberta-base-sentiment
+    revision: f2f1202b1bdeb07342385c3f807f9c07cd8f5cf8
+    max_length: 512          # XLM-R soporta 512; con 128 se perdía texto largo en silencio
+    expect_sha256: 93316a86051c359748c5d5453e7660c69a21a57cfb477892f95f539e3e171196
+    calibration: null
+    binary_reduction:
+      positive: 2
+      negative: 0
+    smoke:
+      - text: "I love this product, it changed my life!"
+        type: noul
+        instructions: "Does this text express positive sentiment?"
+        expect_value: true
+      - text: "El producto llegó roto y nadie responde. Una estafa."
+        type: noul
+        instructions: "Does this text express positive sentiment?"
+        expect_value: false
+
+  laya-base:
+    label: "Laya base (motor de decisión general, zero-shot sobre instrucciones arbitrarias)"
+    adapter: laya
+    supports: [noul, choice, score]
+    weights: convaiinnovations/laya-multilingual
+    revision: 82d57fc4f2d1be3d2caac494045f2ec51d0842f3
+    expect_sha256: 9d628fd971b700382ac6f65920a86f149777b2e748e0c955fb3b19695aa8f204
+    calibration: null
+    smoke:
+      - text: "Quiero que me devuelvan el dinero de este pedido"
+        type: noul
+        instructions: "Does this text ask for a refund?"
+        expect_value: true
+      - text: "Me cobraron dos veces la misma factura y nadie contesta"
+        type: choice
+        instructions: "Which team should handle this ticket?"
+        options: [sales, support, billing, other]
+        expect_value: billing
+
+  laya-sentiment-v1:
+    label: "Laya sentiment v1 (fine-tune validado, CoreML FP16)"
+    adapter: coreml
+    supports: [noul]
+    weights: /Users/cesarmg.data/Projects/ml/Hybrid_Harness_V5/laya-service/models/laya-sentiment-v1-coreml
+    expect_sha256: 1701a2f936d82eaa7a5e3f4da8c236d6f0fe47d03fad9a49f9e5f5a2483d08c9
+    calibration: /Users/cesarmg.data/Projects/ml/Hybrid_Harness_V5/laya-service/calibration.json
+    smoke:
+      - text: "I love this product, it changed my life!"
+        type: noul
+        instructions: "Does this text express positive sentiment?"
+        expect_value: true
+
+  laya-sentiment-v2:
+    label: "Laya sentiment v2 (experimento 4.8x datos, safetensors)"
+    adapter: laya
+    supports: [noul]
+    weights: /Users/cesarmg.data/Documents/deepseek-harness/Default workspace/etapa4/models/laya_sentiment_v2
+    expect_sha256: 9f79ac8f9e518d210af4f6f51458d3562d8149935e63c9623831cf4d20fb8142
+    calibration: /Users/cesarmg.data/Documents/deepseek-harness/Default workspace/etapa4/models/laya_sentiment_v2/calibration.json
+    smoke:
+      - text: "I love this product, it changed my life!"
+        type: noul
+        instructions: "Does this text express positive sentiment?"
+        expect_value: true
+
+  laya-poc:
+    label: "PoC organizacional (fine-tune de V3, CoreML, 4 clases)"
+    adapter: coreml
+    supports: [noul, choice, score]
+    weights: /Users/cesarmg.data/Projects/ml/Hybrid_Harness_V3/laya-service/models/laya-multilingual-coreml
+    expect_sha256: 587e4ac81f74c55da0e2c323be47f9a4f901e2dcac3a0fce240f88af91da2af5
+    calibration: null
+    smoke:
+      - text: "Me cobraron dos veces la misma factura y nadie contesta"
+        type: choice
+        instructions: "Which team should handle this ticket?"
+        options: [sales, support, billing, other]
+        expect_value: billing
+
+observability:
+  enabled: true
+  # off: nada | metadata: sólo números y hashes | excerpt: primeros caracteres | full: texto entero
+  level: excerpt
+  excerpt_chars: 160
+  directory: logs/decisions
+  window: 5000          # registros en memoria, para /metrics sin leer disco
+  retain_days: 30       # los archivos más viejos se borran al arrancar
+
+active: cardiff-xlmr

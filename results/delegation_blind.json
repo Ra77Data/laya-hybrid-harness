@@ -1,0 +1,486 @@
+{
+  "blind": [
+    {
+      "idx": 1,
+      "lang": "en",
+      "text": "I really don't care. Final is on Tuesday and I'm watching westworld oops",
+      "local_pred": "positivo",
+      "conf": 0.608924
+    },
+    {
+      "idx": 2,
+      "lang": "en",
+      "text": "look at that, one year of vegetarianism and i havent dropped deed from a lack of protein!!",
+      "local_pred": "negativo",
+      "conf": 0.698498
+    },
+    {
+      "idx": 3,
+      "lang": "de",
+      "text": "@user @user @user @user @user @user @user die Szene mit Alistair mochte ich nie! die fand ich",
+      "local_pred": "positivo",
+      "conf": 0.706044
+    },
+    {
+      "idx": 4,
+      "lang": "es",
+      "text": "Ojala pudiera devolver el tiempo, para verte de nuevo, para darte un abrazo y nunca soltarte . #IMissYou #MyAngel",
+      "local_pred": "negativo",
+      "conf": 0.586733
+    },
+    {
+      "idx": 5,
+      "lang": "es",
+      "text": "@user @user yo ni pude ver el live Ten fe que Abdiel es tan lindo que lo hara",
+      "local_pred": "positivo",
+      "conf": 0.709293
+    },
+    {
+      "idx": 6,
+      "lang": "es",
+      "text": "@user calla que yo estoy ahora en mi día libre y las horas se pasan más rápido que poniendo copas en el bar",
+      "local_pred": "positivo",
+      "conf": 0.525586
+    },
+    {
+      "idx": 7,
+      "lang": "es",
+      "text": "Y las emergencias? La gente que necesita ir a hospitales? Los que esperan cita desde hace años? Ahhh no! Yo apoyo el paro nacional jijis",
+      "local_pred": "negativo",
+      "conf": 0.716332
+    },
+    {
+      "idx": 8,
+      "lang": "es",
+      "text": "@user Ya, ya. El edificio A sí, el edificio B no. Facilísimo de articular",
+      "local_pred": "positivo",
+      "conf": 0.640838
+    },
+    {
+      "idx": 9,
+      "lang": "es",
+      "text": "@user noup tu corazón es de oro ese no hay y aparte es único nunca podrían crear uno igual 🤷‍️",
+      "local_pred": "positivo",
+      "conf": 0.534337
+    },
+    {
+      "idx": 10,
+      "lang": "es",
+      "text": "@user Tanto como nosotros de que la impartas",
+      "local_pred": "positivo",
+      "conf": 0.700584
+    },
+    {
+      "idx": 11,
+      "lang": "es",
+      "text": "Me encanta estar de noche en la IC. Lo único malo es que no puedo salir cuando mis amigos salen",
+      "local_pred": "negativo",
+      "conf": 0.741512
+    },
+    {
+      "idx": 12,
+      "lang": "es",
+      "text": "q los GP de La Caixa (y otros) manipulen el Ibex es una bendició gracias a ellos podemos arrañar alg son auténticos PARDILLOS",
+      "local_pred": "positivo",
+      "conf": 0.650038
+    },
+    {
+      "idx": 13,
+      "lang": "de",
+      "text": "RT @user: Ahhhh ja.... Wieder lauter genetische Sackgassen bei #BauersuchtFrau",
+      "local_pred": "negativo",
+      "conf": 0.726275
+    },
+    {
+      "idx": 14,
+      "lang": "es",
+      "text": "@user jajajaja ya en serio me haces falta",
+      "local_pred": "negativo",
+      "conf": 0.5849
+    },
+    {
+      "idx": 15,
+      "lang": "en",
+      "text": "I'd like to have lived in the time when bob dylan was at the top of the charts",
+      "local_pred": "negativo",
+      "conf": 0.510707
+    },
+    {
+      "idx": 16,
+      "lang": "es",
+      "text": "Que bien, cuando marca el Madrid a mi portátil le apetece darme un pantallazo azul y reiniciarse",
+      "local_pred": "positivo",
+      "conf": 0.744014
+    },
+    {
+      "idx": 17,
+      "lang": "de",
+      "text": "@user uh bibi das nie gut, beim lover?",
+      "local_pred": "negativo",
+      "conf": 0.748814
+    },
+    {
+      "idx": 18,
+      "lang": "es",
+      "text": "@user a mi me renovaron y no me tocaron (hasta ahora) el sueldo así que ando más o menos easy",
+      "local_pred": "positivo",
+      "conf": 0.724062
+    },
+    {
+      "idx": 19,
+      "lang": "en",
+      "text": "It's incredible how many people are born in November... if u think about it, that means they were conceived in february...(VALENTINES DAY)",
+      "local_pred": "positivo",
+      "conf": 0.683773
+    },
+    {
+      "idx": 20,
+      "lang": "de",
+      "text": "Gute Besserung mutee {} RT \"@user: Endlich muss ich zum Arzt gehen :|\"",
+      "local_pred": "negativo",
+      "conf": 0.640533
+    },
+    {
+      "idx": 21,
+      "lang": "en",
+      "text": "@user \"As conservatives, we also care about your sexuality though\".",
+      "local_pred": "negativo",
+      "conf": 0.568748
+    },
+    {
+      "idx": 22,
+      "lang": "de",
+      "text": "RT @user: @user #bucks #dilemma",
+      "local_pred": "negativo",
+      "conf": 0.501951
+    },
+    {
+      "idx": 23,
+      "lang": "de",
+      "text": "-Großrückerswalde Ri Mauersberg höhe Fiedler Bäcker aus einem schwarzen Caddy Danke an Holger /AK",
+      "local_pred": "positivo",
+      "conf": 0.668832
+    },
+    {
+      "idx": 24,
+      "lang": "en",
+      "text": "Saakashvili is pushing his own agenda here.The Ukrainian economy is growing, although corruption is still a problem…",
+      "local_pred": "negativo",
+      "conf": 0.742593
+    },
+    {
+      "idx": 25,
+      "lang": "en",
+      "text": "American Radical Christianity seems to love hate-spewing Marine Le Pen 😂🙄",
+      "local_pred": "negativo",
+      "conf": 0.720229
+    },
+    {
+      "idx": 26,
+      "lang": "es",
+      "text": "Muchas gracias,  sí, las cifras que doy soy generales y de los gastos básicos, luego suelen dispararse con todo lo demás @user",
+      "local_pred": "negativo",
+      "conf": 0.55466
+    },
+    {
+      "idx": 27,
+      "lang": "de",
+      "text": "Den ganzen tag bei der alten Verwandtschaft gesessen, weil will ja niemanden enttäuschen. I'M A SLAAAAVE FOR YOU",
+      "local_pred": "positivo",
+      "conf": 0.59485
+    },
+    {
+      "idx": 28,
+      "lang": "en",
+      "text": "Putin and Seagal love to double date with Dennis Rodman and Kim Jong Un.",
+      "local_pred": "negativo",
+      "conf": 0.592529
+    },
+    {
+      "idx": 29,
+      "lang": "es",
+      "text": "@user pues sí, sé lo que se siente. Pero piénselo como el último esfuerzo, que ya ahorita llegan las vacaciones",
+      "local_pred": "positivo",
+      "conf": 0.706452
+    },
+    {
+      "idx": 30,
+      "lang": "en",
+      "text": "#Spurs #GoSpursGo SAN ANTONIO SPURS #Card LOT TIM DUNCAN DAVID ROBINSON MANU GINOBILI AVERY JOHNSON #TimDuncan #NBA",
+      "local_pred": "positivo",
+      "conf": 0.617966
+    },
+    {
+      "idx": 31,
+      "lang": "es",
+      "text": "Estoy poniendo fotos a lo loco porque no tengo las mias   Pero no va tan mal...😏 http",
+      "local_pred": "positivo",
+      "conf": 0.539679
+    },
+    {
+      "idx": 32,
+      "lang": "en",
+      "text": "#lmao 😂😂😂😂 #theface definitely me #mannequin #mannequinchallenge #goofy #stevebuscemi…",
+      "local_pred": "positivo",
+      "conf": 0.675382
+    },
+    {
+      "idx": 33,
+      "lang": "es",
+      "text": "@user cuidado y se enamora de la suegra, porque vieras que señora y que mano tiene para la cocina, y dicen qe panza llena corazón",
+      "local_pred": "positivo",
+      "conf": 0.52861
+    },
+    {
+      "idx": 34,
+      "lang": "en",
+      "text": "#LeonardCohen a tribute, and Jennifer Warnes",
+      "local_pred": "negativo",
+      "conf": 0.594433
+    },
+    {
+      "idx": 35,
+      "lang": "de",
+      "text": "@user Ich hoffe doch nix ernstes....",
+      "local_pred": "negativo",
+      "conf": 0.696293
+    },
+    {
+      "idx": 36,
+      "lang": "es",
+      "text": "@user ya, aún así... no me fío de la gente",
+      "local_pred": "positivo",
+      "conf": 0.524116
+    },
+    {
+      "idx": 37,
+      "lang": "en",
+      "text": "...\"radical acceptance\", a rigorous mental determination to meet head on the most powerful negatives in our lives...",
+      "local_pred": "positivo",
+      "conf": 0.628608
+    },
+    {
+      "idx": 38,
+      "lang": "de",
+      "text": "Stuttgarter Zeitung: Senioren hinter Gitter: Experten empfehlen altersgerechten Umbau der Gefängniss http",
+      "local_pred": "positivo",
+      "conf": 0.556936
+    },
+    {
+      "idx": 39,
+      "lang": "en",
+      "text": "WestWorld is even more meta than Community.",
+      "local_pred": "negativo",
+      "conf": 0.512254
+    },
+    {
+      "idx": 40,
+      "lang": "de",
+      "text": "\" ich kann nicht schlafen wenn du da tv schaust \" boah ernsthaft^^",
+      "local_pred": "positivo",
+      "conf": 0.588753
+    },
+    {
+      "idx": 41,
+      "lang": "de",
+      "text": "@user nah.",
+      "local_pred": "negativo",
+      "conf": 0.6192
+    },
+    {
+      "idx": 42,
+      "lang": "en",
+      "text": "But the AP notes 'Kim Fat Fat Fat' still works",
+      "local_pred": "positivo",
+      "conf": 0.551893
+    },
+    {
+      "idx": 43,
+      "lang": "en",
+      "text": "Exotic Fashion News Journal is out! Managing Editor, Riley Rose McKesson, @user #beautyandthebeast",
+      "local_pred": "negativo",
+      "conf": 0.573319
+    },
+    {
+      "idx": 44,
+      "lang": "de",
+      "text": "So langsam verflacht die Partie etwas, Arsenal schaltet einen Gang zurück. Sieht jetzt mehr nach Serie A als Premier League aus.",
+      "local_pred": "negativo",
+      "conf": 0.681998
+    },
+    {
+      "idx": 45,
+      "lang": "en",
+      "text": "#GilmoreGirlsTop4 Can't be Lorelei or Rory 4)Mrs Kim 3) Miss Patty 2) Emily 1) Luke",
+      "local_pred": "negativo",
+      "conf": 0.722364
+    },
+    {
+      "idx": 46,
+      "lang": "en",
+      "text": "There's this Jaguar ad that keeps coming up on my tl and every time i see it i think of a tesla model s",
+      "local_pred": "positivo",
+      "conf": 0.605834
+    },
+    {
+      "idx": 47,
+      "lang": "en",
+      "text": "@user Tesla Network enrollee's eligible for relatively low cost insurance, since 'self-driving' cars are safer? Tesla to self-insure?",
+      "local_pred": "positivo",
+      "conf": 0.717197
+    },
+    {
+      "idx": 48,
+      "lang": "de",
+      "text": "@user Fies. Fieser. Düsseldorf.",
+      "local_pred": "negativo",
+      "conf": 0.633804
+    },
+    {
+      "idx": 49,
+      "lang": "en",
+      "text": "Our #MannequinChallenge it's only 10 secs tho 😂😂😂",
+      "local_pred": "positivo",
+      "conf": 0.533892
+    },
+    {
+      "idx": 50,
+      "lang": "en",
+      "text": "Still though, Bob Dylan trumps all",
+      "local_pred": "negativo",
+      "conf": 0.562237
+    },
+    {
+      "idx": 51,
+      "lang": "en",
+      "text": "Presumably we took all that gold for saving all those 'lives'. Sounds much better than saying we mugged #Libya and…",
+      "local_pred": "positivo",
+      "conf": 0.550615
+    },
+    {
+      "idx": 52,
+      "lang": "de",
+      "text": "Wow.sitzplätze.wahnsinn",
+      "local_pred": "positivo",
+      "conf": 0.622605
+    },
+    {
+      "idx": 53,
+      "lang": "de",
+      "text": "(geliebte Schwestern ausgeschlossen) @user",
+      "local_pred": "negativo",
+      "conf": 0.749732
+    },
+    {
+      "idx": 54,
+      "lang": "es",
+      "text": "He llegado a mi casa (AL FIN), y el dolor del sacro ha empezado a agudirzarse",
+      "local_pred": "positivo",
+      "conf": 0.54245
+    },
+    {
+      "idx": 55,
+      "lang": "de",
+      "text": "@user @user Ich schrecke eben vor nichts zurück - wohl auch dank Amnesie :DD",
+      "local_pred": "positivo",
+      "conf": 0.640941
+    },
+    {
+      "idx": 56,
+      "lang": "de",
+      "text": "@user Oui",
+      "local_pred": "positivo",
+      "conf": 0.602658
+    },
+    {
+      "idx": 57,
+      "lang": "de",
+      "text": "Dank @user spiele ich jetzt ohne Scheiß Candy Crush Saga ... es regt mich maßlos auf aber aufhören kann ich auch ned -.-",
+      "local_pred": "positivo",
+      "conf": 0.519063
+    },
+    {
+      "idx": 58,
+      "lang": "en",
+      "text": "That time @user arrived in #Russia and the FSB's Olga Kostina was waiting at the airport to facilitate his defec…",
+      "local_pred": "negativo",
+      "conf": 0.635848
+    },
+    {
+      "idx": 59,
+      "lang": "en",
+      "text": "@user @user @user @user I'm GOD'S Voice! God says:\"EU was converted into SATANIC Unions by godless LIBERALS:Tusk",
+      "local_pred": "negativo",
+      "conf": 0.697484
+    },
+    {
+      "idx": 60,
+      "lang": "es",
+      "text": "@user Así me gusta, cada cosa a su CCAA. Así dejamos de cargar las culpas a nuestra querida nación.",
+      "local_pred": "positivo",
+      "conf": 0.60507
+    }
+  ],
+  "gold": {
+    "1": 1,
+    "2": 1,
+    "3": 0,
+    "4": 0,
+    "5": 1,
+    "6": 0,
+    "7": 0,
+    "8": 1,
+    "9": 1,
+    "10": 1,
+    "11": 1,
+    "12": 0,
+    "13": 0,
+    "14": 0,
+    "15": 1,
+    "16": 0,
+    "17": 0,
+    "18": 1,
+    "19": 1,
+    "20": 0,
+    "21": 0,
+    "22": 0,
+    "23": 1,
+    "24": 0,
+    "25": 0,
+    "26": 1,
+    "27": 0,
+    "28": 1,
+    "29": 1,
+    "30": 1,
+    "31": 1,
+    "32": 1,
+    "33": 1,
+    "34": 1,
+    "35": 0,
+    "36": 0,
+    "37": 0,
+    "38": 0,
+    "39": 1,
+    "40": 0,
+    "41": 0,
+    "42": 0,
+    "43": 1,
+    "44": 1,
+    "45": 1,
+    "46": 1,
+    "47": 1,
+    "48": 0,
+    "49": 1,
+    "50": 1,
+    "51": 0,
+    "52": 1,
+    "53": 0,
+    "54": 0,
+    "55": 1,
+    "56": 1,
+    "57": 0,
+    "58": 0,
+    "59": 0,
+    "60": 0
+  }
+}

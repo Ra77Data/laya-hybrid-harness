@@ -1,0 +1,27 @@
+# Entorno
+.venv/
+.uvcache/
+.env
+.envrc
+.envrc.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Registro y resultados crudos (se regeneran con los scripts)
+logs/
+results/*.jsonl
+results/*.npy
+results/*.npz
+results/real_traffic_eval.jsonl
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Generado por `make cordis`
+dsh-laya-plugin/laya.cordis.yml

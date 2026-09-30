@@ -1,0 +1,2424 @@
+{
+  "model_used": "laya-base",
+  "question_type": "choice",
+  "options": [
+    "positive",
+    "negative"
+  ],
+  "n": 240,
+  "unmapped": 0,
+  "accuracy": 0.875,
+  "accuracy_by_lang": {
+    "de": 0.825,
+    "en": 0.95,
+    "es": 0.85
+  },
+  "delegation_rate": 0.06666666666666667,
+  "local_only_accuracy": 0.8883928571428571,
+  "local_coverage": 0.9333333333333333,
+  "mean_confidence": 0.93376625,
+  "latency_ms_median": 19.35,
+  "wall_seconds": 5.4,
+  "rows": [
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9899,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 83.44
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.8473,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 29.62
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.5705,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 30.96
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.952,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 23.69
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9988,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 35.88
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9977,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 31.69
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9915,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 45.01
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9938,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 33.15
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.962,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 27.21
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.7972,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.38
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9988,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 25.84
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.985,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 23.41
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9992,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.6
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9923,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.02
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9874,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.4
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.959,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 22.73
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9267,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.87
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9961,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.25
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9919,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.06
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9927,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.45
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9933,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.59
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9943,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 15.93
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9948,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.53
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9941,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.77
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.998,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.76
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9731,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 23.09
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.974,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.83
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 1.0,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.23
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9819,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.78
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9893,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.09
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.999,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 29.16
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9819,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 29.38
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.998,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 23.22
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9102,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.9
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.5689,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 20.92
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.8833,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.96
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9895,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.26
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9312,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.76
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.7234,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.51
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.8195,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.66
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9917,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.52
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9117,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.81
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9755,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 15.65
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.86,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.39
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9927,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.54
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.5122,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 19.78
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9928,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.11
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9349,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.82
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.504,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 17.26
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9879,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.98
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.6559,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 16.27
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9438,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.58
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.979,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 22.17
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9983,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.95
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.993,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.86
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.8544,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.83
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9757,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.69
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9656,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.88
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9906,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 24.41
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9955,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.31
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9668,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.55
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9996,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 22.51
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9966,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 23.69
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.6916,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 18.76
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9996,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.36
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9928,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.78
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.8822,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 23.51
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.6574,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 16.46
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9724,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.04
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.6177,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 17.42
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9019,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.04
+    },
+    {
+      "lang": "de",
+      "target": 1,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9081,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.05
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9966,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 23.94
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.99,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.42
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.8129,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 23.6
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9491,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.59
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9954,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.85
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9553,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.14
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9515,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 22.24
+    },
+    {
+      "lang": "de",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9989,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.33
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9232,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.82
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9833,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.18
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9231,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.65
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9915,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 14.84
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9631,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.0
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9953,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.29
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.995,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.14
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9997,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.44
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9965,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.37
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9869,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.87
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9998,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.03
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9992,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.18
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9909,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.74
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.5289,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 22.67
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9916,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.27
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.8495,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.58
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9737,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.33
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9004,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.93
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9701,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.59
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9847,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.56
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9579,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.02
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.8494,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.54
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9687,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.94
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9934,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.83
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9952,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.27
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9989,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.35
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9541,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.53
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.5626,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 17.92
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9837,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.65
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9235,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.89
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9991,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.11
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9882,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.64
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9338,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.01
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9939,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.92
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9923,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.24
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9994,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.55
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9862,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.85
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9997,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.15
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.8817,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.28
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9932,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 22.49
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9939,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 22.78
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9958,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.57
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9958,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.75
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9993,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.5
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9881,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.08
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9498,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.49
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9993,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.81
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9987,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.97
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9996,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.5
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.996,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.9
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.8262,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.64
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.7335,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.68
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9794,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.78
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9809,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.48
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9796,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.5
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9156,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.77
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.995,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.33
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9864,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.31
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9076,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 15.94
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9967,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.86
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9884,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.92
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.8829,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.23
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9958,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.88
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9996,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.66
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9912,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.77
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.8131,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.73
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9938,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.42
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.948,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.97
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9915,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.31
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9894,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.98
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.7786,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.93
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9996,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.86
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.7747,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.4
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.879,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.66
+    },
+    {
+      "lang": "en",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9886,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.96
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9958,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.27
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9995,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 22.53
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9897,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.85
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9996,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 22.38
+    },
+    {
+      "lang": "en",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9993,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.97
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9988,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.05
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9821,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.98
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9978,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.47
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9818,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.14
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9966,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.33
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9856,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.01
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.6049,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 17.23
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9955,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.0
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9828,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.09
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9284,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 25.17
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.881,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.81
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9501,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 22.06
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9967,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.71
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9881,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.89
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9991,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.02
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.974,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.47
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9453,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.11
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9792,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.48
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9874,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.03
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9929,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.31
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.6102,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 19.92
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9524,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 15.11
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.7212,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.51
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9995,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.35
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.989,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.53
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.88,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.66
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.6011,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 23.74
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.7624,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.21
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9841,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 22.97
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.99,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.2
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9073,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.99
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9991,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.09
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9989,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 22.68
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.8384,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.73
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9977,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 15.93
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9994,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.48
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9782,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.24
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.5518,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 17.49
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9664,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.22
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.7886,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 15.92
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9934,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.81
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9731,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.3
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.8654,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.08
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9998,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.41
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9999,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.39
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.8975,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.54
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9869,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.72
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9957,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 23.29
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9994,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.52
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9983,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.22
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9919,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.97
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9948,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 23.89
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9021,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.11
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9938,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.18
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9919,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.19
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.7525,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.66
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.8107,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.6
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.998,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.41
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9263,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.0
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.7775,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.72
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9983,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 16.56
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9912,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.01
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.999,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.71
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9922,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.79
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.998,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.68
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.8815,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.84
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9481,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.15
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.99,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.43
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9431,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 26.94
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9222,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 25.4
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9988,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 21.67
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.5606,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 22.83
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9871,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.67
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.5217,
+      "model": "laya-base",
+      "delegate": true,
+      "latency_ms": 17.71
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9646,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.45
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9992,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 20.9
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9867,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 18.74
+    },
+    {
+      "lang": "es",
+      "target": 0,
+      "value": "negative",
+      "pred": 0,
+      "conf": 0.9988,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.35
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9481,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 19.21
+    },
+    {
+      "lang": "es",
+      "target": 1,
+      "value": "positive",
+      "pred": 1,
+      "conf": 0.9663,
+      "model": "laya-base",
+      "delegate": false,
+      "latency_ms": 17.36
+    }
+  ]
+}
