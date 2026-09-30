@@ -52,8 +52,13 @@ class ModelSpec:
         if (w.startswith("/") or w.startswith("~") or w.startswith(".")) and not Path(w).expanduser().exists():
             self.available = False
             self.unavailable_reason = f"no existe la ruta de pesos {w}"
+        # Misma lógica que con los pesos: si falta el archivo de calibración, el modelo no está
+        # disponible en esta máquina, pero eso no puede impedir que el servicio arranque. Antes
+        # levantaba, y con la plantilla publicada (rutas EDITAR) `make test` fallaba en un clon
+        # nuevo por un modelo que nadie iba a servir.
         if self.calibration and not Path(self.calibration).exists():
-            raise ValueError(f"{self.id}: no existe el archivo de calibración {self.calibration}")
+            self.available = False
+            self.unavailable_reason = f"no existe el archivo de calibración {self.calibration}"
         for case in self.smoke:
             if case.get("type") not in self.supports:
                 raise ValueError(
