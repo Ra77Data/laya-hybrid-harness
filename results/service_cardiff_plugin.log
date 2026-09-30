@@ -1,24 +1,0 @@
-INFO:     Started server process [10920]
-INFO:     Waiting for application startup.
-[startup] modelo activo: cardiff-xlmr (transformers)
-[transformers] The tokenizer you are loading from 'cardiffnlp/twitter-xlm-roberta-base-sentiment' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
-Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 62112.66it/s]
-[startup] pesos: cardiffnlp/twitter-xlm-roberta-base-sentiment
-[startup] sha256=1fb5b51f7d65d560… esperado=None… coincide=None
-[startup] calibración: ninguna
-  [selftest] OK  esperado=True obtenido=True conf=0.984545 | I love this product, it changed my life!
-  [selftest] OK  esperado=False obtenido=False conf=0.988104 | El producto llegó roto y nadie responde. Una estafa.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8091 (Press CTRL+C to quit)
-INFO:     127.0.0.1:51544 - "GET /health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51545 - "POST /decide HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51546 - "POST /decide HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51545 - "POST /decide HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51546 - "POST /decide HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51545 - "POST /decide HTTP/1.1" 200 OK
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [10920]
-/Users/cesarmg.data/.local/share/uv/python/cpython-3.12-macos-aarch64-none/lib/python3.12/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
-  warnings.warn('resource_tracker: There appear to be %d '

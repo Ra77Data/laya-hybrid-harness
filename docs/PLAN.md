@@ -152,8 +152,8 @@ reproduce. Nada de números sin fuente.
 ### Fase 5 — Publicación (0,5 día)
 
 **Falta un paso concreto antes de publicar.** El `config.yaml` que se versiona y el que usa el
-despliegue son **el mismo archivo**, y tiene tres rutas absolutas a esta máquina
-(`/Users/cesarmg.data/...`) para los modelos de Laya. Publicarlo así filtra la estructura de
+despliegue son **el mismo archivo**, y tiene varias rutas absolutas a la máquina del autor
+para los modelos de Laya. Publicarlo así filtra la estructura de
 directorios y no le sirve a nadie. El paso es: versionar `config.example.yaml` con placeholders
 documentados, sacar `config.yaml` del control de versiones, y ajustar la sincronización del
 despliegue para que conserve el suyo real. `config.demo.yaml` (el del `make demo`) no tiene rutas

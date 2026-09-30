@@ -9,6 +9,7 @@ Uso: python scripts/demo.py [--url http://127.0.0.1:8090]
 """
 import argparse
 import json
+from pathlib import Path
 import urllib.error
 import urllib.request
 
@@ -85,5 +86,10 @@ print(f"  peticiones {m['requests']} | respuestas {m['answers']} | derivadas {m[
 print(f"  motivos: {m['delegate_kinds']}")
 print(f"  modelos: {m['models_seen']}")
 print(f"  latencia: p50 {m['latency_ms']['p50']} ms | p95 {m['latency_ms']['p95']} ms")
-print(f"  registro en: {m['log']['directory']} (nivel {m['log']['level']}, "
+dir_log = m["log"]["directory"]
+try:  # mostrar la ruta relativa al repo: una absoluta publica la estructura de la máquina
+    dir_log = str(Path(dir_log).relative_to(Path(__file__).resolve().parent.parent))
+except ValueError:
+    pass
+print(f"  registro en: {dir_log} (nivel {m['log']['level']}, "
       f"{m['log']['written']} escritos, {m['log']['errors']} errores)")

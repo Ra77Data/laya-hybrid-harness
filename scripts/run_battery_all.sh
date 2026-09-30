@@ -3,7 +3,7 @@
 # Es la prueba de que el pipeline es agnóstico: no se toca código entre modelo y modelo.
 set -u
 cd "$(dirname "$0")/.."
-export HF_HUB_CACHE="/Users/cesarmg.data/Documents/deepseek-harness/Default workspace/.hfcache"
+export HF_HUB_CACHE="${HF_HUB_CACHE:-$HOME/.cache/huggingface/hub}"
 export PYTHONDONTWRITEBYTECODE=1
 mkdir -p results
 URL=http://127.0.0.1:8091
