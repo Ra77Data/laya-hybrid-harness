@@ -16,7 +16,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
 
-from .backends import build_backend
+from .backends import adapter_status, build_backend
 from .calibration import Calibration, apply_temperature, load_calibration
 from .config import ModelSpec, load_config
 from .observability import DecisionLog
@@ -169,6 +169,13 @@ def run_smoke_tests(verbose: bool = True, only: list[str] | None = None) -> dict
             continue
         if not spec.smoke:
             continue
+        listo, motivo_adapter = adapter_status(spec.adapter)
+        if not listo:
+            out[mid] = [{"skipped": True, "reason": motivo_adapter}]
+            STATE["smoke_ok"][mid] = None
+            if verbose:
+                print(f"  [selftest:{mid}] OMITIDO ({motivo_adapter})", flush=True)
+            continue
         if not spec.available:
             # Un modelo cuyos pesos no están en esta máquina no es un fallo: es una entrada del
             # registro que acá no aplica. Darlo por fallado hacía que una instalación limpia
@@ -250,6 +257,7 @@ def health():
         models[mid] = {
             "label": spec.label, "adapter": spec.adapter, "supports": sorted(spec.supports),
             "loaded": loaded, "role": [qt for qt in PRIMITIVES if CONFIG.model_for(qt) == mid],
+            "adapter_ready": adapter_status(spec.adapter)[0], "available": spec.available,
             "weights": info, "load_seconds": STATE["load_seconds"].get(mid),
             "calibration": (STATE["calibrations"][mid].as_dict() if loaded
                             else {"configured": bool(spec.calibration)}),

@@ -246,5 +246,28 @@ class TransformersBackend(Backend):
         return out
 
 
+ADAPTER_MODULES = {
+    "coreml": ("laya_coreml", "torch"),
+    "laya": ("laya", "torch"),
+    "transformers": ("torch", "transformers"),
+}
+
+
+def adapter_status(adapter: str) -> tuple[bool, str | None]:
+    """¿Está instalado el runtime que este adaptador necesita?
+
+    Tercera dimensión, además de "los pesos existen": un modelo puede tener sus pesos y aun así no
+    poder servirse porque el paquete del adaptador no está instalado. En una instalación `[demo]`
+    eso pasaba con los cuatro modelos de Laya, y el self-test los reportaba como fallados cuando lo
+    único que faltaba era `make setup-full`.
+    """
+    import importlib.util
+    faltan = [m for m in ADAPTER_MODULES.get(adapter, ()) if importlib.util.find_spec(m) is None]
+    if faltan:
+        return False, (f"el adaptador '{adapter}' necesita {' y '.join('`' + m + '`' for m in faltan)}: "
+                       "instalá el extra completo (make setup-full)")
+    return True, None
+
+
 def build_backend(spec) -> Backend:
     return {"coreml": CoreMLBackend, "laya": LayaBackend, "transformers": TransformersBackend}[spec.adapter](spec)

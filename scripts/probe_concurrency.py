@@ -31,8 +31,14 @@ PAYLOAD = {
 }
 
 
+DEPLOYED_PORT = 8090   # el agente de launchd sirve este puerto
+
+
 def agent_runs() -> tuple[str, str]:
-    """(runs, pid) del agente de launchd, o ('?', '?') si no se puede leer."""
+    """(runs, pid) del agente de launchd. Devuelve ('n/a','n/a') si la URL probada no es la suya:
+    comparar el contador de OTRO servicio daría un 'SOBREVIVIÓ' que no significa nada."""
+    if f":{DEPLOYED_PORT}" not in args.url:
+        return "n/a", "n/a"
     try:
         out = subprocess.run(["launchctl", "print", f"gui/{__import__('os').getuid()}/com.cesarmg.laya-decide"],
                              capture_output=True, text=True, timeout=10).stdout
@@ -72,15 +78,20 @@ for n in [int(x) for x in args.counts.split(",")]:
     lat = sorted(r["ms"] for r in ok)
     time.sleep(3)
     runs1, pid1 = agent_runs()
-    sobrevivio = runs0 == runs1
+    medible = runs0 != "n/a"
+    sobrevivio = (runs0 == runs1) if medible else None
     print(f"=== {n} concurrentes | pared {wall:.0f} ms | completadas {len(ok)}/{n}")
     if lat:
         print(f"    latencia por petición: min {lat[0]:.0f} | mediana {lat[len(lat)//2]:.0f} | max {lat[-1]:.0f} ms")
         print(f"    respuestas: sentimiento={sorted({str(r['sent']) for r in ok})} routing={sorted({str(r['route']) for r in ok})}")
     for r in [x for x in rs if not x["ok"]][:3]:
         print(f"    FALLO: {r['err']}")
-    print(f"    agente: runs {runs0} -> {runs1} (pid {pid0} -> {pid1}) -> "
-          f"{'SOBREVIVIÓ' if sobrevivio else 'SE CAYÓ Y LO REINICIARON'}")
+    if medible:
+        print(f"    agente: runs {runs0} -> {runs1} (pid {pid0} -> {pid1}) -> "
+              f"{'SOBREVIVIÓ' if sobrevivio else 'SE CAYÓ Y LO REINICIARON'}")
+    else:
+        print(f"    agente: n/a (esta instancia no la maneja launchd; se mira que las "
+              f"{len(ok)}/{n} respuestas hayan vuelto)")
     rows.append({"n": n, "ok": len(ok), "wall_ms": wall, "lat": lat,
                  "runs_before": runs0, "runs_after": runs1,
                  "survived": sobrevivio,
