@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-"""Exporta tráfico real registrado como conjunto para etiquetar.
+"""Exports logged real traffic as a set that can be labelled.
 
-Cierra el bucle: el servicio registra lo que ve, esto lo convierte en algo etiquetable, y con eso
-se puede medir la precisión sobre tráfico propio en vez de sobre el test del dataset.
+It closes the loop: the service logs what it sees, this turns it into something labelable, and
+with that accuracy can be measured on your own traffic instead of on the dataset's test split.
 
-Uso:
+Usage:
   python scripts/export_eval.py --hours 24 --out results/real_traffic_eval.jsonl [--only-delegated]
 """
 import argparse
@@ -21,8 +21,8 @@ ap.add_argument("--hours", type=float, default=24)
 ap.add_argument("--config", default=None)
 ap.add_argument("--out", default="results/real_traffic_eval.jsonl")
 ap.add_argument("--only-delegated", action="store_true",
-                help="exportar sólo lo que el servicio mandó al cloud")
-ap.add_argument("--max", type=int, default=0, help="0 = sin límite")
+                help="export only what the service sent to the cloud")
+ap.add_argument("--max", type=int, default=0, help="0 = no limit")
 args = ap.parse_args()
 
 cfg = load_config(args.config)
@@ -31,20 +31,20 @@ directory = Path(cfg.observability.get("directory", "logs/decisions"))
 from service.observability import DecisionLog  # noqa: E402
 
 log = DecisionLog(enabled=False, directory=directory)
-recs = log._read(args.hours)          # noqa: SLF001 - es la misma clase, no hay API pública de lectura
+recs = log._read(args.hours)          # noqa: SLF001 - same class, there is no public read API
 
-rows, vistos = [], set()
+rows, seen = [], set()
 for r in recs:
     state = r.get("request", {}).get("state")
     if not state:
-        continue                       # nivel metadata: no hay texto que etiquetar
+        continue                       # metadata level: there is no text to label
     for a in r.get("answers", []):
         if args.only_delegated and not a.get("delegate"):
             continue
         key = (r["request"].get("sha256_8"), a.get("type"), a.get("id"))
-        if key in vistos:
+        if key in seen:
             continue
-        vistos.add(key)
+        seen.add(key)
         rows.append({
             "ts": r["ts"], "id": f"real-{r['request'].get('sha256_8')}-{a.get('id')}",
             "text": state, "lang_guess": r["request"].get("lang_guess"),
@@ -52,7 +52,7 @@ for r in recs:
             "pred": a.get("value"), "confidence": a.get("confidence"),
             "neutral_mass": a.get("neutral_mass"), "delegate": a.get("delegate"),
             "delegate_kind": a.get("delegate_kind"),
-            "target": None,                # <-- lo que hay que completar para medir precisión
+            "target": None,                # <-- what has to be filled in to measure accuracy
         })
         if args.max and len(rows) >= args.max:
             break

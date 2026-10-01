@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-"""Bucle de delegación, parte 1: ¿la compuerta apunta a los casos donde el modelo falla?
+"""Delegation loop, part 1: does the gate point at the cases where the model fails?
 
-Recorre el test completo contra el servicio desplegado y cruza dos cosas que ya conocemos sin
-necesidad de ninguna etiqueta nueva: la decisión de derivar y el acierto real del modelo local.
+It walks the whole test set against the deployed service and crosses two things we already know
+without needing any new label: the decision to delegate and the local model's actual accuracy.
 
-Si derivar sirve, la tasa de error del modelo en lo derivado tiene que ser MUCHO mayor que en lo
-que responde localmente. Si son parecidas, la compuerta no está discriminando nada.
+If delegating works, the model's error rate on what it delegates has to be MUCH higher than on
+what it answers locally. If they are similar, the gate is not discriminating anything.
 
-Uso: python scripts/delegation_loop.py [--n 0]   (0 = todo el test)
+Usage: python scripts/delegation_loop.py [--n 0]   (0 = the whole test set)
 """
 import argparse
 import json
@@ -21,9 +21,9 @@ SENT = "Does this text express positive sentiment?"
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--url", default="http://127.0.0.1:8090")
-ap.add_argument("--n", type=int, default=0, help="0 = todo el conjunto")
+ap.add_argument("--n", type=int, default=0, help="0 = the whole set")
 ap.add_argument("--seed", type=int, default=42)
-ap.add_argument("--blind", type=int, default=60, help="cuántos derivados listar a ciegas para etiquetar")
+ap.add_argument("--blind", type=int, default=60, help="how many delegated cases to list blind for labelling")
 ap.add_argument("--out", default=str(HERE / "results/delegation_loop.json"))
 ap.add_argument("--blind-out", default=str(HERE / "results/delegation_blind.json"))
 args = ap.parse_args()
@@ -67,14 +67,14 @@ print(f"\n  accuracy if EVERYTHING is answered locally {(1-err(rows))*100:.2f} %
 print(f"  local accuracy on what it does answer     {(1-err(loc))*100:.2f} %  (coverage {len(loc)/len(rows)*100:.1f} %)")
 
 print("\n  errors by confidence band (whole set):")
-bandas = [(0, 0.60), (0.60, 0.75), (0.75, 0.90), (0.90, 1.01)]
-for lo, hi in bandas:
+bands = [(0, 0.60), (0.60, 0.75), (0.75, 0.90), (0.90, 1.01)]
+for lo, hi in bands:
     sub = [x for x in rows if lo <= x["conf"] < hi]
     if sub:
         print(f"    {lo:.2f}-{hi:.2f}: {len(sub):4d} cases | error {err(sub)*100:5.1f} % | "
               f"delegated {sum(1 for x in sub if x['delegate'])/len(sub)*100:5.1f} %")
 
-# listado a ciegas: sin etiqueta, para que el LLM etiquete sin ver la verdad
+# blind listing: no label, so the LLM labels it without seeing the ground truth
 rnd.shuffle(dlg)
 blind = [{"idx": i + 1, "id": x["id"], "lang": x["lang"], "text": x["text"],
           "local_pred": "positive" if x["pred"] else "negative", "conf": x["conf"]}

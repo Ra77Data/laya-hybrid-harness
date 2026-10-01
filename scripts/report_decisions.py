@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-"""Informe del tráfico real registrado por el servicio.
+"""Report on the real traffic logged by the service.
 
-Uso:
+Usage:
   python scripts/report_decisions.py [--hours 24] [--top 8]
 """
 import argparse

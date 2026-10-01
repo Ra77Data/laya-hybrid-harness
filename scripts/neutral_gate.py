@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-"""¿A partir de qué masa neutral conviene derivar?
+"""From which neutral mass is it worth delegating?
 
-Mide los DOS lados, que es lo que hace falta para elegir el umbral con datos:
+It measures BOTH sides, which is what is needed to choose the threshold with data:
 
-  * textos NEUTROS de verdad (clase 1 del dataset original, que quedó fuera del test de 1.740):
-    deberían derivarse;
-  * los 1.740 NO neutros ya etiquetados: NO deberían derivarse por este motivo.
+  * genuinely NEUTRAL texts (class 1 of the original dataset, left out of the 1,740 test set):
+    they should be delegated;
+  * the 1,740 already labelled NON-neutral ones: they should NOT be delegated for this reason.
 
-Uso: python scripts/neutral_gate.py [--per-lang 200] [--url http://127.0.0.1:8090]
+Usage: python scripts/neutral_gate.py [--per-lang 200] [--url http://127.0.0.1:8090]
 """
 import argparse
 import json
@@ -28,12 +28,12 @@ ap.add_argument("--seed", type=int, default=7)
 ap.add_argument("--out", default=str(HERE / "results/neutral_gate.json"))
 args = ap.parse_args()
 
-# --- 1. textos neutros: label == 1 en el mismo dataset y los mismos splits que el test
+# --- 1. neutral texts: label == 1 in the same dataset and the same splits as the test set
 rnd = random.Random(args.seed)
 neutral = []
-fuentes = HERE.parent / "etapa4/data"
+sources = HERE.parent / "etapa4/data"
 for lang, f in (("en", "english_test.parquet"), ("de", "german_test.parquet"), ("es", "spanish_test.parquet")):
-    p = fuentes / f
+    p = sources / f
     if not p.exists():
         print(f"  warning: {p} missing, skipping {lang}")
         continue
@@ -58,13 +58,13 @@ def ask(text):
     return a
 
 
-def run(items, es_neutro):
+def run(items, is_neutral):
     out = []
     for it in items:
         a = ask(it["text"])
         out.append({"lang": it["lang"], "text": it["text"][:120], "neutral_mass": a.get("neutral_mass"),
                     "conf": a["confidence"], "pred": int(bool(a["value"])), "target": it.get("target"),
-                    "es_neutro": es_neutro, "delegate": a["delegate_to_cloud"]})
+                    "is_neutral": is_neutral, "delegate": a["delegate_to_cloud"]})
     return out
 
 
@@ -87,20 +87,20 @@ print(f"neutral mass — non-neutrals: median {sorted(nm_non)[len(nm_non)//2]:.3
 
 print("\n=== neutral-mass threshold: what is gained and what is lost")
 print(f"  {'thresh':>7s} {'neutrals delegated':>18s} {'non-neutrals delegated (false pos.)':>36s} {'F1':>6s}")
-mejor = None
+best = None
 for t in [x / 100 for x in range(30, 96, 5)]:
     tp = sum(1 for v in nm_neu if v > t) / len(nm_neu)
     fp = sum(1 for v in nm_non if v > t) / len(nm_non)
     f1 = (2 * tp * (1 - fp) / (tp + (1 - fp))) if (tp + (1 - fp)) else 0.0
     print(f"  {t:7.2f} {tp*100:17.1f}% {fp*100:30.1f}% {f1:6.3f}")
-    if mejor is None or f1 > mejor[1]:
-        mejor = ((t, tp, fp), f1)
-print(f"\n  best F1 on this grid: threshold {mejor[0][0]:.2f} -> detects {mejor[0][1]*100:.1f}% of neutrals "
-      f"at the cost of {mejor[0][2]*100:.1f}% extra on non-neutrals")
+    if best is None or f1 > best[1]:
+        best = ((t, tp, fp), f1)
+print(f"\n  best F1 on this grid: threshold {best[0][0]:.2f} -> detects {best[0][1]*100:.1f}% of neutrals "
+      f"at the cost of {best[0][2]*100:.1f}% extra on non-neutrals")
 
-# --- efecto combinado con la compuerta de confianza actual
+# --- combined effect with the current confidence gate
 print("\n=== effect on traffic (the 1,740 non-neutral + the genuinely neutral)")
-for t in (0.5, 0.6, 0.7, mejor[0][0]):
+for t in (0.5, 0.6, 0.7, best[0][0]):
     extra = sum(1 for r in rows_non if r["neutral_mass"] and r["neutral_mass"] > t) / len(rows_non)
     base = sum(1 for r in rows_non if r["delegate"]) / len(rows_non)
     print(f"  threshold {t:.2f}: delegation on non-neutrals {base*100:.1f}% -> {(base+extra)*100:.1f}% "
