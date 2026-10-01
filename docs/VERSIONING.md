@@ -90,7 +90,7 @@ Un texto neutro salía positivo con 0,768 y sin derivar: la reducción binaria d
 El umbral (0,70) se eligió con datos: 600 neutros reales de la clase 1 del dataset original contra
 los 1.740 no neutros. AUC 0,81; con 0,70 se detecta el 49 % de los neutros por +1,5 puntos de
 tráfico. Se descartó 0,50, que detecta más neutros pero cuesta cuatro veces más tráfico con el mismo
-error local. Detalle en `results/RESUMEN_PRUEBA_HARNESS.md`.
+error local. Detalle en `results/SUMMARY_HARNESS_TEST.md`.
 
 ## Observabilidad
 
@@ -122,4 +122,4 @@ del config, así que los scripts devolvían cero registros si se los llamaba des
       de punta a punta y **50 ms** de inferencia directa sin HTTP en 30 llamadas, así que el overhead de
       HTTP son ~5 ms y el "16 ms steady" **no se reproduce**: es el modelo, no la red. No queda registro
       de cómo se obtuvo aquel número, así que la discrepancia se documenta en vez de resolverse.
-      Ver `results/RESUMEN_BATERIA.md`.
+      Ver `results/SUMMARY_BATTERY.md`.

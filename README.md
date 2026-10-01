@@ -143,11 +143,11 @@ accuracy on your own traffic instead of on the dataset's test split.
 | Document | What it covers |
 |---|---|
 | [`docs/DEMO.md`](docs/DEMO.md) | the demonstration, with its real output |
-| [`docs/ARQUITECTURA.md`](docs/ARQUITECTURA.md) | components, contract, routing, guarantees |
-| [`docs/DECISIONES.md`](docs/DECISIONES.md) | every design decision with its evidence |
-| [`docs/OPERACION.md`](docs/OPERACION.md) | deploy, observe, change, troubleshoot |
-| [`docs/LICENCIAS.md`](docs/LICENCIAS.md) | third-party licenses, verified |
-| [`results/RESUMEN_*.md`](results/) | **the evidence**: every number with its method |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | components, contract, routing, guarantees |
+| [`docs/DECISIONS.md`](docs/DECISIONS.md) | every design decision with its evidence |
+| [`docs/OPERATIONS.md`](docs/OPERATIONS.md) | deploy, observe, change, troubleshoot |
+| [`docs/LICENSES.md`](docs/LICENSES.md) | third-party licenses, verified |
+| [`results/SUMMARY_*.md`](results/) | **the evidence**: every number with its method |
 
 > **Note:** the documents above are currently written in **Spanish**. The README is bilingual; the
 > detailed docs are not yet.
@@ -193,12 +193,12 @@ Mapa de la documentación:
 | Documento | Para qué |
 |---|---|
 | `docs/DEMO.md` | la demostración, con su salida real |
-| `docs/ARQUITECTURA.md` | cómo está armado y por qué |
-| `docs/DECISIONES.md` | cada decisión con su evidencia |
-| `docs/OPERACION.md` | desplegarlo, observarlo, cambiarlo, troubleshooting |
-| `docs/LICENCIAS.md` | terceros, verificado |
+| `docs/ARCHITECTURE.md` | cómo está armado y por qué |
+| `docs/DECISIONS.md` | cada decisión con su evidencia |
+| `docs/OPERATIONS.md` | desplegarlo, observarlo, cambiarlo, troubleshooting |
+| `docs/LICENSES.md` | terceros, verificado |
 | `docs/PLAN.md` | el plan de trabajo por fases |
-| `results/RESUMEN_*.md` | **la evidencia**: cada número con su método |
+| `results/SUMMARY_*.md` | **la evidencia**: cada número con su método |
 
 ## El servicio en detalle
 
@@ -297,7 +297,7 @@ contestó (`model_used`). Para comparar modelos sin tocar la config, `POST /deci
 de sentimiento y la misma muestra de 240 textos, acierta **87,5 %** si se pregunta como `choice`
 (positivo/negativo) y **53,3 %** si se pregunta como `noul` — en la formulación `noul` responde
 "no" a textos claramente positivos. Un motor zero-shot supera así al fine-tune del proyecto.
-Detalle en `results/RESUMEN_MOTOR_GENERAL.md`.
+Detalle en `results/SUMMARY_GENERAL_ENGINE.md`.
 
 **Ojo con la carga perezosa**: cargar un modelo tarda 2,7-7 s y el plugin de DSH corta a 2,5 s. Todo
 modelo que sirva alguna primitiva debe estar en `preload`, o la primera pregunta fallará por timeout.
@@ -364,9 +364,9 @@ van a `logs/launchd.out.log` y `logs/launchd.err.log`.
 
 ## Resultados medidos
 
-- `results/RESUMEN_BATERIA.md` — los tres modelos con la misma batería de 240 textos, con
+- `results/SUMMARY_BATTERY.md` — los tres modelos con la misma batería de 240 textos, con
   intervalos de Wilson y McNemar pareado.
-- `results/RESUMEN_VERIFICACION_PLUGIN.md` — los dos plugins reales de DSH llamados contra este
+- `results/SUMMARY_PLUGIN_VERIFICATION.md` — los dos plugins reales de DSH llamados contra este
   servicio, con los mismos 4 casos sobre v1 y sobre Cardiff.
 
 ## Estructura
@@ -415,7 +415,7 @@ curva medida sobre 1.740 textos (Cardiff, umbral actual 0,75):
 \* suponiendo que el cloud acierta todo lo derivado. Medido de verdad, con el LLM etiquetando a
 ciegas 38 casos derivados: 92,5 % contra 89,7 % respondiendo todo local, con el 13 % del tráfico
 derivado. Los detalles y los límites de esa medición están en
-`results/RESUMEN_PRUEBA_HARNESS.md`.
+`results/SUMMARY_HARNESS_TEST.md`.
 
 ## Observabilidad
 
@@ -460,7 +460,7 @@ también deriva cuando `P(neutro)` supera `delegation.neutral_mass_threshold` (0
 
 Medido sobre 600 neutros reales y los 1.740 no neutros: **AUC 0,81**; con 0,70 se deriva el 49 % de
 los neutros a cambio de **+1,5 puntos** de tráfico en los no neutros. La tabla marginal completa y
-por qué no se eligió 0,50 están en `results/RESUMEN_PRUEBA_HARNESS.md`.
+por qué no se eligió 0,50 están en `results/SUMMARY_HARNESS_TEST.md`.
 
 El campo `neutral_mass` viaja en cada respuesta, y la razón de derivación lo dice:
 `high_neutral_mass(0.809>0.7)`.
@@ -472,6 +472,6 @@ El campo `neutral_mass` viaja en cada respuesta, y la razón de derivación lo d
   servicio ya lo registra desde el primer día.
 
 Todo lo demás que estaba acá —observabilidad, el camino `choice`/`score` en los adaptadores de Laya,
-los topics del repositorio— está hecho y verificado: ver `docs/VERSIONADO.md`.
+los topics del repositorio— está hecho y verificado: ver `docs/VERSIONING.md`.
 
 </details>

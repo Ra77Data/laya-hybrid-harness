@@ -9,7 +9,7 @@ estética: todas salieron de un incidente o de una medición.
 el puerto lo ocupaba una versión vieja con un fine-tune de otra tarea, y nada en el sistema lo
 detectaba. Se descubrió mirando, no por una alerta.
 
-**Evidencia.** `results/RESUMEN_VERIFICACION_PLUGIN.md` documenta el incidente: `/health` respondía
+**Evidencia.** `results/SUMMARY_PLUGIN_VERIFICATION.md` documenta el incidente: `/health` respondía
 `laya-multilingual-coreml` con una calibración `choice` cuando debía servir el modelo de sentimiento.
 
 **Consecuencia.** Registro de modelos en `config.yaml`, adaptadores intercambiables, y **hash
@@ -21,7 +21,7 @@ justo el error que se quiere evitar.
 
 ## 2. Cardiff XLM-R como modelo por defecto
 
-**Evidencia** (240 textos, mismos umbrales, ver `results/RESUMEN_BATERIA.md`):
+**Evidencia** (240 textos, mismos umbrales, ver `results/SUMMARY_BATTERY.md`):
 
 | Modelo | Accuracy | Accuracy local | Latencia mediana |
 |---|---|---|---|
@@ -51,7 +51,7 @@ como `available: false` y sigue. Si alguien enruta a ese modelo, la respuesta lo
 y el cliente no debería saberlo.
 
 **Evidencia.** Una sola llamada HTTP contestada por dos modelos, con `model_used` en cada respuesta;
-`results/RESUMEN_MOTOR_GENERAL.md`.
+`results/SUMMARY_GENERAL_ENGINE.md`.
 
 **Lo que se midió de paso, y no se esperaba**: la **formulación pesa más que el modelo**. El mismo
 motor general acierta 87,5 % preguntando el sentimiento como `choice` y 53,3 % como `noul` (en la
@@ -59,7 +59,7 @@ formulación `noul` responde "no" a textos claramente positivos).
 
 ## 5. La política de derivación, sobre confianza calibrada y por primitiva
 
-**Evidencia** (1.740 textos, `results/RESUMEN_PRUEBA_HARNESS.md`):
+**Evidencia** (1.740 textos, `results/SUMMARY_HARNESS_TEST.md`):
 
 | | Casos | Error del modelo |
 |---|---|---|
@@ -163,7 +163,7 @@ sistema operativo. Los adaptadores de Laya son la variante `make setup-full`, do
 no GPL. Y la FSF considera **Apache-2.0 incompatible con GPL-2.0**, aunque sí compatible con GPL-3.0.
 
 **Decisión.** Apache-2.0: es la licencia de Laya y es compatible con todas las dependencias. Detalle
-verificado en `docs/LICENCIAS.md`.
+verificado en `docs/LICENSES.md`.
 
 ## 14. No vender el modelo
 

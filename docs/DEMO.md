@@ -71,7 +71,7 @@ umbral de confianza: {'noul': 0.75, 'choice': 0.75, 'score': 0.75} | masa neutra
   completo (`config.yaml`) se habilitan, incluido el **enrutamiento por primitiva**: `noul` al
   modelo de sentimiento y `choice`/`score` a un motor de decisión general.
 - **La precisión del modelo**: el demo muestra decisiones, no calidad. Las mediciones —incluida la
-  comparación contra el baseline que gana— están en `results/RESUMEN_*.md`.
+  comparación contra el baseline que gana— están en `results/SUMMARY_*.md`.
 
 ## Verificación automática
 

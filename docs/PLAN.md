@@ -8,7 +8,7 @@
 | 1 Empaquetado | ✅ git, `pyproject` con extras, `Makefile`, `LICENSE`, `LICENCIAS.md`, `.env.example` |
 | 2 Quickstart y demo | ✅ `make demo` + `docs/DEMO.md` con la salida real |
 | 3 Verificación en limpio | ✅ pasa de punta a punta (ver abajo); encontró **dos fallos reales** |
-| 4 Documentación | ✅ `ARQUITECTURA`, `DECISIONES`, `OPERACION` |
+| 4 Documentación | ✅ `ARCHITECTURE`, `DECISIONS`, `OPERATIONS` |
 | 5 Publicación | ✅ repo público, tag `v1.0.0`, Release con notas y 10 topics |
 | 6 Presentación (opcional) | ⏳ no hecha (guion de 5 minutos y figuras) |
 
@@ -96,7 +96,7 @@ Nada de lo demás se puede cerrar sin esto:
 - `pyproject.toml` con dos extras: `[demo]` (transformers, torch, fastapi) y `[full]` (+ laya,
   laya-coreml).
 - `.env.example` con las variables que importan (`LAYA_SERVICE_URL`, `LAYA_ACTIVE_MODEL`).
-- `LICENSE` + `docs/LICENCIAS.md` con los modelos, datasets y paquetes de terceros.
+- `LICENSE` + `docs/LICENSES.md` con los modelos, datasets y paquetes de terceros.
 - `Makefile` (o `justfile`) con: `setup`, `setup-full`, `serve`, `demo`, `test`, `metrics`, `report`.
 
 **Criterio de aceptación**: `git clone` + `make setup` deja un entorno funcional sin leer nada más.
@@ -140,13 +140,13 @@ Un punto de entrada y cuatro documentos de referencia, sin duplicar la evidencia
 | Documento | Para qué |
 |---|---|
 | `README.md` | qué es, qué **no** es, quickstart de 3 comandos, resultados honestos, mapa de la documentación |
-| `docs/ARQUITECTURA.md` | componentes, flujo, enrutamiento por primitiva, la política de derivación |
-| `docs/DECISIONES.md` | las decisiones con su evidencia: por qué Cardiff, la curva del umbral, el umbral de masa neutral, por qué el candado de inferencia |
-| `docs/OPERACION.md` | launchd, logs, `/metrics`, cambiar de modelo, troubleshooting, los dos fallos que encontramos |
-| `docs/LICENCIAS.md` | terceros y qué implica para redistribuir |
-| `results/RESUMEN_*.md` | **anexo de evidencia** (ya existen, se enlazan, no se reescriben) |
+| `docs/ARCHITECTURE.md` | componentes, flujo, enrutamiento por primitiva, la política de derivación |
+| `docs/DECISIONS.md` | las decisiones con su evidencia: por qué Cardiff, la curva del umbral, el umbral de masa neutral, por qué el candado de inferencia |
+| `docs/OPERATIONS.md` | launchd, logs, `/metrics`, cambiar de modelo, troubleshooting, los dos fallos que encontramos |
+| `docs/LICENSES.md` | terceros y qué implica para redistribuir |
+| `results/SUMMARY_*.md` | **anexo de evidencia** (ya existen, se enlazan, no se reescriben) |
 
-Regla: cada afirmación numérica del README tiene que apuntar al `RESUMEN_*.md` o al script que la
+Regla: cada afirmación numérica del README tiene que apuntar al `SUMMARY_*.md` o al script que la
 reproduce. Nada de números sin fuente.
 
 ### Fase 5 — Publicación (0,5 día)
@@ -201,7 +201,7 @@ tirado.
   Fase 5, no de las anteriores.
 - **R3 — `laya`/`laya-coreml` son paquetes de nicho** y el CoreML sólo corre en Apple Silicon. Por
   eso el demo por defecto no los usa.
-- **R4 — El log guarda texto de usuario**: el default `excerpt` mitiga, pero el `docs/OPERACION.md`
+- **R4 — El log guarda texto de usuario**: el default `excerpt` mitiga, pero el `docs/OPERATIONS.md`
   tiene que decir explícitamente qué se guarda y cómo apagarlo.
 - **R5 — DSH no es público**: la parte de "tool dentro del agente" no es reproducible por terceros.
   Se muestra como transcripción y se dice claro.
