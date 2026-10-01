@@ -1,14 +1,15 @@
-"""Registro de decisiones: la única forma de medir el tráfico que realmente llega.
+"""Decision log: the only way to measure the traffic that actually arrives.
 
-Principios, aprendidos a golpes en este proyecto:
+Principles, learned the hard way in this project:
 
-  * **El registro nunca tumba una decisión.** Todo va dentro de un try/except: un fallo al
-    escribir el log no puede convertirse en un fallo del servicio.
-  * **Registra lo que pasó, no lo que debería haber pasado**: versión de calibración, si se aplicó
-    temperatura, qué modelo contestó y por qué se derivó.
-  * **Privacidad por defecto**: el nivel `excerpt` guarda los primeros caracteres, no el texto
-    completo. `full` existe para depurar y hay que pedirlo explícitamente.
-  * **Rotación diaria** y ventana acotada en memoria para que `/metrics` no lea disco por petición.
+  * **Logging never takes a decision down.** Everything runs inside a try/except: a failure
+    writing the log cannot become a service failure.
+  * **It records what happened, not what should have happened**: calibration version, whether a
+    temperature was applied, which model answered and why it delegated.
+  * **Privacy by default**: the `excerpt` level keeps the first characters, not the whole text.
+    `full` exists for debugging and has to be asked for explicitly.
+  * **Daily rotation** and a bounded in-memory window so `/metrics` does not read from disk on
+    every request.
 """
 import json
 import threading
@@ -20,7 +21,7 @@ LEVELS = ("off", "metadata", "excerpt", "full")
 
 
 def _kind(reason: str | None) -> str | None:
-    """Agrupa los motivos de derivación: los números que llevan dentro impiden contarlos."""
+    """Groups delegation reasons: the numbers inside them prevent counting them."""
     if not reason:
         return None
     return reason.split("(")[0].split(";")[0].strip() or None
@@ -49,7 +50,7 @@ class DecisionLog:
         if self.enabled and self.level != "off":
             self.directory.mkdir(parents=True, exist_ok=True)
 
-    # ------------------------------------------------------------------ escritura
+    # ------------------------------------------------------------------ writing
     def _file(self, when: datetime) -> Path:
         return self.directory / f"decisions-{when:%Y-%m-%d}.jsonl"
 
@@ -94,10 +95,10 @@ class DecisionLog:
                         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
                     self._written += 1
         except Exception:  # noqa: BLE001
-            # El registro jamás puede tumbar una decisión: se cuenta y se sigue.
+            # Logging can never take a decision down: count it and carry on.
             self._errors += 1
 
-    # ------------------------------------------------------------------ métricas
+    # ------------------------------------------------------------------ metrics
     def _read(self, hours: float) -> list[dict]:
         if not self.directory.exists():
             return []
@@ -169,9 +170,9 @@ class DecisionLog:
                     if self.directory.exists() else 0},
         }
 
-    # ------------------------------------------------------------------ mantenimiento
+    # ------------------------------------------------------------------ maintenance
     def prune(self) -> int:
-        """Borra archivos más viejos que `retain_days`. Devuelve cuántos borró."""
+        """Deletes files older than `retain_days`. Returns how many it deleted."""
         if not self.directory.exists() or self.retain_days <= 0:
             return 0
         cutoff = datetime.now(timezone.utc) - timedelta(days=self.retain_days)
@@ -196,11 +197,11 @@ def _short_hash(text: str) -> str:
 
 
 def _lang_guess(text: str) -> str:
-    """Pista gruesa de idioma, sin dependencias: alcanza para ver la mezcla de tráfico."""
+    """Coarse language hint, no dependencies: enough to see the traffic mix."""
     t = (text or "").lower()
     if not t.strip():
         return "empty"
-    marcas = {
+    marks = {
         "es": (" que ", " de ", " no ", " el ", " la ", " los ", " las ", " un ", " una ", " y ",
                " por ", " con ", " para ", " me ", " mi ", " es ", " está", "ñ", "ción", " gracias"),
         "de": (" und ", " der ", " die ", " das ", " ich ", " nicht", " ist ", " wir ", " sie ",
@@ -208,6 +209,6 @@ def _lang_guess(text: str) -> str:
         "en": (" the ", " and ", " you ", " is ", " it ", " not ", " this ", " that ", " for ",
                " with ", " have ", " my "),
     }
-    score = {k: sum(t.count(m) for m in v) for k, v in marcas.items()}
+    score = {k: sum(t.count(m) for m in v) for k, v in marks.items()}
     best = max(score, key=score.get)
     return best if score[best] > 0 else "?"

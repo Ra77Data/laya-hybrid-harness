@@ -1,4 +1,4 @@
-"""Carga y valida el registro de modelos y el enrutamiento por primitiva."""
+"""Loads and validates the model registry and the routing by primitive."""
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -42,20 +42,20 @@ class ModelSpec:
         if bad:
             raise ValueError(f"{self.id}: invalid primitives {bad}")
         w = str(self.weights)
-        # `weights` puede ser una ruta local (debe existir) o un repo de Hugging Face (se resuelve
-        # por la caché o la red). Antes solo se aceptaban rutas.
-        # Una entrada del registro puede apuntar a un modelo que no está en esta máquina: no es un
-        # error de configuración, es un modelo no disponible. Antes esto levantaba y **el servicio
-        # no arrancaba en una máquina que no fuera la del autor**, que es exactamente lo contrario
-        # de lo que hace falta para que alguien más pueda probarlo. Si alguien enruta a un modelo
-        # ausente, la respuesta lo dice (`model_unavailable`).
+        # `weights` can be a local path (which must exist) or a Hugging Face repo (resolved
+        # through the cache or the network). Only paths used to be accepted.
+        # A registry entry can point at a model that is not on this machine: that is not a
+        # configuration error, it is an unavailable model. This used to raise, and **the service
+        # would not start on any machine other than the author's**, which is exactly the opposite
+        # of what is needed for someone else to try it. If something routes to an absent model,
+        # the answer says so (`model_unavailable`).
         if (w.startswith("/") or w.startswith("~") or w.startswith(".")) and not Path(w).expanduser().exists():
             self.available = False
             self.unavailable_reason = f"weights path does not exist: {w}"
-        # Misma lógica que con los pesos: si falta el archivo de calibración, el modelo no está
-        # disponible en esta máquina, pero eso no puede impedir que el servicio arranque. Antes
-        # levantaba, y con la plantilla publicada (rutas EDITAR) `make test` fallaba en un clon
-        # nuevo por un modelo que nadie iba a servir.
+        # Same logic as with the weights: if the calibration file is missing, the model is not
+        # available on this machine, but that cannot stop the service from starting. It used to
+        # raise, and with the published template (EDITAR paths) `make test` failed in a fresh clone
+        # because of a model nobody was going to serve.
         if self.calibration and not Path(self.calibration).exists():
             self.available = False
             self.unavailable_reason = f"calibration file does not exist: {self.calibration}"
@@ -89,7 +89,7 @@ class Config:
         return self.models[mid]
 
     def model_for(self, qtype: str) -> str:
-        """Qué modelo sirve esta primitiva. Sin ruta explícita, cae al modelo activo."""
+        """Which model serves this primitive. Without an explicit route, it falls back to the active model."""
         return self.routing.get(qtype, self.active)
 
 
@@ -100,9 +100,9 @@ def load_config(path: str | Path | None = None) -> Config:
     for m in models.values():
         m.validate()
 
-    # La ruta del registro se resuelve contra el directorio del config, no contra el cwd: si no,
-    # `report_decisions.py --config <otro>/config.yaml` leía una carpeta distinta y devolvía cero
-    # registros sin ningún error.
+    # The registry path is resolved against the config's directory, not the cwd: otherwise
+    # `report_decisions.py --config <other>/config.yaml` read a different folder and returned zero
+    # records with no error at all.
     obs = dict(raw.get("observability") or {})
     if obs.get("directory") and not Path(str(obs["directory"])).is_absolute():
         obs["directory"] = str((p.parent / str(obs["directory"])).resolve())
@@ -127,7 +127,7 @@ def load_config(path: str | Path | None = None) -> Config:
         if mid not in models:
             raise ValueError(f"preload: '{mid}' is not in the registry")
 
-    # LAYA_PORT permite correr una instancia en otro puerto sin tocar la config (lo usa el demo).
+    # LAYA_PORT allows running an instance on another port without touching the config (the demo uses it).
     port = int(os.environ.get("LAYA_PORT") or raw["service"]["port"])
     return Config(
         host=raw["service"]["host"], port=port,
