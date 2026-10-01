@@ -83,7 +83,13 @@ including *"I love this product, it changed my life!"*. Since the sample is bala
 
 The honest reading: **the base model does not answer that particular phrasing well**, most likely
 because it does not resemble what it saw during training. A fine-tune trained on exactly that phrasing
-does (`noul` is the right primitive for the models fine-tuned for it). If you are using the base model
+does (`noul` is the right primitive for the models fine-tuned for it). **This is not our discovery, and it is worth saying so.** The phenomenon is documented upstream:
+[issue #156](https://github.com/NandhaKishorM/laya/issues/156) (closed, with independent reproductions)
+narrows the cause to the label words —`render_options` hardcodes `false:` / `true:` for a `noul`
+question— and the model card already advises the two-option `choice` formulation as the check. What the
+measurement above adds is the size of the gap on a labelled set, and that it reproduces on the
+**multilingual** checkpoint on the current release (0.3.22), not only on the English one. If you are
+using the base model
 zero-shot, formulate as `choice` and give it the labels as criteria.
 
 ## Latency: the portable path is fast enough
@@ -220,7 +226,13 @@ responder siempre "no" saca ~50 %.
 
 La lectura honesta: **el modelo base no responde bien a ese fraseo concreto**, muy probablemente porque
 no se parece a lo que vio durante su entrenamiento. Un fine-tune entrenado exactamente con ese fraseo sí
-(`noul` es la primitiva correcta para los modelos ajustados para eso). Si estás usando el modelo base
+(`noul` es la primitiva correcta para los modelos ajustados para eso). **Esto no es un hallazgo nuestro, y corresponde decirlo.** El fenómeno está documentado aguas arriba:
+el [issue #156](https://github.com/NandhaKishorM/laya/issues/156) (cerrado, con reproducciones
+independientes) acota la causa a las palabras de las etiquetas —`render_options` fija `false:` / `true:`
+para una pregunta `noul`— y la card del modelo ya recomienda la formulación `choice` de dos opciones como
+comprobación. Lo que agrega la medición de arriba es el tamaño de la brecha sobre un conjunto
+etiquetado, y que reproduce en el checkpoint **multilingüe** en la versión actual (0.3.22), no sólo en el
+inglés. Si estás usando el modelo base
 zero-shot, formulá como `choice` y dale las etiquetas como criterios.
 
 ## Latencia: el camino portátil alcanza

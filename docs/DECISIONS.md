@@ -54,9 +54,11 @@ and the client should not have to know that.
 **Evidence.** A single HTTP call answered by two models, with `model_used` on every answer;
 `results/SUMMARY_GENERAL_ENGINE.md`.
 
-**What was measured along the way, unexpectedly**: **the formulation matters more than the model**.
+**What was measured along the way**: **the formulation matters more than the model**.
 The same general engine scores 87.5% when sentiment is asked as `choice` and 53.3% as `noul` (in the
-`noul` formulation it answers "no" to clearly positive texts).
+`noul` formulation it answers "no" to clearly positive texts). The upstream cause is documented in
+[issue #156](https://github.com/NandhaKishorM/laya/issues/156): the label words (`false:`/`true:`) decide,
+not the state; the model card recommends the two-option `choice` formulation instead.
 
 ## 5. The delegation policy, on calibrated confidence and per primitive
 
@@ -237,9 +239,11 @@ y el cliente no debería saberlo.
 **Evidencia.** Una sola llamada HTTP contestada por dos modelos, con `model_used` en cada respuesta;
 `results/SUMMARY_GENERAL_ENGINE.md`.
 
-**Lo que se midió de paso, y no se esperaba**: la **formulación pesa más que el modelo**. El mismo
+**Lo que se midió de paso**: la **formulación pesa más que el modelo**. El mismo
 motor general acierta 87,5 % preguntando el sentimiento como `choice` y 53,3 % como `noul` (en la
-formulación `noul` responde "no" a textos claramente positivos).
+formulación `noul` responde "no" a textos claramente positivos). La causa aguas arriba está documentada en el
+[issue #156](https://github.com/NandhaKishorM/laya/issues/156): deciden las palabras de las etiquetas
+(`false:`/`true:`), no el estado; la card del modelo recomienda la formulación `choice` de dos opciones.
 
 ## 5. La política de derivación, sobre confianza calibrada y por primitiva
 
