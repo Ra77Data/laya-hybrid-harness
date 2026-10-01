@@ -128,16 +128,6 @@ make report                    # human-readable report of real traffic
 brings it back; if the service **refuses to start** (e.g. a hash mismatch), it retries at most once
 every 30 seconds instead of hot-looping.
 
-## Observability
-
-Every decision is written to `logs/decisions/decisions-<date>.jsonl` with a configurable detail
-level (`off` / `metadata` / **`excerpt`** (default) / `full`). `/metrics` aggregates delegation rate
-by primitive, delegation reasons by kind, model mix, latency percentiles, and confidence and
-neutral-mass histograms.
-
-`scripts/export_eval.py` turns real traffic into a labelled evaluation set — that is how you measure
-accuracy on your own traffic instead of on the dataset's test split.
-
 ## Documentation
 
 | Document | What it covers |
@@ -148,6 +138,277 @@ accuracy on your own traffic instead of on the dataset's test split.
 | [`docs/OPERATIONS.md`](docs/OPERATIONS.md) | deploy, observe, change, troubleshoot |
 | [`docs/LICENSES.md`](docs/LICENSES.md) | third-party licenses, verified |
 | [`results/SUMMARY_*.md`](results/) | **the evidence**: every number with its method |
+
+## The service in detail
+
+A FastAPI service that exposes typed decisions (`noul`, `choice`, `score`) over a local model, with a
+policy for delegating to the cloud. **The model it serves is configuration, not code**: you change
+`active` in `config.yaml` or the `LAYA_ACTIVE_MODEL` variable.
+
+It replaces the V3/V5 service, which had the model hardcoded and an ambiguous calibration.
+
+## Why it exists
+
+Auditing the deployed harness surfaced four problems that this service fixes by design:
+
+| Problem in V3/V5 | What this service does |
+|---|---|
+| The model was in the code; the V3 service was left running with the PoC model while the documentation said V5 | The adapter and the weights come from `config.yaml`; `/health` reports the **weights hash** and whether it matches the expected one |
+| `calibrated: true` meant "a calibration file exists", even when no temperature was applied | `calibrated` is true **only if a T was applied**, and the answer includes `temperature` and, when it could not be applied, `calibration_note` |
+| The delegation policy applied only to `choice`; `noul` (sentiment) never delegated | The policy applies to **every** primitive, with a per-type threshold and on calibrated confidence |
+| The service did not flag what it could not do | Every model declares `supports`; an unsupported primitive comes back as `unsupported_by_model`, not invented |
+
+## Usage
+
+```bash
+.venv/bin/python -m uvicorn service.server:app --host 127.0.0.1 --port 8091
+# or with whichever model you want to serve:
+LAYA_ACTIVE_MODEL=cardiff-xlmr .venv/bin/python -m uvicorn service.server:app --port 8091
+```
+
+### Endpoints
+
+| Endpoint | Returns |
+|---|---|
+| `GET /health` | active model, adapter, supported primitives, weights hash + `match`, temperatures **per primitive**, per-type thresholds, `smoke_ok` |
+| `GET /models` | the full registry and which one is active |
+| `POST /decide` | the usual contract (`{state, questions}`), plus the honesty fields |
+| `POST /selftest` | runs the cases declared in the config and reports which pass |
+
+The contract of a `noul` answer:
+
+```json
+{"id": "sentiment", "type": "noul", "value": true,
+ "confidence": 0.9812, "raw_confidence": 0.9723,
+ "calibrated": true, "temperature": 0.9, "calibration_note": null,
+ "probs": [0.0188, 0.9812], "threshold": 0.75,
+ "delegate_to_cloud": false, "delegate_reason": null, "supported": true}
+```
+
+## Adapters
+
+| Adapter | Serves | Requirements |
+|---|---|---|
+| `coreml` | Laya CoreML packages (`model.mlpackage` + `weight.bin`), ANE/GPU | `laya-coreml` |
+| `laya` | Laya checkpoints in safetensors, without CoreML (x86/Linux/CI) | `laya` + `torch` |
+| `transformers` | Hugging Face classifiers; for 3 classes it reduces to binary with `binary_reduction` | `torch` + `transformers` |
+
+Careful: `laya-coreml` and `laya` **do not share a question schema** (`type`/`instructions` against
+`t`/`ins`). The adapter translates; no common shape is assumed.
+
+## Startup guarantees
+
+- If the weights hash is not the one declared in `expect_sha256`, **the service does not start**. It
+  is the defence against "I am serving another model and nothing says so".
+- It runs the `smoke` self-test at startup. If it fails, it still starts, but `/health` reports
+  `smoke_ok: false` and it is written to the log: a model that gets things wrong is a quality problem,
+  not an identity one, and it should be debuggable with the service up.
+
+## Evaluation battery
+
+`scripts/battery.py` measures the **pipeline** (model + calibration + threshold), not just the model,
+over a deterministic sample of labelled texts:
+
+```bash
+bash scripts/run_battery_all.sh          # all three models, changing only LAYA_ACTIVE_MODEL
+```
+
+It reports accuracy, delegation rate, **accuracy of the subset answered locally** (what the user gets
+without the cloud), mean confidence and latency.
+
+## Routing: sentiment + general engine
+
+Each primitive can be served by a different model (`routing` in `config.yaml`):
+
+```yaml
+routing:
+  noul: cardiff-xlmr      # sentiment, the best measured
+  choice: laya-base       # general zero-shot decision engine
+  score: laya-base
+preload: [cardiff-xlmr, laya-base]   # the rest of the registry loads on first use
+```
+
+A single call can carry all three primitives and every answer says which model produced it
+(`model_used`). To compare models without touching the config, `POST /decide` accepts
+`"model": "<id>"` and pins that model for all questions.
+
+**Measured finding**: the formulation matters more than the model. The same `laya-base`, on the same
+sentiment task and the same 240-text sample, scores **87.5%** when asked as `choice`
+(positive/negative) and **53.3%** when asked as `noul` — in the `noul` formulation it answers "no" to
+clearly positive texts. A zero-shot engine thus beats this project's fine-tune. Details in
+`results/SUMMARY_GENERAL_ENGINE.md`.
+
+**Mind the lazy loading**: loading a model takes 2.7-7 s and the DSH plugin times out at 2.5 s. Every
+model that serves a primitive must be in `preload`, or the first question will fail on timeout.
+
+## Daily use
+
+After restarting the machine **the service is already running**: launchd starts it at login. The
+terminal you used to start the service from (the "terminal A") is no longer needed.
+
+```bash
+# 1. (optional) check that the service is up and with which model
+curl -s http://127.0.0.1:8090/health | python3 -m json.tool
+
+# 2. bring up the DSH interface with the Laya tool registered
+cd ~/Projects/ml/Hybrid_Harness_V7 && bash scripts/start-dsh.sh
+```
+
+If something does not answer:
+
+```bash
+launchctl print gui/$(id -u)/com.cesarmg.laya-decide | grep -E 'state|pid|runs'
+launchctl kickstart -k gui/$(id -u)/com.cesarmg.laya-decide   # force a restart
+tail -50 ~/Projects/ml/Hybrid_Harness_V7/logs/launchd.err.log
+```
+
+> **If direnv warns `... .envrc is blocked`, run `direnv allow` in this directory.** The `.envrc` only
+> sets `LAYA_SERVICE_URL` and the timeout; the plugin carries the same defaults (8090 and 2500 ms), so
+> the warning breaks nothing — but approving it makes the environment explicit. The other variables in
+> the `.envrc` are V3 conventions this service does not read.
+
+> **Do not run `Hybrid_Harness_V3/scripts/start-laya-service.sh` any more.** That was the old service
+> (PoC model, `choice` calibration). Port 8090 is now held by V7: that script would fail on a busy
+> port, and if it did start, it would leave the tool answering with the wrong model.
+
+## Startup and persistence
+
+The service runs as a launchd **LaunchAgent**: it starts at login and restarts on its own if it dies.
+
+```bash
+scripts/install-launchd.sh                 # installs and starts it (the `active` model of config.yaml)
+LAYA_ACTIVE_MODEL=laya-sentiment-v1 scripts/install-launchd.sh   # or pinning the model
+scripts/uninstall-launchd.sh               # unloads it and stops the service
+launchctl print gui/$(id -u)/com.cesarmg.laya-decide | grep -E 'state|pid|runs'
+tail -f logs/launchd.err.log
+```
+
+**Agent, not daemon.** A LaunchAgent starts when **the user logs in**; not before. Starting at boot
+without a login would need a LaunchDaemon (as root), which would also have to read the user's model
+cache. For a personal machine the agent is the right choice.
+
+Restart policy: `KeepAlive` with `SuccessfulExit: false` and `ThrottleInterval: 30`. If the process
+dies (even with `kill -9`) launchd brings it back; if the service **refuses to start** —for example
+because the weights hash does not match— it retries at most every 30 seconds instead of hot-looping.
+
+> If `launchctl bootstrap` returns `Bootstrap failed: 5: Input/output error`, it is almost always the
+> environment it is run from, not the plist: from a restricted shell it fails and from a normal
+> terminal it works. `plutil -lint` on the plist confirms it in a second.
+
+`scripts/service-run.sh` is the entry point launchd uses (foreground, no `tee`); logs go to
+`logs/launchd.out.log` and `logs/launchd.err.log`.
+
+## Measured results
+
+- `results/SUMMARY_BATTERY.md` — the three models on the same 240-text battery, with Wilson intervals
+  and paired McNemar.
+- `results/SUMMARY_PLUGIN_VERIFICATION.md` — both real DSH plugins called against this service, with
+  the same 4 cases on v1 and on Cardiff.
+
+## Layout
+
+```
+config.yaml              model registry, thresholds and self-test cases
+service/config.py        loads and validates the registry
+service/backends.py      the three adapters
+service/calibration.py   per-primitive temperature, applied and reported honestly
+service/schemas.py       HTTP contract (compatible with the DSH plugin)
+service/server.py        FastAPI + verified startup + self-test
+scripts/                 adapter test, battery and comparison
+```
+
+## Concurrency: read before touching the service
+
+**MPS/Metal is not thread-safe.** FastAPI serves synchronous endpoints from a thread pool, so without
+serializing, **two concurrent requests abort the process**:
+
+```
+failed assertion _status < MTLCommandBufferStatusCommitted in -[IOGPUMetalCommandBuffer ...]
+```
+
+The service takes `STATE["infer_lock"]` around every model call (in `/decide` and in the self-test).
+Verified up to 16 concurrent requests: 16/16 completed and the agent did not restart. If a new adapter
+is ever added, **the model call goes inside the lock**.
+
+## Long texts
+
+`max_length` is configurable per model (Cardiff: 512 tokens). When the text does not fit, the answer
+says so (`truncated`, `input_tokens`, `max_length`) and it **delegates anyway**, because a confident
+answer over partial text is worthless. The threshold does not save you here: a truncated text can come
+back at 0.9 confidence.
+
+## Delegation policy
+
+The threshold lives in `config.yaml` (`delegation.per_type`) and applies to calibrated confidence. The
+curve measured over 1,740 texts (Cardiff, current threshold 0.75):
+
+| Threshold | Local coverage | Local error | Hybrid accuracy* |
+|---|---|---|---|
+| 0.75 | 86.9% | 6.3% | 94.5% |
+| 0.85 | 79.4% | 4.3% | 96.6% |
+| 0.90 | 71.8% | 3.8% | 97.2% |
+
+\* assuming the cloud gets everything delegated right. Measured for real, with the LLM labelling 38
+delegated cases blind: 92.5% against 89.7% answering everything locally, with 13% of traffic
+delegated. The details and the limits of that measurement are in `results/SUMMARY_HARNESS_TEST.md`.
+
+## Observability
+
+Every decision is recorded in `logs/decisions/decisions-<date>.jsonl` (one file per day, daily
+rotation, the oldest deleted according to `retain_days`).
+
+What each record keeps: time, length and short hash of the text, primitive, **which model answered**,
+value, raw and calibrated confidence, temperature applied, neutral mass, whether it was truncated,
+whether it delegated and **why** (the reason grouped by kind: `high_neutral_mass`,
+`raw_confidence_below_0.75`, `input_truncated`…), latency and calibration version.
+
+Detail level in `config.yaml`:
+
+| `level` | What it keeps of the text |
+|---|---|
+| `off` | nothing |
+| `metadata` | numbers, hash and length only |
+| **`excerpt`** (default) | the first `excerpt_chars` characters |
+| `full` | the whole text (for debugging) |
+
+**Design guarantee**: logging runs inside a `try/except` and can never take down a decision. Measured
+on the first batch: 83 records written, **0 errors**.
+
+```bash
+curl -s "http://127.0.0.1:8090/metrics?hours=24" | python3 -m json.tool   # raw metrics
+python scripts/report_decisions.py --hours 24                            # readable report
+python scripts/export_eval.py --hours 24 --out results/real_eval.jsonl   # export for labelling
+```
+
+`/metrics` reports: requests and answers, overall delegation rate and **per primitive**, model mix,
+delegation reasons grouped, p50/p90/p95/p99 latencies, confidence and **neutral-mass** histograms,
+lengths, languages (a coarse heuristic) and truncations.
+
+The neutral-mass histogram is what makes it possible to re-tune the threshold against the real traffic
+mix, which is exactly what cannot be known from the dataset's test split.
+
+## Neutral mass
+
+Cardiff is a 3-class classifier; the binary reduction discards the neutral mass, so a text with no
+sentiment ("The order arrived on Tuesday.") comes back positive at 0.768. The policy now also delegates
+when `P(neutral)` exceeds `delegation.neutral_mass_threshold` (0.70).
+
+Measured over 600 genuinely neutral texts and the 1,740 non-neutral ones: **AUC 0.81**; at 0.70 it
+delegates **32.7%** of the neutrals at a cost of **+3.9 points** of traffic on non-neutrals, which also
+carry twice the average error. The full marginal table and why 0.50 was not chosen are in
+`results/SUMMARY_HARNESS_TEST.md`.
+
+The `neutral_mass` field travels in every answer, and the delegation reason says so:
+`high_neutral_mass(0.809>0.7)`.
+
+## Pending
+
+- **A battery with your own traffic**: the tool exists (`scripts/export_eval.py` exports the logged
+  decisions so they can be labelled and real accuracy measured); what is missing is accumulating
+  traffic. The service has been logging since day one.
+
+Everything else that used to be here —observability, the `choice`/`score` path on the Laya adapters,
+the repository topics— is done and verified: see `docs/VERSIONING.md`.
 
 ## License
 
