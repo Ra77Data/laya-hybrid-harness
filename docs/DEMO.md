@@ -29,38 +29,37 @@ one specific case.
 
 ## Real output
 
-This transcript is the output of `bash scripts/demo.sh`, copied verbatim (not retyped). The labels the
-script prints are currently in Spanish:
+This transcript is the output of `bash scripts/demo.sh`, copied verbatim (not retyped):
 
 ```text
-=== arrancando el servicio en 8091 con config.demo.yaml
-    la primera vez descarga Cardiff XLM-R (~1,1 GB) desde Hugging Face
+=== starting the service on 8091 with config.demo.yaml
+    the first time it downloads Cardiff XLM-R (~1.1 GB) from Hugging Face
 
-modelo servido: cardiff-xlmr (transformers) | routing: {'noul': 'cardiff-xlmr'}
-umbral de confianza: {'noul': 0.75, 'choice': 0.75, 'score': 0.75} | masa neutral: 0.7
+model served: cardiff-xlmr (transformers) | routing: {'noul': 'cardiff-xlmr'}
+confidence thresholds: {'noul': 0.75, 'choice': 0.75, 'score': 0.75} | neutral mass: 0.7
 
-  [ok] positivo claro                     local  value=True     conf=0.985 (cruda) neutral=0.05 modelo=cardiff-xlmr
-  [ok] negativo claro                     local  value=False    conf=0.988 (cruda) neutral=0.05 modelo=cardiff-xlmr
-  [·] sarcasmo                           DERIVA value=True     conf=0.680 (cruda) neutral=0.21 modelo=cardiff-xlmr
-        motivo: raw_confidence_below_0.75(0.680);no_temperature_for_noul
-  [ok] neutro (masa neutral alta)         DERIVA value=True     conf=0.768 (cruda) neutral=0.81 modelo=cardiff-xlmr
-        motivo: high_neutral_mass(0.809>0.7)
-  [ok] sin contenido                      DERIVA value=False    conf=0.527 (cruda) neutral=0.34 modelo=cardiff-xlmr
-        motivo: raw_confidence_below_0.75(0.527);no_temperature_for_noul
-  [ok] largo: el final cambia el sentido  DERIVA value=True     conf=0.622 (cruda) neutral=0.51 modelo=cardiff-xlmr
-        motivo: input_truncated(536 tokens > 512);raw_confidence_below_0.75(0.622);no_temperature_for_noul
-  [ok] primitiva que el modelo no soporta DERIVA value=None     conf=0.000 (cruda) neutral=  -  modelo=cardiff-xlmr
-        motivo: unsupported_by_model(cardiff-xlmr)
+  [ok] clear positive                     local    value=True     conf=0.985 (raw) neutral=0.05 model=cardiff-xlmr
+  [ok] clear negative                     local    value=False    conf=0.988 (raw) neutral=0.05 model=cardiff-xlmr
+  [·] sarcasm                            DELEGATE value=True     conf=0.680 (raw) neutral=0.21 model=cardiff-xlmr
+        reason: raw_confidence_below_0.75(0.680);no_temperature_for_noul
+  [ok] neutral (high neutral mass)        DELEGATE value=True     conf=0.768 (raw) neutral=0.81 model=cardiff-xlmr
+        reason: high_neutral_mass(0.809>0.7)
+  [ok] no content                         DELEGATE value=False    conf=0.527 (raw) neutral=0.34 model=cardiff-xlmr
+        reason: raw_confidence_below_0.75(0.527);no_temperature_for_noul
+  [ok] long: the ending flips the meaning DELEGATE value=True     conf=0.622 (raw) neutral=0.51 model=cardiff-xlmr
+        reason: input_truncated(536 tokens > 512);raw_confidence_below_0.75(0.622);no_temperature_for_noul
+  [ok] primitive the model does not support DELEGATE value=None     conf=0.000 (raw) neutral=  -  model=cardiff-xlmr
+        reason: unsupported_by_model(cardiff-xlmr)
 
-=== lo que quedó registrado (observabilidad)
-  peticiones 35 | respuestas 35 | derivadas 25 (71.4 %)
-  motivos: {'raw_confidence_below_0.75': 10, 'high_neutral_mass': 5, 'input_truncated': 5, 'unsupported_by_model': 5}
-  modelos: {'cardiff-xlmr': 35}
-  latencia: p50 100.09 ms | p95 310.7 ms
-  registro en: logs/decisions (nivel excerpt, 7 escritos, 0 errores)
+=== what was logged (observability)
+  requests 21 | answers 21 | delegated 15 (71.4 %)
+  reasons: {'raw_confidence_below_0.75': 6, 'high_neutral_mass': 3, 'input_truncated': 3, 'unsupported_by_model': 3}
+  models: {'cardiff-xlmr': 21}
+  latency: p50 100.09 ms | p95 312.0 ms
+  log at: logs/decisions (level excerpt, 7 written, 0 errors)
 
-=== demo terminado. Para dejarlo corriendo de verdad:  make serve
-    (o 'bash scripts/demo.sh --keep' para que no lo apague al terminar)
+=== demo finished. To actually leave it running:  make serve
+    (or 'bash scripts/demo.sh --keep' so it is not shut down at the end)
 ```
 
 ## What the demo does NOT show
@@ -118,37 +117,38 @@ duda, derive. Afirmarlo haría que el demo dependiera de la confianza de un caso
 
 ## Salida real
 
-Esta transcripción es la salida de `bash scripts/demo.sh`, copiada tal cual (no retipeada):
+Esta transcripción es la salida de `bash scripts/demo.sh`, copiada tal cual (no retipeada). El script
+imprime en inglés:
 
 ```text
-=== arrancando el servicio en 8091 con config.demo.yaml
-    la primera vez descarga Cardiff XLM-R (~1,1 GB) desde Hugging Face
+=== starting the service on 8091 with config.demo.yaml
+    the first time it downloads Cardiff XLM-R (~1.1 GB) from Hugging Face
 
-modelo servido: cardiff-xlmr (transformers) | routing: {'noul': 'cardiff-xlmr'}
-umbral de confianza: {'noul': 0.75, 'choice': 0.75, 'score': 0.75} | masa neutral: 0.7
+model served: cardiff-xlmr (transformers) | routing: {'noul': 'cardiff-xlmr'}
+confidence thresholds: {'noul': 0.75, 'choice': 0.75, 'score': 0.75} | neutral mass: 0.7
 
-  [ok] positivo claro                     local  value=True     conf=0.985 (cruda) neutral=0.05 modelo=cardiff-xlmr
-  [ok] negativo claro                     local  value=False    conf=0.988 (cruda) neutral=0.05 modelo=cardiff-xlmr
-  [·] sarcasmo                           DERIVA value=True     conf=0.680 (cruda) neutral=0.21 modelo=cardiff-xlmr
-        motivo: raw_confidence_below_0.75(0.680);no_temperature_for_noul
-  [ok] neutro (masa neutral alta)         DERIVA value=True     conf=0.768 (cruda) neutral=0.81 modelo=cardiff-xlmr
-        motivo: high_neutral_mass(0.809>0.7)
-  [ok] sin contenido                      DERIVA value=False    conf=0.527 (cruda) neutral=0.34 modelo=cardiff-xlmr
-        motivo: raw_confidence_below_0.75(0.527);no_temperature_for_noul
-  [ok] largo: el final cambia el sentido  DERIVA value=True     conf=0.622 (cruda) neutral=0.51 modelo=cardiff-xlmr
-        motivo: input_truncated(536 tokens > 512);raw_confidence_below_0.75(0.622);no_temperature_for_noul
-  [ok] primitiva que el modelo no soporta DERIVA value=None     conf=0.000 (cruda) neutral=  -  modelo=cardiff-xlmr
-        motivo: unsupported_by_model(cardiff-xlmr)
+  [ok] clear positive                     local    value=True     conf=0.985 (raw) neutral=0.05 model=cardiff-xlmr
+  [ok] clear negative                     local    value=False    conf=0.988 (raw) neutral=0.05 model=cardiff-xlmr
+  [·] sarcasm                            DELEGATE value=True     conf=0.680 (raw) neutral=0.21 model=cardiff-xlmr
+        reason: raw_confidence_below_0.75(0.680);no_temperature_for_noul
+  [ok] neutral (high neutral mass)        DELEGATE value=True     conf=0.768 (raw) neutral=0.81 model=cardiff-xlmr
+        reason: high_neutral_mass(0.809>0.7)
+  [ok] no content                         DELEGATE value=False    conf=0.527 (raw) neutral=0.34 model=cardiff-xlmr
+        reason: raw_confidence_below_0.75(0.527);no_temperature_for_noul
+  [ok] long: the ending flips the meaning DELEGATE value=True     conf=0.622 (raw) neutral=0.51 model=cardiff-xlmr
+        reason: input_truncated(536 tokens > 512);raw_confidence_below_0.75(0.622);no_temperature_for_noul
+  [ok] primitive the model does not support DELEGATE value=None     conf=0.000 (raw) neutral=  -  model=cardiff-xlmr
+        reason: unsupported_by_model(cardiff-xlmr)
 
-=== lo que quedó registrado (observabilidad)
-  peticiones 35 | respuestas 35 | derivadas 25 (71.4 %)
-  motivos: {'raw_confidence_below_0.75': 10, 'high_neutral_mass': 5, 'input_truncated': 5, 'unsupported_by_model': 5}
-  modelos: {'cardiff-xlmr': 35}
-  latencia: p50 100.09 ms | p95 310.7 ms
-  registro en: logs/decisions (nivel excerpt, 7 escritos, 0 errores)
+=== what was logged (observability)
+  requests 21 | answers 21 | delegated 15 (71.4 %)
+  reasons: {'raw_confidence_below_0.75': 6, 'high_neutral_mass': 3, 'input_truncated': 3, 'unsupported_by_model': 3}
+  models: {'cardiff-xlmr': 21}
+  latency: p50 100.09 ms | p95 312.0 ms
+  log at: logs/decisions (level excerpt, 7 written, 0 errors)
 
-=== demo terminado. Para dejarlo corriendo de verdad:  make serve
-    (o 'bash scripts/demo.sh --keep' para que no lo apague al terminar)
+=== demo finished. To actually leave it running:  make serve
+    (or 'bash scripts/demo.sh --keep' so it is not shut down at the end)
 ```
 
 ## Lo que el demo NO muestra

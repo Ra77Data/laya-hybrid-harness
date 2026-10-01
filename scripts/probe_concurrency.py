@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Sonda de concurrencia: manda N peticiones en paralelo y dice si el servicio sobrevivió.
+"""Concurrency probe: sends N requests in parallel and reports whether the service survived.
 
 Registra el contador de arranques del agente antes y después, así la caída queda atribuida y
 no como una sospecha. Imprime el error real de cada petición fallida.
@@ -80,18 +80,18 @@ for n in [int(x) for x in args.counts.split(",")]:
     runs1, pid1 = agent_runs()
     medible = runs0 != "n/a"
     sobrevivio = (runs0 == runs1) if medible else None
-    print(f"=== {n} concurrentes | pared {wall:.0f} ms | completadas {len(ok)}/{n}")
+    print(f"=== {n} concurrent | wall {wall:.0f} ms | completed {len(ok)}/{n}")
     if lat:
-        print(f"    latencia por petición: min {lat[0]:.0f} | mediana {lat[len(lat)//2]:.0f} | max {lat[-1]:.0f} ms")
-        print(f"    respuestas: sentimiento={sorted({str(r['sent']) for r in ok})} routing={sorted({str(r['route']) for r in ok})}")
+        print(f"    per-request latency: min {lat[0]:.0f} | median {lat[len(lat)//2]:.0f} | max {lat[-1]:.0f} ms")
+        print(f"    answers: sentiment={sorted({str(r['sent']) for r in ok})} routing={sorted({str(r['route']) for r in ok})}")
     for r in [x for x in rs if not x["ok"]][:3]:
-        print(f"    FALLO: {r['err']}")
+        print(f"    FAILED: {r['err']}")
     if medible:
-        print(f"    agente: runs {runs0} -> {runs1} (pid {pid0} -> {pid1}) -> "
-              f"{'SOBREVIVIÓ' if sobrevivio else 'SE CAYÓ Y LO REINICIARON'}")
+        print(f"    agent: runs {runs0} -> {runs1} (pid {pid0} -> {pid1}) -> "
+              f"{'SURVIVED' if sobrevivio else 'CRASHED AND WAS RESTARTED'}")
     else:
-        print(f"    agente: n/a (esta instancia no la maneja launchd; se mira que las "
-              f"{len(ok)}/{n} respuestas hayan vuelto)")
+        print(f"    agent: n/a (this instance is not managed by launchd; we only check that "
+              f"{len(ok)}/{n} answers came back)")
     rows.append({"n": n, "ok": len(ok), "wall_ms": wall, "lat": lat,
                  "runs_before": runs0, "runs_after": runs1,
                  "survived": sobrevivio,
@@ -100,4 +100,4 @@ for n in [int(x) for x in args.counts.split(",")]:
 
 Path(args.out).parent.mkdir(parents=True, exist_ok=True)
 Path(args.out).write_text(json.dumps(rows, indent=2, ensure_ascii=False))
-print(f"\nguardado: {args.out}")
+print(f"\nsaved: {args.out}")

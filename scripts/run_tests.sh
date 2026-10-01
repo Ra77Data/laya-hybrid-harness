@@ -9,11 +9,11 @@ PY=".venv/bin/python"
 FAIL=0
 
 if [ ! -x "$PY" ]; then
-  echo "no hay entorno: corré 'make setup' primero" >&2
+  echo "no environment: run 'make setup' first" >&2
   exit 2
 fi
 
-echo "=== arrancando una instancia de prueba en $PORT"
+echo "=== starting a test instance on $PORT"
 LAYA_PORT="$PORT" "$PY" -m uvicorn service.server:app --host 127.0.0.1 --port "$PORT" \
   > /tmp/harness-test.log 2>&1 &
 PID=$!
@@ -24,38 +24,38 @@ for _ in $(seq 1 60); do
   sleep 2
 done
 if ! curl -s -m 5 "$URL/health" >/dev/null 2>&1; then
-  echo "FALLA: el servicio no arrancó (ver /tmp/harness-test.log)" >&2
+  echo "FAILED: the service did not start (see /tmp/harness-test.log)" >&2
   tail -20 /tmp/harness-test.log >&2
   exit 1
 fi
 
 echo
-echo "=== self-test de los modelos declarados"
+echo "=== self-test of the declared models"
 "$PY" - "$URL" <<'PYEOF' || FAIL=1
 import json, sys, urllib.request
 url = sys.argv[1]
 req = urllib.request.Request(url + "/selftest", data=b"{}", headers={"Content-Type": "application/json"})
 d = json.load(urllib.request.urlopen(req, timeout=600))
-print(f"  passed: {d['passed']} | casos evaluados: {d.get('tested')} | "
-      f"modelos omitidos (no están en esta máquina): {d.get('skipped_models') or 'ninguno'}")
+print(f"  passed: {d['passed']} | cases evaluated: {d.get('tested')} | "
+      f"skipped models (not on this machine): {d.get('skipped_models') or 'none'}")
 for mid, recs in d["results"].items():
     for r in recs:
         if r.get("skipped"):
-            print(f"   OMITIDO [{mid}] {r.get('reason')}")
+            print(f"   SKIPPED [{mid}] {r.get('reason')}")
         else:
-            print(f"   {'OK ' if r.get('ok') else 'FALLA'} [{mid}] esperado={r.get('expected')} "
-                  f"obtenido={r.get('got')} {r.get('error') or ''}")
+            print(f"   {'OK ' if r.get('ok') else 'FAILED'} [{mid}] expected={r.get('expected')} "
+                  f"got={r.get('got')} {r.get('error') or ''}")
 sys.exit(0 if d["passed"] else 1)
 PYEOF
 
 echo
-echo "=== casos límite"
+echo "=== edge cases"
 "$PY" scripts/probe_harness.py --url "$URL" --out /tmp/probe.json | tail -4 || FAIL=1
 
 echo
-echo "=== concurrencia (es lo que tumbaba el servicio antes del candado de inferencia)"
-"$PY" scripts/probe_concurrency.py --url "$URL" --counts 2,4,8 --out /tmp/conc.json | grep -E "concurrentes|agente" || FAIL=1
+echo "=== concurrency (what used to take the service down before the inference lock)"
+"$PY" scripts/probe_concurrency.py --url "$URL" --counts 2,4,8 --out /tmp/conc.json | grep -E "concurrent|agent" || FAIL=1
 
 echo
-if [ "$FAIL" = "0" ]; then echo "TODO OK"; else echo "HUBO FALLAS"; fi
+if [ "$FAIL" = "0" ]; then echo "ALL OK"; else echo "THERE WERE FAILURES"; fi
 exit $FAIL

@@ -13,16 +13,16 @@ URL="http://127.0.0.1:$PORT"
 PY=".venv/bin/python"
 
 if [ ! -x "$PY" ]; then
-  echo "no hay entorno todavía. Corré primero:  make setup" >&2
+  echo "no environment yet. Run first:  make setup" >&2
   exit 2
 fi
 
 PROPIO=0
 if curl -s -m 2 "$URL/health" >/dev/null 2>&1; then
-  echo "(uso el servicio que ya está corriendo en $PORT)"
+  echo "(using the service already running on $PORT)"
 else
-  echo "=== arrancando el servicio en $PORT con config.demo.yaml"
-  echo "    la primera vez descarga Cardiff XLM-R (~1,1 GB) desde Hugging Face"
+  echo "=== starting the service on $PORT with config.demo.yaml"
+  echo "    the first time it downloads Cardiff XLM-R (~1.1 GB) from Hugging Face"
   LAYA_PORT="$PORT" LAYA_CONFIG=config.demo.yaml "$PY" -m uvicorn service.server:app \
     --host 127.0.0.1 --port "$PORT" > /tmp/harness-demo.log 2>&1 &
   PID=$!
@@ -33,7 +33,7 @@ else
     sleep 2
   done
   if ! curl -s -m 5 "$URL/health" >/dev/null 2>&1; then
-    echo "el servicio no arrancó. Últimas líneas del log:" >&2
+    echo "the service did not start. Last lines of the log:" >&2
     tail -25 /tmp/harness-demo.log >&2
     exit 1
   fi
@@ -46,10 +46,10 @@ if [ "$PROPIO" = "1" ] && [ "$KEEP" = "0" ]; then
   kill $PID 2>/dev/null
   wait $PID 2>/dev/null
   echo
-  echo "=== demo terminado. Para dejarlo corriendo de verdad:  make serve"
-  echo "    (o 'bash scripts/demo.sh --keep' para que no lo apague al terminar)"
+  echo "=== demo finished. To actually leave it running:  make serve"
+  echo "    (or 'bash scripts/demo.sh --keep' so it is not shut down at the end)"
 elif [ "$PROPIO" = "1" ]; then
   echo
-  echo "=== el servicio sigue arriba en $URL"
+  echo "=== the service is still up at $URL"
   wait $PID
 fi
