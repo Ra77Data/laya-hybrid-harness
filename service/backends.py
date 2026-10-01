@@ -1,20 +1,20 @@
-"""Adaptadores de modelo. Todos exponen la misma interfaz y devuelven la misma forma canónica.
+"""Model adapters. They all expose the same interface and return the same canonical shape.
 
     backend.load()
     backend.weights_info() -> {"path", "sha256", "expected", "match", "note"}
     backend.predict(state, questions) -> {qid: {"type", "probs", "value", "options"}}
 
-El servicio no conoce ningún modelo: solo pide un adaptador por nombre en la config.
+The service knows no model: it only asks for an adapter by name from the config.
 """
 import hashlib
 import json
 import os
 from pathlib import Path
 
-os.environ.setdefault("USE_TF", "0")            # evita el deadlock de abseil al cargar Laya
+os.environ.setdefault("USE_TF", "0")            # avoids the abseil deadlock when loading Laya
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
-# HF_HUB_OFFLINE y HF_HUB_CACHE se dejan al entorno: fijarlos acá escondía el fallo
-# "el modelo no está en la caché y no puedo bajarlo" detrás de un error de red.
+# HF_HUB_OFFLINE and HF_HUB_CACHE are left to the environment: setting them here hid the
+# "the model is not in the cache and I cannot download it" failure behind a network error.
 
 
 def sha256_file(path: Path, chunk: int = 1 << 20) -> str:
@@ -26,12 +26,11 @@ def sha256_file(path: Path, chunk: int = 1 << 20) -> str:
 
 
 def resolve_weights(weights: str, filenames: tuple[str, ...]) -> tuple[str | None, str | None, str]:
-    """Devuelve (ruta, sha256 real, nota) para un path local o un repo de HF ya cacheado.
+    """Returns (path, real sha256, note) for a local path or an already cached HF repo.
 
-    El nombre del blob en la caché de Hugging Face **no** es el sha256 del contenido (se
-    verificó: difieren para los dos modelos). Reportar aquel como sha256 era incorrecto, así
-    que acá se hashea el archivo de verdad, que es 1-2 s por modelo y hace que `expect_sha256`
-    signifique algo.
+    A blob name in the Hugging Face cache is **not** the sha256 of the content (verified:
+    they differ for both models). Reporting the former as sha256 was wrong, so here the real
+    file is hashed, which costs 1-2 s per model and makes `expect_sha256` mean something.
     """
     p = Path(weights)
     if p.is_dir():
@@ -54,12 +53,12 @@ def resolve_weights(weights: str, filenames: tuple[str, ...]) -> tuple[str | Non
 
 
 def _laya_question(q: dict) -> dict:
-    """Esquema que espera `Agent.predict` / `laya_coreml.predict`.
+    """Schema expected by `Agent.predict` / `laya_coreml.predict`.
 
-    Ojo: la librería tiene DOS capas con esquemas distintos para lo mismo. `Agent.predict`
-    (alto nivel) usa {"type", "instructions", "criteria"}; `build_sequence` (bajo nivel)
-    usa {"t", "ins", "crit"}. Acá se usa la capa de alto nivel; mezclarlas fue el bug que
-    rompía `choice` con un AttributeError sobre None.
+    Careful: the library has TWO layers with different schemas for the same thing.
+    `Agent.predict` (high level) uses {"type", "instructions", "criteria"}; `build_sequence`
+    (low level) uses {"t", "ins", "crit"}. The high-level layer is used here; mixing them was
+    the bug that broke `choice` with an AttributeError over None.
     """
     out = {"type": q["type"], "instructions": q.get("instructions", "")}
     if q["type"] == "choice":
@@ -70,13 +69,13 @@ def _laya_question(q: dict) -> dict:
 
 
 def _canonical_from_laya(ans: dict, q: dict) -> dict:
-    """Normaliza la respuesta cruda de laya / laya-coreml a la forma canónica.
+    """Normalises the raw answer from laya / laya-coreml into the canonical shape.
 
-    Laya publica la distribución de `choice` en `probabilities` (un dict opción->prob),
-    no en una lista `probs`; y en `score` la distribución viene indexada por número con
-    las etiquetas en `legend`. Si no hay distribución, se devuelve `probs` vacío y la
-    confianza propia del modelo: antes se fabricaba un vector uniforme, que es
-    exactamente el tipo de dato inventado que este servicio debe evitar.
+    Laya publishes the `choice` distribution in `probabilities` (an option->prob dict), not
+    in a `probs` list; and for `score` the distribution is indexed by number with the labels
+    in `legend`. If there is no distribution, an empty `probs` and the model's own confidence
+    are returned: a uniform vector used to be fabricated here, which is exactly the kind of
+    invented data this service must avoid.
     """
     qtype = ans.get("type") or q["type"]
     if qtype == "noul" or "noul" in ans:
@@ -119,7 +118,7 @@ class Backend:
         self.spec = spec
         self._weights: dict = {}
 
-    def load(self) -> None:                      # pragma: no cover - lo implementa cada adaptador
+    def load(self) -> None:                      # pragma: no cover - each adapter implements it
         raise NotImplementedError
 
     def weights_info(self) -> dict:
@@ -130,7 +129,7 @@ class Backend:
 
 
 class CoreMLBackend(Backend):
-    """Sirve un paquete CoreML de Laya (ANE/GPU en Apple Silicon)."""
+    """Serves a Laya CoreML package (ANE/GPU on Apple Silicon)."""
     adapter = "coreml"
 
     def load(self) -> None:
@@ -145,7 +144,7 @@ class CoreMLBackend(Backend):
             "sha256": declared,
             "expected": self.spec.expect_sha256,
             "match": (declared == self.spec.expect_sha256) if (declared and self.spec.expect_sha256) else None,
-            "note": "hash de los pesos de origen, declarado en coreml_config.json",
+            "note": "source-weights hash, declared in coreml_config.json",
         }
 
     def predict(self, state: str, questions: list[dict]) -> dict:
@@ -156,7 +155,7 @@ class CoreMLBackend(Backend):
         out = {}
         for q in questions:
             item = _canonical_from_laya(answers.get(q["id"], {}), q)
-            # La librería ya dice si tuvo que tirar texto; antes se descartaba.
+            # The library already says whether it had to drop text; that used to be discarded.
             item["input_tokens"] = usage.get("input_tokens")
             item["state_tokens_dropped"] = usage.get("state_tokens_dropped")
             item["truncated"] = bool(usage.get("truncated"))
@@ -165,15 +164,15 @@ class CoreMLBackend(Backend):
 
 
 class LayaBackend(Backend):
-    """Sirve un checkpoint Laya en safetensors (sin CoreML): pensado para x86/Linux o CI."""
+    """Serves a Laya checkpoint in safetensors (no CoreML): meant for x86/Linux or CI."""
     adapter = "laya"
 
     def load(self) -> None:
         import laya.agent
 
-        # La librería trae su propio cargador: batching, renderizado de opciones y parseo de
-        # respuestas. La temperatura NO se delega acá: la aplica el servicio, igual para todos
-        # los adaptadores, para no calibrar dos veces.
+        # The library brings its own loader: batching, option rendering and answer parsing.
+        # Temperature is NOT delegated here: the service applies it, the same for every
+        # adapter, so as not to calibrate twice.
         self.agent = laya.agent.load(str(self.spec.weights))
         path, sha, note = resolve_weights(self.spec.weights, ("model.safetensors",))
         self._weights = {
@@ -192,7 +191,7 @@ class LayaBackend(Backend):
 
 
 class TransformersBackend(Backend):
-    """Sirve un clasificador de Hugging Face. Para sentimiento 3 clases se reduce a binario."""
+    """Serves a Hugging Face classifier. For 3-class sentiment it reduces to binary."""
     adapter = "transformers"
 
     def load(self) -> None:
@@ -206,8 +205,8 @@ class TransformersBackend(Backend):
         self.device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
         self.model.to(self.device).eval()
         self.id2 = {int(k): str(v).lower() for k, v in self.model.config.id2label.items()}
-        # 128 tokens era el valor por defecto que yo hardcodeé: un texto de 2.500 caracteres
-        # perdía tres cuartos de su contenido sin que nadie se enterara. Ahora es configurable.
+        # 128 tokens was the default I hardcoded: a 2,500-character text lost three quarters
+        # of its content without anyone noticing. It is configurable now.
         self.max_length = int(self.spec.max_length or 512)
         path, sha, note = resolve_weights(
             self.spec.weights, ("model.safetensors", "pytorch_model.bin"))
@@ -254,12 +253,12 @@ ADAPTER_MODULES = {
 
 
 def adapter_status(adapter: str) -> tuple[bool, str | None]:
-    """¿Está instalado el runtime que este adaptador necesita?
+    """Is the runtime this adapter needs installed?
 
-    Tercera dimensión, además de "los pesos existen": un modelo puede tener sus pesos y aun así no
-    poder servirse porque el paquete del adaptador no está instalado. En una instalación `[demo]`
-    eso pasaba con los cuatro modelos de Laya, y el self-test los reportaba como fallados cuando lo
-    único que faltaba era `make setup-full`.
+    A third dimension, on top of "the weights exist": a model can have its weights and still not
+    be servable because the adapter's package is not installed. In a `[demo]` install that
+    happened with the four Laya models, and the self-test reported them as failed when the only
+    thing missing was `make setup-full`.
     """
     import importlib.util
     faltan = [m for m in ADAPTER_MODULES.get(adapter, ()) if importlib.util.find_spec(m) is None]

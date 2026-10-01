@@ -1,14 +1,14 @@
-"""Servicio de decisión local, agnóstico del modelo y con enrutamiento por primitiva.
+"""Local decision service, model-agnostic, with routing by primitive.
 
-Cada primitiva (`noul`, `choice`, `score`) puede servirse con un modelo distinto según
-`routing` en config.yaml. Los modelos se cargan de forma perezosa, salvo los de `preload`.
+Each primitive (`noul`, `choice`, `score`) can be served by a different model according to
+`routing` in config.yaml. Models load lazily, except those in `preload`.
 
-Garantías, todas verificables desde /health:
-  * el sha256 REAL del archivo de pesos se compara con `expect_sha256`;
-  * un modelo cuyo hash no coincide **no se carga** y sus respuestas se derivan con motivo;
-  * `calibrated` es verdadero solo si se aplicó una temperatura a esa respuesta;
-  * una primitiva que el modelo de turno no implementa vuelve como `unsupported_by_model`;
-  * cada respuesta dice con qué modelo se contestó (`model_used`).
+Guarantees, all verifiable from /health:
+  * the REAL sha256 of the weights file is compared against `expect_sha256`;
+  * a model whose hash does not match **is not loaded** and its answers delegate with a reason;
+  * `calibrated` is true only if a temperature was applied to that answer;
+  * a primitive the model does not implement comes back as `unsupported_by_model`;
+  * every answer says which model answered it (`model_used`).
 """
 import threading
 import time
@@ -33,24 +33,24 @@ LOG = DecisionLog(
     window=int(CONFIG.observability.get("window", 5000)),
     retain_days=int(CONFIG.observability.get("retain_days", 30)))
 STATE: dict = {
-    "backends": {},          # id -> Backend ya cargado
+    "backends": {},          # id -> Backend already loaded
     "calibrations": {},      # id -> Calibration
-    "smoke": {},             # id -> [resultados]
-    "errors": {},            # id -> motivo por el que no se pudo cargar
+    "smoke": {},             # id -> [results]
+    "errors": {},            # id -> why it could not be loaded
     "smoke_ok": {},          # id -> bool
-    "load_seconds": {},      # id -> segundos de carga
-    "lock": threading.Lock(),        # protege la carga de modelos
-    # Candado de INFERENCIA, separado y global. MPS/Metal no es thread-safe: dos hilos
-    # enviando comandos al mismo MTLCommandBuffer abortan el proceso con
-    # "failed assertion _status < MTLCommandBufferStatusCommitted". FastAPI atiende los
-    # endpoints sincrónicos en un pool de hilos, así que sin esto DOS peticiones
-    # simultáneas tumban el servicio (reproducido: 2 concurrentes -> caída).
+    "load_seconds": {},      # id -> load seconds
+    "lock": threading.Lock(),        # protects model loading
+    # INFERENCE lock, separate and global. MPS/Metal is not thread-safe: two threads
+    # sending commands to the same MTLCommandBuffer abort the process with
+    # "failed assertion _status < MTLCommandBufferStatusCommitted". FastAPI serves
+    # synchronous endpoints from a thread pool, so without this TWO simultaneous
+    # requests take the service down (reproduced: 2 concurrent -> crash).
     "infer_lock": threading.Lock(),
 }
 
 
 def get_backend(spec: ModelSpec):
-    """Carga perezosa con lock. Verifica el hash real antes de dar por bueno el modelo."""
+    """Lazy loading with a lock. Verifies the real hash before accepting the model."""
     backend = STATE["backends"].get(spec.id)
     if backend is not None:
         return backend
@@ -82,7 +82,7 @@ def _answer_for(model_id: str, q: Question, item: dict, cal: Calibration) -> Ans
     if delegate:
         reason = (f"calibrated_confidence_below_{thr}({conf:.3f})" if applied
                   else f"raw_confidence_below_{thr}({conf:.3f});no_temperature_for_{q.type}")
-    # Masa neutral: un texto sin sentimiento no debería responderse como positivo por descarte.
+    # Neutral mass: a text with no sentiment should not be answered as positive by default.
     nm = item.get("neutral_mass")
     if nm is not None and CONFIG.neutral_mass_threshold is not None and nm > CONFIG.neutral_mass_threshold:
         delegate = True
@@ -90,7 +90,7 @@ def _answer_for(model_id: str, q: Question, item: dict, cal: Calibration) -> Ans
                   + (f";{reason}" if reason else ""))
     truncated = bool(item.get("truncated"))
     if truncated:
-        # Si el modelo no vio el texto completo, su respuesta segura no vale: se deriva.
+        # If the model did not see the whole text, its confident answer is worthless: delegate.
         delegate = True
         reason = (f"input_truncated({item.get('input_tokens')} tokens > "
                   f"{item.get('max_length', '?')})" + (f";{reason}" if reason else ""))
@@ -105,10 +105,10 @@ def _answer_for(model_id: str, q: Question, item: dict, cal: Calibration) -> Ans
 
 
 def decide_with(state: str, questions: list[Question], pinned: str | None = None) -> list[Answer]:
-    """Lógica única de decisión: la usan /decide y el self-test.
+    """Single decision path: used by both /decide and the self-test.
 
-    `pinned` fuerza un modelo para todas las preguntas (comparaciones A/B); sin él se enruta
-    cada primitiva según la config.
+    `pinned` forces one model for every question (A/B comparisons); without it each primitive
+    is routed according to the config.
     """
     groups: dict[str, list[Question]] = {}
     rejected: list[tuple[Question, str, str]] = []
@@ -159,9 +159,10 @@ def decide_with(state: str, questions: list[Question], pinned: str | None = None
 
 
 def run_smoke_tests(verbose: bool = True, only: list[str] | None = None) -> dict[str, list[dict]]:
-    """Corre los casos de self-test de cada modelo **contra ese modelo**, sin enrutar.
+    """Runs each model's self-test cases **against that model**, without routing.
 
-    Enrutar el self-test lo haría pasar por otro modelo y no verificaría nada del declarado.
+    Routing the self-test would send it through another model and would verify nothing about
+    the declared one.
     """
     out: dict[str, list[dict]] = {}
     for mid, spec in CONFIG.models.items():
@@ -177,9 +178,9 @@ def run_smoke_tests(verbose: bool = True, only: list[str] | None = None) -> dict
                 print(f"  [selftest:{mid}] SKIPPED ({motivo_adapter})", flush=True)
             continue
         if not spec.available:
-            # Un modelo cuyos pesos no están en esta máquina no es un fallo: es una entrada del
-            # registro que acá no aplica. Darlo por fallado hacía que una instalación limpia
-            # reportara self-test roto por modelos que nunca se propuso servir.
+            # A model whose weights are not on this machine is not a failure: it is a registry
+            # entry that does not apply here. Marking it failed made a clean install report a
+            # broken self-test because of models it never intended to serve.
             out[mid] = [{"skipped": True, "reason": spec.unavailable_reason}]
             STATE["smoke_ok"][mid] = None
             if verbose:
@@ -264,7 +265,7 @@ def health():
             "smoke_ok": STATE["smoke_ok"].get(mid),
             "error": STATE["errors"].get(mid),
         }
-    # Sólo cuentan los modelos que sirven alguna primitiva: los demás son alternativas del registro.
+    # Only models serving a primitive count: the rest are registry alternatives.
     any_error = any(m["error"] for m in models.values() if m["role"])
     return HealthResponse(
         status="ok" if STATE["backends"] and not any_error else "degraded",
@@ -283,7 +284,7 @@ def health():
 
 @app.get("/metrics")
 def metrics(hours: float = 24):
-    """Lo que pasó de verdad en el servicio: derivación, motivos, modelos, latencias, mezclas."""
+    """What actually happened in the service: delegation, reasons, models, latencies, mixes."""
     return LOG.metrics(hours=hours)
 
 
