@@ -199,7 +199,7 @@ def _lang_guess(text: str) -> str:
     """Pista gruesa de idioma, sin dependencias: alcanza para ver la mezcla de tráfico."""
     t = (text or "").lower()
     if not t.strip():
-        return "vacío"
+        return "empty"
     marcas = {
         "es": (" que ", " de ", " no ", " el ", " la ", " los ", " las ", " un ", " una ", " y ",
                " por ", " con ", " para ", " me ", " mi ", " es ", " está", "ñ", "ción", " gracias"),

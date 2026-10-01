@@ -13,6 +13,17 @@ if [ ! -x "$PY" ]; then
   exit 2
 fi
 
+# Si quedó una instancia de prueba anterior, esperar a que libere el puerto: correr `make test`
+# dos veces seguidas fallaba de forma confusa (el servicio nuevo no podía enlazar).
+for _ in $(seq 1 15); do
+  lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1 || break
+  sleep 1
+done
+if lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; then
+  echo "port $PORT is still in use; stop whatever is listening there and retry" >&2
+  exit 2
+fi
+
 echo "=== starting a test instance on $PORT"
 LAYA_PORT="$PORT" "$PY" -m uvicorn service.server:app --host 127.0.0.1 --port "$PORT" \
   > /tmp/harness-test.log 2>&1 &

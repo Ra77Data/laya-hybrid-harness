@@ -37,10 +37,10 @@ class ModelSpec:
 
     def validate(self) -> None:
         if self.adapter not in ADAPTERS:
-            raise ValueError(f"{self.id}: adaptador desconocido '{self.adapter}'")
+            raise ValueError(f"{self.id}: unknown adapter '{self.adapter}'")
         bad = self.supports - PRIMITIVES
         if bad:
-            raise ValueError(f"{self.id}: primitivas inválidas {bad}")
+            raise ValueError(f"{self.id}: invalid primitives {bad}")
         w = str(self.weights)
         # `weights` puede ser una ruta local (debe existir) o un repo de Hugging Face (se resuelve
         # por la caché o la red). Antes solo se aceptaban rutas.
@@ -51,14 +51,14 @@ class ModelSpec:
         # ausente, la respuesta lo dice (`model_unavailable`).
         if (w.startswith("/") or w.startswith("~") or w.startswith(".")) and not Path(w).expanduser().exists():
             self.available = False
-            self.unavailable_reason = f"no existe la ruta de pesos {w}"
+            self.unavailable_reason = f"weights path does not exist: {w}"
         # Misma lógica que con los pesos: si falta el archivo de calibración, el modelo no está
         # disponible en esta máquina, pero eso no puede impedir que el servicio arranque. Antes
         # levantaba, y con la plantilla publicada (rutas EDITAR) `make test` fallaba en un clon
         # nuevo por un modelo que nadie iba a servir.
         if self.calibration and not Path(self.calibration).exists():
             self.available = False
-            self.unavailable_reason = f"no existe el archivo de calibración {self.calibration}"
+            self.unavailable_reason = f"calibration file does not exist: {self.calibration}"
         for case in self.smoke:
             if case.get("type") not in self.supports:
                 raise ValueError(
@@ -85,7 +85,7 @@ class Config:
     def spec(self, model_id: str | None = None) -> ModelSpec:
         mid = model_id or self.active
         if mid not in self.models:
-            raise KeyError(f"modelo '{mid}' no está en el registro")
+            raise KeyError(f"model '{mid}' is not in the registry")
         return self.models[mid]
 
     def model_for(self, qtype: str) -> str:
@@ -110,14 +110,14 @@ def load_config(path: str | Path | None = None) -> Config:
     deleg = raw.get("delegation", {}) or {}
     active = os.environ.get("LAYA_ACTIVE_MODEL") or raw.get("active") or next(iter(models))
     if active not in models:
-        raise KeyError(f"modelo activo '{active}' no está en el registro")
+        raise KeyError(f"active model '{active}' is not in the registry")
 
     routing = {str(k): str(v) for k, v in (raw.get("routing") or {}).items()}
     for qtype, mid in routing.items():
         if qtype not in PRIMITIVES:
-            raise ValueError(f"routing: primitiva desconocida '{qtype}'")
+            raise ValueError(f"routing: unknown primitive '{qtype}'")
         if mid not in models:
-            raise ValueError(f"routing: '{qtype}' apunta a '{mid}', que no está en el registro")
+            raise ValueError(f"routing: '{qtype}' points at '{mid}', which is not in the registry")
         if qtype not in models[mid].supports:
             raise ValueError(
                 f"routing: '{qtype}' apunta a '{mid}', que declara soportar {sorted(models[mid].supports)}")
@@ -125,7 +125,7 @@ def load_config(path: str | Path | None = None) -> Config:
     preload = [str(x) for x in (raw.get("preload") or [active])]
     for mid in preload:
         if mid not in models:
-            raise ValueError(f"preload: '{mid}' no está en el registro")
+            raise ValueError(f"preload: '{mid}' is not in the registry")
 
     # LAYA_PORT permite correr una instancia en otro puerto sin tocar la config (lo usa el demo).
     port = int(os.environ.get("LAYA_PORT") or raw["service"]["port"])

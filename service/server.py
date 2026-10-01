@@ -64,7 +64,7 @@ def get_backend(spec: ModelSpec):
         info = candidate.weights_info()
         if info.get("match") is False:
             STATE["errors"][spec.id] = (
-                f"hash de pesos no coincide: {info.get('sha256')} != {info.get('expected')}")
+                f"weights hash mismatch: {info.get('sha256')} != {info.get('expected')}")
             raise RuntimeError(STATE["errors"][spec.id])
         STATE["backends"][spec.id] = candidate
         STATE["calibrations"][spec.id] = load_calibration(spec.calibration)
@@ -117,7 +117,7 @@ def decide_with(state: str, questions: list[Question], pinned: str | None = None
         spec = CONFIG.spec(mid)
         if q.type not in spec.supports:
             rejected.append((q, f"unsupported_by_model({mid})",
-                             f"el modelo '{mid}' declara soporte solo para {sorted(spec.supports)}"))
+                             f"model '{mid}' declares support only for {sorted(spec.supports)}"))
             continue
         groups.setdefault(mid, []).append(q)
 
@@ -174,7 +174,7 @@ def run_smoke_tests(verbose: bool = True, only: list[str] | None = None) -> dict
             out[mid] = [{"skipped": True, "reason": motivo_adapter}]
             STATE["smoke_ok"][mid] = None
             if verbose:
-                print(f"  [selftest:{mid}] OMITIDO ({motivo_adapter})", flush=True)
+                print(f"  [selftest:{mid}] SKIPPED ({motivo_adapter})", flush=True)
             continue
         if not spec.available:
             # Un modelo cuyos pesos no están en esta máquina no es un fallo: es una entrada del
@@ -183,7 +183,7 @@ def run_smoke_tests(verbose: bool = True, only: list[str] | None = None) -> dict
             out[mid] = [{"skipped": True, "reason": spec.unavailable_reason}]
             STATE["smoke_ok"][mid] = None
             if verbose:
-                print(f"  [selftest:{mid}] OMITIDO ({spec.unavailable_reason})", flush=True)
+                print(f"  [selftest:{mid}] SKIPPED ({spec.unavailable_reason})", flush=True)
             continue
         try:
             backend = get_backend(spec)
@@ -212,36 +212,36 @@ def run_smoke_tests(verbose: bool = True, only: list[str] | None = None) -> dict
         STATE["smoke_ok"][mid] = all(r["ok"] for r in recs)
         if verbose:
             for r in recs:
-                mark = "OK " if r["ok"] else "FALLA"
-                print(f"  [selftest:{mid}] {mark} esperado={r['expected']} "
-                      f"obtenido={r.get('got')} | {r['text'][:50]}", flush=True)
+                mark = "OK " if r["ok"] else "FAIL"
+                print(f"  [selftest:{mid}] {mark} expected={r['expected']} "
+                      f"got={r.get('got')} | {r['text'][:50]}", flush=True)
     return out
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print(f"[startup] modelo activo: {CONFIG.active} | routing: {CONFIG.routing}", flush=True)
+    print(f"[startup] active model: {CONFIG.active} | routing: {CONFIG.routing}", flush=True)
     for mid in CONFIG.preload:
         spec = CONFIG.spec(mid)
         try:
             backend = get_backend(spec)
         except Exception as exc:  # noqa: BLE001
-            print(f"[startup] ERROR al cargar '{mid}': {STATE['errors'].get(mid) or exc}", flush=True)
+            print(f"[startup] ERROR loading '{mid}': {STATE['errors'].get(mid) or exc}", flush=True)
             if mid == CONFIG.active:
                 raise
             continue
         w = backend.weights_info()
         print(f"[startup] {mid}: {w.get('path')}", flush=True)
-        print(f"[startup]   sha256={str(w.get('sha256'))[:16]}… esperado={str(w.get('expected'))[:16]}… "
-              f"coincide={w.get('match')} ({STATE['load_seconds'].get(mid)}s)", flush=True)
-        print(f"[startup]   calibración: "
+        print(f"[startup]   sha256={str(w.get('sha256'))[:16]}… expected={str(w.get('expected'))[:16]}… "
+              f"matches={w.get('match')} ({STATE['load_seconds'].get(mid)}s)", flush=True)
+        print(f"[startup]   calibration: "
               f"{STATE['calibrations'][mid].as_dict()['types_with_temperature'] or 'ninguna'}", flush=True)
     STATE["smoke"] = run_smoke_tests(verbose=True, only=CONFIG.preload)
     print(f"[startup] self-test: {STATE['smoke_ok']} | "
-          f"carga perezosa pendiente: {[m for m in CONFIG.models if m not in STATE['backends']]}", flush=True)
+          f"lazy load pending: {[m for m in CONFIG.models if m not in STATE['backends']]}", flush=True)
     borrados = LOG.prune()
-    print(f"[startup] observabilidad: nivel={LOG.level} dir={LOG.directory} "
-          f"(archivos viejos borrados: {borrados})", flush=True)
+    print(f"[startup] observability: level={LOG.level} dir={LOG.directory} "
+          f"(old files deleted: {borrados})", flush=True)
     yield
 
 

@@ -21,7 +21,7 @@ preload: [cardiff-xlmr]
 
 models:
   cardiff-xlmr:
-    label: "Cardiff XLM-R sentiment (clasificador HF, 3 clases reducidas a binario)"
+    label: "Cardiff XLM-R sentiment (HF classifier, 3 classes reduced to binary)"
     adapter: transformers
     supports: [noul]
     weights: cardiffnlp/twitter-xlm-roberta-base-sentiment

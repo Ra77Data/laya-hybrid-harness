@@ -38,19 +38,19 @@ def resolve_weights(weights: str, filenames: tuple[str, ...]) -> tuple[str | Non
         for f in filenames:
             fp = p / f
             if fp.exists():
-                return str(fp), sha256_file(fp), f"sha256 calculado sobre {f}"
-        return None, None, f"no se encontró ninguno de {filenames} en {p}"
+                return str(fp), sha256_file(fp), f"sha256 computed over {f}"
+        return None, None, f"none of {filenames} found in {p}"
     if p.is_file():
-        return str(p), sha256_file(p), f"sha256 calculado sobre {p.name}"
+        return str(p), sha256_file(p), f"sha256 computed over {p.name}"
     try:
         from huggingface_hub import try_to_load_from_cache
         for f in filenames:
             cp = try_to_load_from_cache(weights, f)
             if isinstance(cp, str) and Path(cp).exists():
-                return cp, sha256_file(Path(cp)), f"sha256 calculado sobre {f} resuelto desde la caché"
+                return cp, sha256_file(Path(cp)), f"sha256 computed over {f}, resolved from the cache"
     except Exception as exc:  # noqa: BLE001
-        return None, None, f"no se pudo resolver la caché: {type(exc).__name__}"
-    return None, None, "el archivo de pesos no está en la caché local"
+        return None, None, f"could not resolve the cache: {type(exc).__name__}"
+    return None, None, "the weights file is not in the local cache"
 
 
 def _laya_question(q: dict) -> dict:
@@ -216,7 +216,7 @@ class TransformersBackend(Backend):
             "sha256": sha,
             "expected": self.spec.expect_sha256,
             "match": (sha == self.spec.expect_sha256) if (sha and self.spec.expect_sha256) else None,
-            "note": note + (f" | revision fijada: {rev}" if rev else " | sin revision fijada"),
+            "note": note + (f" | pinned revision: {rev}" if rev else " | sin revision fijada"),
         }
 
     def predict(self, state: str, questions: list[dict]) -> dict:
@@ -264,8 +264,8 @@ def adapter_status(adapter: str) -> tuple[bool, str | None]:
     import importlib.util
     faltan = [m for m in ADAPTER_MODULES.get(adapter, ()) if importlib.util.find_spec(m) is None]
     if faltan:
-        return False, (f"el adaptador '{adapter}' necesita {' y '.join('`' + m + '`' for m in faltan)}: "
-                       "instalá el extra completo (make setup-full)")
+        return False, (f"the '{adapter}' adapter needs {' and '.join('`' + m + '`' for m in faltan)}: "
+                       "install the full extra (make setup-full)")
     return True, None
 
 

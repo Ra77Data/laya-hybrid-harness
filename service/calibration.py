@@ -68,18 +68,18 @@ def apply_temperature(probs: list[float], qtype: str, cal: Calibration, fallback
     if not probs:
         if fallback is not None:
             return float(fallback), False, None, (
-                f"el modelo no expone distribución para '{qtype}'; "
-                "se reporta su confianza tal cual, sin calibrar")
-        return 0.0, False, None, "sin probabilidades"
+                f"the model exposes no distribution for '{qtype}'; "
+                "its confidence is reported as-is, uncalibrated")
+        return 0.0, False, None, "no probabilities"
     raw = float(max(probs))
     T = cal.temperatures.get(qtype)
     if T is None:
         return raw, False, None, (
-            f"sin temperatura para '{qtype}'"
-            + (f" en {Path(cal.source).name}" if cal.source else " (no hay archivo de calibración)")
+            f"no temperature for '{qtype}'"
+            + (f" en {Path(cal.source).name}" if cal.source else " (no calibration file)")
         )
     if T <= 0:
-        return raw, False, None, f"temperatura inválida ({T})"
+        return raw, False, None, f"invalid temperature ({T})"
     if len(probs) == 2:
         # softmax(logits/T) con dos clases = sigma(logit(P(true))/T) para la clase positiva.
         # La CONFIANZA es la probabilidad de la clase elegida, o sea el máximo del vector

@@ -184,7 +184,7 @@ POST /decide
     "id": "s", "type": "noul", "value": true, "model_used": "cardiff-xlmr",
     "confidence": 0.768, "raw_confidence": 0.768,
     "calibrated": false, "temperature": null,
-    "calibration_note": "sin temperatura para 'noul' (no hay archivo de calibración)",
+    "calibration_note": "no temperature for 'noul' (no calibration file)",
     "neutral_mass": 0.81, "probs": [0.232, 0.768], "threshold": 0.75,
     "delegate_to_cloud": true, "delegate_reason": "high_neutral_mass(0.809>0.7)",
     "supported": true, "truncated": false, "input_tokens": 21, "max_length": 512 }] }
