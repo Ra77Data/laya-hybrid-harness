@@ -200,8 +200,9 @@ the model card on Hugging Face.
   earlier phases.
 - **R3 — `laya`/`laya-coreml` are niche packages** and CoreML only runs on Apple Silicon. That is why
   the default demo does not use them.
-- **R4 — The log keeps user text**: the `excerpt` default mitigates it, but `docs/OPERATIONS.md` has
-  to state explicitly what is kept and how to turn it off.
+- **R4 — The log keeps user text**: resolved by default — the level is now `metadata`, which stores
+  no text. `docs/OPERATIONS.md` states explicitly what is kept and that measuring accuracy on real
+  traffic requires opting into `excerpt`.
 - **R5 — DSH is not public**: the "tool inside the agent" part is not reproducible by third parties.
   It is shown as a transcript and said clearly.
 - **R6 — Overselling**: the local model loses to a baseline you download in two lines (89.7% against
