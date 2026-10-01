@@ -88,7 +88,7 @@ A neutral text came back positive at 0.768 and did not delegate: Cardiff's binar
 "neutral". The policy now delegates when `P(neutral)` exceeds `delegation.neutral_mass_threshold`.
 
 The threshold (0.70) was chosen with data: 600 real neutral texts from class 1 of the original dataset
-against the 1,740 non-neutral ones. AUC 0.81; at 0.70 it detects 49% of neutrals for +1.5 points of
+against the 1,740 non-neutral ones. AUC 0.81; at 0.70 it detects 32.7% of neutrals for +3.9 points of
 traffic. 0.50 was rejected: it detects more neutrals but costs four times the traffic at the same
 local error. Details in `results/SUMMARY_HARNESS_TEST.md`.
 
@@ -219,7 +219,7 @@ Un texto neutro salía positivo con 0,768 y sin derivar: la reducción binaria d
 "neutro". Ahora la política deriva cuando `P(neutro)` supera `delegation.neutral_mass_threshold`.
 
 El umbral (0,70) se eligió con datos: 600 neutros reales de la clase 1 del dataset original contra
-los 1.740 no neutros. AUC 0,81; con 0,70 se detecta el 49 % de los neutros por +1,5 puntos de
+los 1.740 no neutros. AUC 0,81; con 0,70 se detecta el 32,7 % de los neutros por +3,9 puntos de
 tráfico. Se descartó 0,50, que detecta más neutros pero cuesta cuatro veces más tráfico con el mismo
 error local. Detalle en `results/SUMMARY_HARNESS_TEST.md`.
 

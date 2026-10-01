@@ -85,14 +85,16 @@ technical one. It stays measured and configurable.
 non-neutral ones):
 
 - Median `P(neutral)`: **0.528** on neutrals against **0.153** on non-neutrals. **AUC 0.814**.
-- Threshold 0.70: delegates **48.7%** of neutrals at a cost of **+1.5 points** of traffic on
-  non-neutrals. At 0.50 it detects 61.7% but costs four times the traffic (+6.0 points).
+- Threshold 0.70: delegates **32.7%** of neutrals at a cost of **+3.9 points** of traffic on
+  non-neutrals, and that extra traffic carries twice the average error. At 0.50 it detects 54.0% but
+  costs three times the traffic (+12.1 points) for the same marginal error.
 
 **A correction that is on the record.** I picked 0.50 first, reading the F1 curve. That was the wrong
 frame: F1 treats a false positive and a false negative alike, but here a false positive costs money.
 The marginal table —the correct frame— moves the choice to 0.70. And I claimed the extra traffic had
 23.7% error (which would make delegating it free); that number belonged to another rule: with the
-implemented threshold it is **11.5%**, i.e. average. The policy is justified by the neutrals, not by
+implemented threshold it is **19.1%**, i.e. about twice the 10.3% average, so that extra traffic is
+worth delegating. The policy is justified by the neutrals, not by
 benchmark accuracy.
 
 ## 7. Truncation: configurable, reported, and it forces delegation
@@ -265,14 +267,16 @@ derivaba**: la reducción binaria de un modelo de 3 clases no sabe decir "neutro
 **Evidencia** (600 neutros reales de la clase 1 del dataset original, contra los 1.740 no neutros):
 
 - Mediana de `P(neutro)`: **0,528** en neutros contra **0,153** en no neutros. **AUC 0,814**.
-- Umbral 0,70: deriva el **48,7 %** de los neutros a cambio de **+1,5 puntos** de tráfico en los no
-  neutros. Con 0,50 se detecta el 61,7 % pero cuesta cuatro veces más tráfico (+6,0 puntos).
+- Umbral 0,70: deriva el **32,7 %** de los neutros a cambio de **+3,9 puntos** de tráfico en los no
+  neutros, y ese tráfico extra tiene el doble de error que el promedio. Con 0,50 se detecta el 54,0 %
+  pero cuesta tres veces más tráfico (+12,1 puntos) con el mismo error marginal.
 
 **Una corrección que quedó registrada.** Elegí 0,50 primero, leyendo la curva de F1. Estaba mal
 encuadrado: la F1 trata igual un falso positivo que uno negativo, pero acá un falso positivo cuesta
 dinero. La tabla marginal —que es el encuadre correcto— mueve la elección a 0,70. Y afirmé que el
 tráfico extra tenía 23,7 % de error (sería gratis derivarlo); ese número era de otra regla: con el
-umbral implementado es **11,5 %**, o sea el promedio. La política se justifica por los neutros, no
+umbral implementado es **19,1 %**, o sea unos el doble del promedio de 10,3 %, así que ese tráfico
+extra conviene derivarlo. La política se justifica por los neutros, no
 por precisión en el benchmark.
 
 ## 7. Truncación: configurable, reportada y obliga a derivar

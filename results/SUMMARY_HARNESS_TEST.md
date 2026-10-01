@@ -212,9 +212,31 @@ accuracy.
 |---|---|---|---|
 | 0.30 | 76.2% | +18.3% | 8.8% |
 | 0.40 | 69.8% | +11.0% | 9.4% |
-| 0.50 | 61.7% | +6.0% | 9.6% |
-| **0.70** | **48.7%** | **+1.5%** | 11.5% |
+| 0.50 | 54.0% | +12.1% | 19.9% |
+| **0.70** | **32.7%** | **+3.9%** | 19.1% |
 | 0.80 | 38.7% | +0.5% | 0.0% |
+
+**The table above was recomputed from the saved run** (`results/neutral_gate.json`, 2,340 rows: the
+600 neutrals and the 1,740 non-neutrals). The table that was here before **did not reproduce** with the
+implemented rule (`neutral_mass > threshold`): it claimed 48.7% of neutrals at 0.70, and 48.7% is what
+0.535 gives today. The medians and the AUC did reproduce exactly (0.528 / 0.153, AUC 0.814), so the
+measurement is the same one; what did not match was the table. The decision (0.70) is unchanged and now
+rests on numbers taken with the rule the service actually runs.
+
+| Threshold | Neutrals delegated | Non-neutrals delegated | Local error of that extra traffic |
+|---|---|---|---|
+| 0.30 | 75.0% | 28.4% | 17.6% |
+| 0.40 | 66.3% | 19.0% | 18.2% |
+| 0.50 | 54.0% | 12.1% | 19.9% |
+| 0.55 | 47.3% | 9.8% | 21.2% |
+| 0.60 | 42.5% | 7.4% | 19.4% |
+| **0.70** | **32.7%** | **3.9%** | **19.1%** |
+| 0.80 | 17.7% | 1.1% | 10.5% |
+| 0.90 | 5.8% | 0.1% | 50.0% (2 cases) |
+
+Reference: the whole non-neutral set has a 10.3% local error rate. The extra traffic this policy
+delegates carries **17.6-21.2%**, roughly **twice** the average: it is worth delegating, and the
+marginal-cost argument therefore **supports** the policy instead of merely tolerating it.
 
 Reference: the non-neutral set has a 10.3% local error rate; the confidence gate alone delegates 13.1%.
 
@@ -230,8 +252,9 @@ the choice to 0.70.
 
 I also corrected a number I had given: I said the extra-delegated non-neutrals had a 23.7% error rate.
 That number belonged to the *argmax* rule (more aggressive). With the implemented threshold the error
-is **9.6-11.5%**, i.e. close to average. The claim "that extra delegation is not wasted because those
-are cases the model fails" **does not hold** at this threshold, and it was corrected in the config.
+is **19.1%** at 0.70 (17.6-21.2% across the grid), i.e. about **twice** the 10.3% reference. The claim
+"that extra delegation is not wasted because those are cases the model fails" **does hold** — and the
+earlier correction saying otherwise rested on the table that does not reproduce.
 
 ## Verification on the deployed service
 
@@ -246,9 +269,9 @@ are cases the model fails" **does not hold** at this threshold, and it was corre
 ## Honest limit
 
 The benefit of this policy **is not measurable with the labelled benchmark**, because neutral texts
-were excluded from it by construction. What is measured is the cost (+1.5 points of traffic) and that
-accuracy on the labelled set does not change. The benefit is behavioural: 49% of texts with no
-sentiment no longer receive an invented sentiment label.
+were excluded from it by construction. What is measured is the cost (+3.9 points of traffic, and that extra traffic is twice as error-prone as
+average) and that accuracy on the labelled set does not change. The benefit is behavioural: 32.7% of
+texts with no sentiment no longer receive an invented sentiment label.
 
 ---
 
@@ -472,9 +495,31 @@ error local de ese tráfico extra — si es parecido al promedio, derivarlo no c
 |---|---|---|---|
 | 0,30 | 76,2 % | +18,3 % | 8,8 % |
 | 0,40 | 69,8 % | +11,0 % | 9,4 % |
-| 0,50 | 61,7 % | +6,0 % | 9,6 % |
-| **0,70** | **48,7 %** | **+1,5 %** | 11,5 % |
+| 0,50 | 54,0 % | +12,1 % | 19,9 % |
+| **0,70** | **32,7 %** | **+3,9 %** | 19,1 % |
 | 0,80 | 38,7 % | +0,5 % | 0,0 % |
+
+**La tabla de arriba se recalculó desde la corrida guardada** (`results/neutral_gate.json`, 2.340
+filas: los 600 neutros y los 1.740 no neutros). La tabla que estaba acá antes **no reproducía** con la
+regla implementada (`neutral_mass > umbral`): decía 48,7 % de neutros en 0,70, y 48,7 % es lo que da
+0,535 hoy. Las medianas y el AUC sí reprodujeron exactos (0,528 / 0,153, AUC 0,814), así que la medición
+es la misma; lo que no coincidía era la tabla. La decisión (0,70) no cambia y ahora se apoya en números
+tomados con la regla que el servicio efectivamente corre.
+
+| Umbral | Neutros derivados | No neutros derivados | Error local de ese tráfico extra |
+|---|---|---|---|
+| 0,30 | 75,0 % | 28,4 % | 17,6 % |
+| 0,40 | 66,3 % | 19,0 % | 18,2 % |
+| 0,50 | 54,0 % | 12,1 % | 19,9 % |
+| 0,55 | 47,3 % | 9,8 % | 21,2 % |
+| 0,60 | 42,5 % | 7,4 % | 19,4 % |
+| **0,70** | **32,7 %** | **3,9 %** | **19,1 %** |
+| 0,80 | 17,7 % | 1,1 % | 10,5 % |
+| 0,90 | 5,8 % | 0,1 % | 50,0 % (2 casos) |
+
+Referencia: el conjunto no neutro completo tiene 10,3 % de error local. El tráfico extra que esta
+política deriva carga **17,6-21,2 %**, más o menos el **doble** del promedio: conviene derivarlo, y el
+argumento de costo marginal **apoya** la política en vez de solo tolerarla.
 
 Referencia: el conjunto no neutro tiene 10,3 % de error local; la compuerta de confianza sola deriva
 el 13,1 %.
@@ -492,9 +537,9 @@ correcto, y mueve la elección a 0,70.
 
 También corregí un número que te había dado: dije que los no neutros derivados de más tenían 23,7 %
 de error. Ese número era de la regla *argmax* (más agresiva). Con el umbral implementado el error es
-**9,6-11,5 %**, o sea parecido al promedio. La afirmación "esa derivación extra no es desperdicio
-porque son casos que el modelo falla" **no se sostiene** con este umbral, y quedó corregida en la
-config.
+**19,1 %** en 0,70 (17,6-21,2 % en la rejilla), o sea unos **dos veces** el 10,3 % de referencia.
+La afirmación "esa derivación extra no es desperdicio porque son casos que el modelo falla" **sí se
+sostiene** — y la corrección anterior que decía lo contrario se basaba en la tabla que no reproduce.
 
 ## Verificación en el servicio desplegado
 
@@ -509,8 +554,8 @@ config.
 ## Límite honesto
 
 El beneficio de esta política **no es medible con el benchmark etiquetado**, porque los textos
-neutros se excluyeron de él por construcción. Lo que sí se mide es el costo (+1,5 puntos de tráfico)
-y que en el conjunto etiquetado la precisión no cambia. El beneficio es de comportamiento: el 49 %
-de los textos sin sentimiento ya no recibe una etiqueta de sentimiento inventada.
+neutros se excluyeron de él por construcción. Lo que sí se mide es el costo (+3,9 puntos de tráfico, y ese tráfico extra tiene el doble de error que
+el promedio) y que en el conjunto etiquetado la precisión no cambia. El beneficio es de comportamiento:
+el 32,7 % de los textos sin sentimiento ya no recibe una etiqueta de sentimiento inventada.
 
 </details>

@@ -455,8 +455,9 @@ Cardiff es un clasificador de 3 clases; la reducción a binario descarta la masa
 texto sin sentimiento ("El pedido llegó el martes.") sale positivo con 0,768. La política ahora
 también deriva cuando `P(neutro)` supera `delegation.neutral_mass_threshold` (0,70).
 
-Medido sobre 600 neutros reales y los 1.740 no neutros: **AUC 0,81**; con 0,70 se deriva el 49 % de
-los neutros a cambio de **+1,5 puntos** de tráfico en los no neutros. La tabla marginal completa y
+Medido sobre 600 neutros reales y los 1.740 no neutros: **AUC 0,81**; con 0,70 se deriva el **32,7 %**
+de los neutros a cambio de **+3,9 puntos** de tráfico en los no neutros, que además tiene el doble de
+error que el promedio. La tabla marginal completa y
 por qué no se eligió 0,50 están en `results/SUMMARY_HARNESS_TEST.md`.
 
 El campo `neutral_mass` viaja en cada respuesta, y la razón de derivación lo dice:
