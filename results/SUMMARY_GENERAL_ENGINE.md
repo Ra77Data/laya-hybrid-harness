@@ -36,6 +36,13 @@ most likely because the phrasing does not resemble what it saw during training. 
 (v1, v2) do, because they were trained on exactly that phrasing. It is not an adapter problem: it was
 checked against the model's raw output.
 
+**Attribution.** The phenomenon is documented upstream:
+[`NandhaKishorM/laya#156`](https://github.com/NandhaKishorM/laya/issues/156) (closed, with independent
+reproductions) narrows the cause to the label words — `render_options` hardcodes `false:` / `true:` for a
+`noul` question — and the model card advises the two-option `choice` formulation as the check. What this
+measurement adds is the size of the gap on a labelled set, on the multilingual checkpoint, on the current
+release.
+
 ## Comparison on the same sample (240 texts, 80 per language)
 
 | Model | Formulation | Accuracy | Local accuracy | Local coverage |
@@ -108,6 +115,13 @@ La lectura honesta: el modelo base **no responde bien esa pregunta concreta en f
 probablemente porque la fraseo no se parece a lo que vio durante su entrenamiento. Los modelos
 fine-tuneados (v1, v2) sí, porque se entrenaron exactamente con ese fraseo. No es un problema del
 adaptador: se verificó contra la respuesta cruda del modelo.
+
+**Atribución.** El fenómeno está documentado aguas arriba:
+[`NandhaKishorM/laya#156`](https://github.com/NandhaKishorM/laya/issues/156) (cerrado, con reproducciones
+independientes) acota la causa a las palabras de las etiquetas — `render_options` fija `false:` / `true:`
+para una pregunta `noul` — y la card del modelo recomienda la formulación `choice` de dos opciones como
+comprobación. Lo que agrega esta medición es el tamaño de la brecha sobre un conjunto etiquetado, en el
+checkpoint multilingüe y en la versión actual.
 
 ## Comparación en la misma muestra (240 textos, 80 por idioma)
 
