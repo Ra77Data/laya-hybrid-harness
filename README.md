@@ -4,8 +4,10 @@
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)](https://www.python.org/)
 [![Model](https://img.shields.io/badge/🤗%20Model-laya--sentiment--multilingual-yellow)](https://huggingface.co/Ramg77/laya-sentiment-multilingual)
 
-A decision service that runs **locally**, reports an **honest confidence**, and **delegates to the
-cloud when it is not sure**. The model it serves is configuration, not code.
+A decision service that runs **locally**, reports an **honest confidence**, and **flags when an
+answer should be delegated** to a bigger model. It decides *whether* to delegate and says why; making
+the cloud call is the client's job, and there is a working example in [`examples/delegate.py`](examples/delegate.py).
+The model it serves is configuration, not code.
 
 ```bash
 make setup    # virtual environment + dependencies (once)
@@ -23,14 +25,24 @@ general engine beats the project's fine-tune.
 
 What *is* measured, and is not common to have measured, is everything else:
 
-| Finding | Number |
-|---|---|
-| How much more often the model errs on what it delegates | **5.86×** (36.8% vs 6.3%) |
-| End-to-end accuracy of the hybrid vs answering everything locally | **+2.76 points** (92.5% vs 89.7%) |
-| Traffic sent to the cloud to get that | **13%** |
-| AUC of the neutral-mass gate as a detector of neutral texts | **0.814** |
+| Finding | Number | 95% interval |
+|---|---|---|
+| How much more often the model errs on what it delegates | **5.86×** (36.8% vs 6.3%) | the ratio spans **4.1×-8.3×** (36.8% is [30.8; 43.3], 6.3% is [5.2; 7.6]) |
+| End-to-end accuracy of the hybrid vs answering everything locally | **+2.76 points** (92.5% vs 89.7%) | **+0.85 to +3.86** under the cloud model's own uncertainty |
+| Traffic sent to the cloud to get that | **13%** (228 of 1,740) | — |
+| AUC of the neutral-mass gate as a detector of neutral texts | **0.814** | — |
 
 Nothing here is asserted without the script that reproduces it.
+
+**How solid is the headline result?** The hybrid number rests on the 228 delegated answers being
+handled by a bigger model. 38 of them were labelled blind to estimate how well that goes: the local
+model scores 63.2% and the LLM **84.2% (32/38, 95% CI [69.6; 92.6])**. That interval is wide, so the
+honest question is what happens to the conclusion at its edges: propagating it to all 228 delegated
+cases puts the hybrid between **90.6% and 93.6%**, against 89.7% answering everything locally. The
+gain stays positive across the whole interval (+0.85 to +3.86); the exact size of the gain is
+indicative, not the direction. With a single annotator (me) and a noisy truth in the hard cases, that
+is the strongest claim the data supports — the detail is in
+[`results/SUMMARY_HARNESS_TEST.md`](results/SUMMARY_HARNESS_TEST.md).
 
 ## What the demo shows
 
@@ -315,6 +327,7 @@ service/calibration.py   per-primitive temperature, applied and reported honestl
 service/schemas.py       HTTP contract (compatible with the DSH plugin)
 service/server.py        FastAPI + verified startup + self-test
 scripts/                 adapter test, battery and comparison
+examples/delegate.py     the client half: executes the delegation the service flags
 ```
 
 ## Concurrency: read before touching the service
@@ -427,8 +440,10 @@ same license rather than a copyleft one: the FSF considers Apache-2.0 incompatib
 
 # Harness híbrido de decisión local
 
-Un servicio de decisión que corre **local**, responde con una confianza honesta y **deriva al cloud
-cuando no está seguro**. El modelo que sirve es configuración, no código.
+Un servicio de decisión que corre **local**, responde con una confianza honesta y **marca cuándo una
+respuesta debería derivarse** a un modelo más grande. Decide *si* derivar y dice por qué; hacer la
+llamada al cloud es trabajo del cliente, y hay un ejemplo que funciona en
+[`examples/delegate.py`](examples/delegate.py). El modelo que sirve es configuración, no código.
 
 ```bash
 make setup    # entorno virtual + dependencias (una vez)
@@ -439,15 +454,6 @@ Funciona en cualquier sistema operativo con el camino por defecto (`transformers
 de Laya/CoreML —el motor para el que se construyó— son la variante `make setup-full`, en macOS con
 Apple Silicon.
 
-**Qué es y qué no es.** Lo que sigue es el patrón híbrido y su medición, no un modelo ganador: en
-esta tarea el modelo local pierde contra un baseline que se descarga con dos líneas (86,0 % contra
-89,7 %), y hasta un motor zero-shot lo supera. Lo que sí está medido y no es común tenerlo es el
-resto: la curva de derivación, que el modelo se equivoca **5,86× más** en lo que deriva, y que el
-patrón completo gana **+2,76 puntos** enviando el 13 % del tráfico al cloud. Nada de eso se afirma
-sin el script que lo reproduce.
-
-Mapa de la documentación:
-
 ## Qué es esto y qué no
 
 Lo que sigue es el **patrón híbrido y su medición**, no un modelo ganador. En esta tarea el modelo
@@ -456,14 +462,24 @@ general zero-shot le gana al fine-tune del proyecto.
 
 Lo que sí está medido, y no es común tenerlo medido, es todo lo demás:
 
-| Hallazgo | Número |
-|---|---|
-| Cuánto más se equivoca el modelo en lo que deriva | **5,86×** (36,8 % contra 6,3 %) |
-| Accuracy de punta a punta del híbrido contra responder todo local | **+2,76 puntos** (92,5 % contra 89,7 %) |
-| Tráfico que va al cloud para lograrlo | **13 %** |
-| AUC de la compuerta de masa neutral como detector de textos neutros | **0,814** |
+| Hallazgo | Número | Intervalo 95 % |
+|---|---|---|
+| Cuánto más se equivoca el modelo en lo que deriva | **5,86×** (36,8 % contra 6,3 %) | el cociente va de **4,1× a 8,3×** (36,8 % es [30,8; 43,3], 6,3 % es [5,2; 7,6]) |
+| Accuracy de punta a punta del híbrido contra responder todo local | **+2,76 puntos** (92,5 % contra 89,7 %) | **+0,85 a +3,86** según la incertidumbre del propio modelo grande |
+| Tráfico que va al cloud para lograrlo | **13 %** (228 de 1.740) | — |
+| AUC de la compuerta de masa neutral como detector de textos neutros | **0,814** | — |
 
 Nada de esto se afirma sin el script que lo reproduce.
+
+**¿Qué tan sólido es el resultado estrella?** El número híbrido se apoya en que las 228 respuestas
+derivadas las conteste un modelo más grande. Se etiquetaron 38 a ciegas para estimar qué tan bien sale
+eso: el modelo local acierta 63,2 % y el LLM **84,2 % (32/38, IC95 [69,6; 92,6])**. Ese intervalo es
+ancho, así que la pregunta honesta es qué pasa con la conclusión en sus bordes: propagándolo a los 228
+derivados, el híbrido queda entre **90,6 % y 93,6 %**, contra 89,7 % respondiendo todo local. La
+ganancia se mantiene positiva en todo el intervalo (+0,85 a +3,86); lo indicativo es el tamaño de la
+ganancia, no su dirección. Con un solo anotador (yo) y una verdad ruidosa en los casos difíciles, eso
+es lo más fuerte que sostienen los datos — el detalle está en
+[`results/SUMMARY_HARNESS_TEST.md`](results/SUMMARY_HARNESS_TEST.md).
 
 ## Qué muestra el demo
 
@@ -577,7 +593,7 @@ Reemplaza al servicio de V3/V5, que tenía el modelo cableado y una calibración
 
 ## Por qué existe
 
-Auditando el harness desplegado aparecieron tres problemas que este servicio corrige por diseño:
+Auditando el harness desplegado aparecieron cuatro problemas que este servicio corrige por diseño:
 
 | Problema en V3/V5 | Qué hace este servicio |
 |---|---|
@@ -746,6 +762,7 @@ service/calibration.py   temperatura por primitiva, aplicada y reportada con hon
 service/schemas.py       contrato HTTP (compatible con el plugin de DSH)
 service/server.py        FastAPI + arranque verificado + self-test
 scripts/                 test de adaptadores, batería y comparación
+examples/delegate.py     la otra mitad: ejecuta la derivación que el servicio marca
 ```
 
 ## Concurrencia: leer antes de tocar el servicio

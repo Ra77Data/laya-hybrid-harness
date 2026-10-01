@@ -101,6 +101,11 @@ It delegates if **any** of these holds, and the reason is written into the respo
 | the text did not fit the model's window | it never saw all of it: its confidence is worthless | same |
 | the model does not support that primitive | it cannot answer it | — |
 
+**The service flags the delegation; it does not perform it.** It has no cloud credentials and no
+vendor SDK, and it answers with `delegate_to_cloud` plus a machine-readable reason instead of
+silently falling back. Making the cloud call is the client's job: `examples/delegate.py` does it
+against any OpenAI-compatible endpoint, and `make delegate TEXT="..."` runs it.
+
 ## Design guarantees
 
 1. **The hash is authoritative.** If the real sha256 of the weights does not match `expect_sha256`,
@@ -226,6 +231,11 @@ Se deriva si pasa **cualquiera** de estas tres cosas, y la razón queda escrita 
 | `P(neutro)` > `neutral_mass_threshold` | el texto no tiene sentimiento que clasificar | ídem |
 | el texto no entró en la ventana del modelo | no vio todo el texto: su seguridad no vale | ídem |
 | el modelo no soporta esa primitiva | no puede contestarla | — |
+
+**El servicio marca la derivación, no la ejecuta.** No tiene credenciales de cloud ni SDK de ningún
+proveedor: responde con `delegate_to_cloud` y un motivo legible en vez de caer en silencio al
+resultado local. Hacer la llamada al cloud es trabajo del cliente: `examples/delegate.py` la hace
+contra cualquier endpoint compatible con OpenAI, y `make delegate TEXT="..."` lo corre.
 
 ## Garantías de diseño
 

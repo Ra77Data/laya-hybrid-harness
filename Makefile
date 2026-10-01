@@ -35,6 +35,9 @@ serve: config  ## Start the service in the foreground
 demo:  ## Whole demonstration in one command: starts, shows cases and metrics, shuts down
 	bash scripts/demo.sh
 
+delegate:  ## Run the delegation example (the client half of the pattern): make delegate TEXT="..."
+	@.venv/bin/python examples/delegate.py "$(TEXT)"
+
 smoke:  ## Check that the service answers and with which model
 	@curl -s "http://127.0.0.1:$(PORT)/health" | $(PY) -m json.tool || \
 		(echo "el servicio no responde en $(PORT); probá 'make serve'"; exit 1)
