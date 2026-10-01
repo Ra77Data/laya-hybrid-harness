@@ -49,6 +49,27 @@ STATE: dict = {
 }
 
 
+def provides_neutral_mass(spec: ModelSpec) -> bool:
+    """Can this model report P(neutral) at all?
+
+    Only a classifier with three classes can: the binary reduction keeps it as `neutral_mass`.
+    A purely binary model has no neutral class to expose, so the neutral-mass gate cannot apply and
+    the service should say so instead of leaving the field silently absent.
+    """
+    red = spec.binary_reduction or {}
+    return (spec.adapter == "transformers"
+            and red.get("positive") is not None and red.get("negative") is not None)
+
+
+def neutral_mass_gate() -> str:
+    spec = CONFIG.spec(CONFIG.model_for("noul"))
+    if CONFIG.neutral_mass_threshold is None:
+        return "off (no threshold configured)"
+    if provides_neutral_mass(spec):
+        return "active"
+    return f"inactive: '{spec.id}' exposes no neutral mass"
+
+
 def get_backend(spec: ModelSpec):
     """Lazy loading with a lock. Verifies the real hash before accepting the model."""
     backend = STATE["backends"].get(spec.id)
@@ -276,7 +297,8 @@ def health():
                      if CONFIG.active in STATE["calibrations"] else {"configured": False}),
         delegation={"default": CONFIG.default_threshold,
                     "per_type": {t: CONFIG.threshold_for(t) for t in PRIMITIVES},
-                    "neutral_mass_threshold": CONFIG.neutral_mass_threshold},
+                    "neutral_mass_threshold": CONFIG.neutral_mass_threshold,
+                    "neutral_mass_gate": neutral_mass_gate()},
         smoke_ok=(all(STATE["smoke_ok"].get(m) for m in CONFIG.preload
                       if STATE["smoke_ok"].get(m) is not None) if STATE["smoke_ok"] else None),
         routing=CONFIG.routing, models=models)

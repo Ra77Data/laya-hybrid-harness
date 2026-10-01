@@ -14,8 +14,8 @@ it. It was found by looking, not by an alert.
 model.
 
 **Consequence.** A model registry in `config.yaml`, interchangeable adapters, and **hash verification
-at startup**: if the real sha256 of the weights does not match the expected one, that model is not
-loaded.
+at startup**: if the real sha256 of the **weights file** does not match the expected one, that model
+is not loaded. The hash is of the file, not of the tensor values.
 
 **Rejected alternative.** One service per model: it forces the client to know which one to call,
 which is exactly the mistake being avoided.
@@ -197,7 +197,7 @@ detectaba. Se descubrió mirando, no por una alerta.
 `laya-multilingual-coreml` con una calibración `choice` cuando debía servir el modelo de sentimiento.
 
 **Consecuencia.** Registro de modelos en `config.yaml`, adaptadores intercambiables, y **hash
-verificado al arrancar**: si el sha256 real de los pesos no coincide con el esperado, ese modelo no
+verificado al arrancar**: si el sha256 real del **archivo de pesos** no coincide con el esperado, ese modelo no
 se carga.
 
 **Alternativa descartada.** Un servicio por modelo: obliga al cliente a saber cuál llamar, que es

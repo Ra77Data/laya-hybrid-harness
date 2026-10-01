@@ -53,7 +53,7 @@ make report                       # human-readable report
 curl -s localhost:8090/health | python3 -m json.tool
 ```
 
-`/health` reports: active model, adapter, supported primitives, **real sha256 of the weights and
+`/health` reports: active model, adapter, supported primitives, **real sha256 of the weights file and
 whether it matches the expected one**, **which primitives have a temperature**, the delegation
 thresholds, the state of every model in the registry (`loaded`, `smoke_ok`, `error`, `adapter_ready`,
 `available`) and the startup self-test.
@@ -71,6 +71,9 @@ grouped by kind, model mix, latency p50/p90/p95/p99, and confidence and neutral-
 | which models are preloaded | `preload` | restart the service |
 | how much text is kept in the log | `observability.level` | restart the service |
 | add a model | an entry under `models:` | restart the service |
+
+The same restart applies after adding a model to `routing`: it has to be in `preload`
+too, and the service refuses to start otherwise (see `docs/ARCHITECTURE.md`).
 
 With launchd: `launchctl kickstart -k gui/$(id -u)/$LABEL` (see the label above).
 
@@ -235,7 +238,7 @@ make report                       # informe legible
 curl -s localhost:8090/health | python3 -m json.tool
 ```
 
-`/health` reporta: modelo activo, adaptador, primitivas soportadas, **sha256 real de los pesos y si
+`/health` reporta: modelo activo, adaptador, primitivas soportadas, **sha256 real del archivo de pesos y si
 coincide con el esperado**, **qué primitivas tienen temperatura**, los umbrales de derivación, el
 estado de cada modelo del registro (`loaded`, `smoke_ok`, `error`) y el self-test de arranque.
 
@@ -252,6 +255,9 @@ por tipo, mezcla de modelos, latencias p50/p90/p95/p99, histogramas de confianza
 | qué modelos se precargan | `preload` | reiniciar el servicio |
 | cuánto texto se guarda en el registro | `observability.level` | reiniciar el servicio |
 | agregar un modelo | una entrada en `models:` | reiniciar el servicio |
+
+Lo mismo vale al agregar un modelo a `routing`: también tiene que estar en `preload`, y si no
+el servicio se niega a arrancar (ver `docs/ARCHITECTURE.md`).
 
 Con launchd: `launchctl kickstart -k gui/$(id -u)/$LABEL` (ver el label arriba).
 

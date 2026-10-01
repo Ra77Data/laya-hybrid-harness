@@ -127,6 +127,19 @@ def load_config(path: str | Path | None = None) -> Config:
         if mid not in models:
             raise ValueError(f"preload: '{mid}' is not in the registry")
 
+    # Every primitive that will be asked for has to have its model preloaded. Loading takes 2.7-7 s
+    # and the DSH plugin gives up at 2.5 s, so a routed-but-lazy model fails the FIRST real request —
+    # and it fails on the client side, where nothing points back at the config. That is a static
+    # mistake, so it is caught here instead of surfacing later as a mysterious timeout. The check
+    # covers the routing fallback too: a primitive with no explicit route is served by `active`.
+    for qtype in PRIMITIVES:
+        mid = routing.get(qtype) or active
+        if mid not in preload:
+            raise ValueError(
+                f"'{qtype}' is served by '{mid}', which is not in `preload`. Add it: loading takes "
+                f"seconds and the first '{qtype}' request would time out on the client side. "
+                f"Current preload: {preload}")
+
     # LAYA_PORT allows running an instance on another port without touching the config (the demo uses it).
     port = int(os.environ.get("LAYA_PORT") or raw["service"]["port"])
     return Config(

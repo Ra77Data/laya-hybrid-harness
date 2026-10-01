@@ -98,7 +98,7 @@ which model produced it (`model_used`).
 
 **Design guarantees**, all visible from `/health`:
 
-- **The hash is authoritative.** If the real sha256 of the weights does not match `expect_sha256`,
+- **The hash is authoritative.** If the real sha256 of the **weights file** does not match `expect_sha256`,
   that model is not loaded. This came from a real incident: the deployed service was serving a
   different model than the documentation claimed.
 - **`calibrated` does not lie.** It is true only if a temperature was actually applied.
@@ -257,7 +257,7 @@ La transcripción completa, copiada de una corrida real, está en `docs/DEMO.md`
               └──────────────────────┘
 ```
 
-**El hash manda.** Si el sha256 real de los pesos no coincide con `expect_sha256`, ese modelo no se
+**El hash manda.** Si el sha256 real del **archivo de pesos** no coincide con `expect_sha256`, ese modelo no se
 carga. Salió de un incidente real: el servicio desplegado estaba sirviendo **otro modelo** del que
 decía la documentación.
 

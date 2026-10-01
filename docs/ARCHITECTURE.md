@@ -109,6 +109,11 @@ routing:
 preload: [cardiff-xlmr, laya-base]
 ```
 
+If a model serves a primitive it has to be in `preload`, and the config **refuses to load** if it is
+not: loading takes seconds and the DSH plugin gives up at 2.5 s, so a routed-but-lazy model would fail
+the first real request — on the client side, where nothing points back at the config. It is a static
+mistake and it is caught statically.
+
 If the model in turn does not declare support for a primitive, the answer comes back as
 `unsupported_by_model` and is delegated: **no answer is ever invented**. `preload` matters because
 loading a model takes seconds and the client's timeout can be shorter.
@@ -129,10 +134,19 @@ vendor SDK, and it answers with `delegate_to_cloud` plus a machine-readable reas
 silently falling back. Making the cloud call is the client's job: `examples/delegate.py` does it
 against any OpenAI-compatible endpoint, and `make delegate TEXT="..."` runs it.
 
+**`neutral_mass` is conditional, and `/health` says so.** Only a model with three classes can expose a
+neutral mass: the binary reduction keeps it as `neutral_mass`, and a purely binary model has no neutral
+class to report. The neutral-mass gate therefore cannot apply to every model, and rather than leaving
+the field silently absent, `/health` reports
+`delegation.neutral_mass_gate` (`active`, `off`, or `inactive: '<model>' exposes no neutral mass`).
+
 ## Design guarantees
 
-1. **The hash is authoritative.** If the real sha256 of the weights does not match `expect_sha256`,
-   that model is not loaded and the service says so. This came from a real incident: the deployed
+1. **The hash is authoritative.** If the real sha256 of the **weights file** does not match
+   `expect_sha256`, that model is not loaded and the service says so. Note what is hashed: the *file*,
+   not the tensor values — re-saving identical weights with another tool changes the hash. For the job
+   it does (refusing to serve a different model than the documented one) that is the right thing to
+   hash, but it is the file. This came from a real incident: the deployed
    service was serving **a different model** than the documentation claimed.
 2. **`calibrated` does not lie.** It is true only if a temperature was applied to that answer. It
    used to mean "a calibration file exists", which is a different thing.
@@ -263,6 +277,11 @@ routing:
 preload: [cardiff-xlmr, laya-base]
 ```
 
+Si un modelo sirve una primitiva tiene que estar en `preload`, y el config **se niega a cargar** si no
+lo está: cargar tarda segundos y el plugin de DSH corta a 2,5 s, así que un modelo enrutado pero perezoso
+fallaría la primera petición real — del lado del cliente, donde nada apunta al config. Es un error
+estático y se atrapa estáticamente.
+
 Si el modelo de turno no declara soportar una primitiva, la respuesta vuelve como
 `unsupported_by_model` y se deriva: **nunca se inventa una respuesta**. `preload` importa porque
 cargar un modelo tarda segundos y el timeout del cliente puede ser más corto.
@@ -283,10 +302,18 @@ proveedor: responde con `delegate_to_cloud` y un motivo legible en vez de caer e
 resultado local. Hacer la llamada al cloud es trabajo del cliente: `examples/delegate.py` la hace
 contra cualquier endpoint compatible con OpenAI, y `make delegate TEXT="..."` lo corre.
 
+**`neutral_mass` es condicional, y `/health` lo dice.** Sólo un modelo de tres clases puede exponer una
+masa neutral: la reducción binaria la conserva como `neutral_mass`, y un modelo puramente binario no
+tiene clase neutra que reportar. Por eso la compuerta de masa neutral no puede aplicar a cualquier
+modelo, y en vez de dejar el campo ausente en silencio, `/health` informa
+`delegation.neutral_mass_gate` (`active`, `off`, o `inactive: '<modelo>' exposes no neutral mass`).
+
 ## Garantías de diseño
 
-1. **El hash manda.** Si el sha256 real de los pesos no coincide con `expect_sha256`, ese modelo no
-   se carga y el servicio lo dice. Nació de un incidente real: el servicio desplegado estaba
+1. **El hash manda.** Si el sha256 real del **archivo de pesos** no coincide con `expect_sha256`, ese modelo no
+   se carga y el servicio lo dice. Ojo con qué se hashea: el *archivo*, no los valores de los tensores
+   — volver a guardar los mismos pesos con otra herramienta cambia el hash. Para el trabajo que hace
+   (negarse a servir un modelo distinto del documentado) es lo correcto, pero es el archivo. Nació de un incidente real: el servicio desplegado estaba
    sirviendo **otro modelo** del que la documentación decía.
 2. **`calibrated` no miente.** Es verdadero sólo si se aplicó una temperatura a esa respuesta. Antes
    significaba "hay un archivo de calibración", que es otra cosa.

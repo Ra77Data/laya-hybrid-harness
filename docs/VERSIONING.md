@@ -9,7 +9,7 @@ four problems that no earlier version detected:
 
 | Problem found | What V7 does |
 |---|---|
-| Port 8090 was held by the **V3** service (the PoC model, `587e4ac8…`), while the documentation said V5 was deployed with the validated model | The model comes from `config.yaml`; `/health` reports the **sha256 of the weights** and whether it matches the expected one. If it does not match, it **does not start** |
+| Port 8090 was held by the **V3** service (the PoC model, `587e4ac8…`), while the documentation said V5 was deployed with the validated model | The model comes from `config.yaml`; `/health` reports the **sha256 of the weights file** and whether it matches the expected one. If it does not match, it **does not start** |
 | `calibrated: true` meant "a calibration file exists", not "a temperature was applied" | `calibrated` is true only if a T was applied; the answer carries `temperature` and, when it could not be applied, `calibration_note` |
 | The delegation policy only applied to `choice`: sentiment (`noul`) never delegated | It applies to every primitive, with per-type thresholds, on calibrated confidence |
 | The service did not distinguish what it cannot do | Every model declares `supports`; anything else comes back as `unsupported_by_model` |
@@ -140,7 +140,7 @@ aparecieron cuatro problemas que ninguna versión anterior detectaba:
 
 | Problema encontrado | Qué hace V7 |
 |---|---|
-| El puerto 8090 lo ocupaba el servicio de **V3** (modelo del PoC, `587e4ac8…`), mientras la documentación decía que estaba desplegado V5 con el modelo validado | El modelo sale de `config.yaml`; `/health` reporta el **sha256 de los pesos** y si coincide con el esperado. Si no coincide, **no arranca** |
+| El puerto 8090 lo ocupaba el servicio de **V3** (modelo del PoC, `587e4ac8…`), mientras la documentación decía que estaba desplegado V5 con el modelo validado | El modelo sale de `config.yaml`; `/health` reporta el **sha256 del archivo de pesos** y si coincide con el esperado. Si no coincide, **no arranca** |
 | `calibrated: true` significaba "hay un archivo de calibración", no "se aplicó una temperatura" | `calibrated` es verdadero solo si se aplicó una T; la respuesta trae `temperature` y, si no se pudo, `calibration_note` |
 | La política de derivación solo aplicaba a `choice`: el sentimiento (`noul`) nunca delegaba | Aplica a todas las primitivas, con umbral por tipo, sobre confianza calibrada |
 | El servicio no distinguía lo que no sabe hacer | Cada modelo declara `supports`; lo demás vuelve como `unsupported_by_model` |
