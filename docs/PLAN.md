@@ -9,8 +9,8 @@
 | 2 Quickstart y demo | ✅ `make demo` + `docs/DEMO.md` con la salida real |
 | 3 Verificación en limpio | ✅ pasa de punta a punta (ver abajo); encontró **dos fallos reales** |
 | 4 Documentación | ✅ `ARQUITECTURA`, `DECISIONES`, `OPERACION` |
-| 5 Publicación | ⏳ pendiente |
-| 6 Presentación (opcional) | ⏳ pendiente |
+| 5 Publicación | ✅ repo público, tag `v1.0.0` y Release; faltan sólo los **topics** (un clic en la UI) |
+| 6 Presentación (opcional) | ⏳ no hecha (guion de 5 minutos y figuras) |
 
 ### Lo que encontró la Fase 3
 

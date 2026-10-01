@@ -298,7 +298,10 @@ El campo `neutral_mass` viaja en cada respuesta, y la razón de derivación lo d
 
 ## Pendiente
 
-- Observabilidad: registrar cada decisión real (hash del texto, confianza, derivación, latencia).
-- Batería con tráfico propio, no con el test del dataset.
-- `choice`/`score` sobre los adaptadores `coreml`/`laya`: el camino `noul` está probado, el
-  multiclase no.
+- **Topics del repositorio**: se agregan desde la interfaz de GitHub; la API necesita token.
+- **Batería con tráfico propio**: la herramienta existe (`scripts/export_eval.py` exporta las
+  decisiones registradas para etiquetarlas y medir precisión real), falta acumular tráfico. El
+  servicio ya lo registra desde el primer día.
+
+Todo lo demás que estaba acá —observabilidad, el camino `choice`/`score` en los adaptadores de Laya—
+está hecho y verificado: ver `docs/VERSIONADO.md`.

@@ -117,5 +117,9 @@ del config, así que los scripts devolvían cero registros si se los llamaba des
       reinicio automático verificado (`kill -9` → `runs` 1→2) y arranque en frío verificado.
 - [x] ~~Camino `choice`/`score` sobre los adaptadores CoreML/Laya~~: probado en los dos adaptadores,
       con `probabilities`/`legend` leídos correctamente.
-- [ ] Re-medir la latencia del camino CoreML con el método original de V5: el "16 ms" documentado no
-      se reproduce (55 ms de mediana en esta medición).
+- [x] ~~Re-medir la latencia del camino CoreML~~: medido **con el mismo método que usaba V5**
+      (cronometrar `/decide` en el servidor, que es lo que hace su `server.py`). Da **55 ms** de mediana
+      de punta a punta y **50 ms** de inferencia directa sin HTTP en 30 llamadas, así que el overhead de
+      HTTP son ~5 ms y el "16 ms steady" **no se reproduce**: es el modelo, no la red. No queda registro
+      de cómo se obtuvo aquel número, así que la discrepancia se documenta en vez de resolverse.
+      Ver `results/RESUMEN_BATERIA.md`.
