@@ -63,7 +63,7 @@ class ModelSpec:
             if case.get("type") not in self.supports:
                 raise ValueError(
                     f"{self.id}: el caso de self-test usa '{case.get('type')}', "
-                    f"que el modelo no declara soportar ({sorted(self.supports)})")
+                    f"that the model does not declare support for ({sorted(self.supports)})")
 
 
 @dataclass

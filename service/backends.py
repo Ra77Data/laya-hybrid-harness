@@ -216,7 +216,7 @@ class TransformersBackend(Backend):
             "sha256": sha,
             "expected": self.spec.expect_sha256,
             "match": (sha == self.spec.expect_sha256) if (sha and self.spec.expect_sha256) else None,
-            "note": note + (f" | pinned revision: {rev}" if rev else " | sin revision fijada"),
+            "note": note + (f" | pinned revision: {rev}" if rev else " | no pinned revision"),
         }
 
     def predict(self, state: str, questions: list[dict]) -> dict:

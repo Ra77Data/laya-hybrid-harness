@@ -188,7 +188,7 @@ def run_smoke_tests(verbose: bool = True, only: list[str] | None = None) -> dict
         try:
             backend = get_backend(spec)
         except Exception as exc:  # noqa: BLE001
-            out[mid] = [{"ok": False, "error": f"no se pudo cargar: {type(exc).__name__}: {exc}"}]
+            out[mid] = [{"ok": False, "error": f"could not load: {type(exc).__name__}: {exc}"}]
             STATE["smoke_ok"][mid] = False
             continue
         cal = STATE["calibrations"][mid]
@@ -300,7 +300,7 @@ def models():
 @app.post("/selftest")
 def selftest():
     if not STATE["backends"]:
-        raise HTTPException(status_code=503, detail=STATE["errors"] or "sin modelos cargados")
+        raise HTTPException(status_code=503, detail=STATE["errors"] or "no models loaded")
     results = run_smoke_tests(verbose=False)
     evaluados = [r for recs in results.values() for r in recs if "ok" in r]
     omitidos = [mid for mid, recs in results.items() if recs and recs[0].get("skipped")]
