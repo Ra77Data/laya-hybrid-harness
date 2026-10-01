@@ -148,6 +148,14 @@ Point `LAYA_LABEL` at the launchd label if you changed it; the examples below us
 # 1. (optional) check that the service is up and with which model
 curl -s http://127.0.0.1:8090/health | python3 -m json.tool
 
+`DSH_DIR` has to point at the `deepseek-harness` checkout that provides the `dsh` CLI; it is
+machine-specific, so it belongs in the project's `.envrc` rather than in the script:
+
+```bash
+export DSH_DIR="$HOME/Projects/ml/Hybrid_Harness/vendor/deepseek-harness"
+bash scripts/start-dsh.sh
+```
+
 # 2. bring up the DSH interface with the Laya tool registered
 bash scripts/start-dsh.sh
 ```
@@ -331,6 +339,14 @@ agrega un adaptador nuevo, la llamada al modelo va dentro del candado.**
 ```bash
 # 1. (opcional) comprobar que el servicio está arriba y con qué modelo
 curl -s http://127.0.0.1:8090/health | python3 -m json.tool
+
+`DSH_DIR` tiene que apuntar al checkout de `deepseek-harness` que provee el CLI `dsh`; es específico
+de la máquina, así que va en el `.envrc` del proyecto y no dentro del script:
+
+```bash
+export DSH_DIR="$HOME/Projects/ml/Hybrid_Harness/vendor/deepseek-harness"
+bash scripts/start-dsh.sh
+```
 
 # 2. levantar la interfaz de DSH con la tool de Laya registrada
 bash scripts/start-dsh.sh
