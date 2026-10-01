@@ -35,7 +35,7 @@ fuentes = HERE.parent / "etapa4/data"
 for lang, f in (("en", "english_test.parquet"), ("de", "german_test.parquet"), ("es", "spanish_test.parquet")):
     p = fuentes / f
     if not p.exists():
-        print(f"  aviso: falta {p}, se omite {lang}")
+        print(f"  warning: {p} missing, skipping {lang}")
         continue
     df = pd.read_parquet(p)
     col = "label" if "label" in df.columns else df.columns[-1]
@@ -46,7 +46,7 @@ for lang, f in (("en", "english_test.parquet"), ("de", "german_test.parquet"), (
 
 non = [{"lang": r["lang"], "text": r["state"], "target": int(r["target"])}
        for r in (json.loads(l) for l in (DATA / "test_extended.jsonl").read_text(encoding="utf-8").splitlines() if l.strip())]
-print(f"neutros de verdad: {len(neutral)} | no neutros etiquetados: {len(non)}")
+print(f"genuinely neutral: {len(neutral)} | labelled non-neutral: {len(non)}")
 
 
 def ask(text):
@@ -68,9 +68,9 @@ def run(items, es_neutro):
     return out
 
 
-print("consultando neutros…")
+print("querying neutral texts…")
 rows_neu = run(neutral, True)
-print("consultando no neutros…")
+print("querying non-neutral texts…")
 rows_non = run(non, False)
 rows = rows_neu + rows_non
 Path(args.out).parent.mkdir(parents=True, exist_ok=True)
@@ -79,14 +79,14 @@ Path(args.out).write_text(json.dumps(rows, indent=2, ensure_ascii=False))
 nm_neu = [r["neutral_mass"] for r in rows_neu if r["neutral_mass"] is not None]
 nm_non = [r["neutral_mass"] for r in rows_non if r["neutral_mass"] is not None]
 if not nm_neu:
-    raise SystemExit("el modelo no está devolviendo neutral_mass")
-print(f"\nmasa neutral — neutros: mediana {sorted(nm_neu)[len(nm_neu)//2]:.3f} "
+    raise SystemExit("the model is not returning neutral_mass")
+print(f"\nneutral mass — neutrals: median {sorted(nm_neu)[len(nm_neu)//2]:.3f} "
       f"(min {min(nm_neu):.3f}, max {max(nm_neu):.3f})")
-print(f"masa neutral — no neutros: mediana {sorted(nm_non)[len(nm_non)//2]:.3f} "
+print(f"neutral mass — non-neutrals: median {sorted(nm_non)[len(nm_non)//2]:.3f} "
       f"(min {min(nm_non):.3f}, max {max(nm_non):.3f})")
 
-print("\n=== umbral de masa neutral: qué se gana y qué se pierde")
-print(f"  {'umbral':>7s} {'neutros derivados':>18s} {'no neutros derivados (falsos)':>31s} {'F1':>6s}")
+print("\n=== neutral-mass threshold: what is gained and what is lost")
+print(f"  {'thresh':>7s} {'neutrals delegated':>18s} {'non-neutrals delegated (false pos.)':>36s} {'F1':>6s}")
 mejor = None
 for t in [x / 100 for x in range(30, 96, 5)]:
     tp = sum(1 for v in nm_neu if v > t) / len(nm_neu)
@@ -95,14 +95,14 @@ for t in [x / 100 for x in range(30, 96, 5)]:
     print(f"  {t:7.2f} {tp*100:17.1f}% {fp*100:30.1f}% {f1:6.3f}")
     if mejor is None or f1 > mejor[1]:
         mejor = ((t, tp, fp), f1)
-print(f"\n  mejor F1 en esta rejilla: umbral {mejor[0][0]:.2f} -> detecta {mejor[0][1]*100:.1f}% de los neutros "
-      f"derivando de más el {mejor[0][2]*100:.1f}% de los no neutros")
+print(f"\n  best F1 on this grid: threshold {mejor[0][0]:.2f} -> detects {mejor[0][1]*100:.1f}% of neutrals "
+      f"at the cost of {mejor[0][2]*100:.1f}% extra on non-neutrals")
 
 # --- efecto combinado con la compuerta de confianza actual
-print("\n=== efecto sobre el tráfico (los 1.740 no neutros + los neutros de verdad)")
+print("\n=== effect on traffic (the 1,740 non-neutral + the genuinely neutral)")
 for t in (0.5, 0.6, 0.7, mejor[0][0]):
     extra = sum(1 for r in rows_non if r["neutral_mass"] and r["neutral_mass"] > t) / len(rows_non)
     base = sum(1 for r in rows_non if r["delegate"]) / len(rows_non)
-    print(f"  umbral {t:.2f}: derivación sobre no neutros {base*100:.1f}% -> {(base+extra)*100:.1f}% "
-          f"(+{extra*100:.1f} puntos)")
-print(f"\nguardado: {args.out}")
+    print(f"  threshold {t:.2f}: delegation on non-neutrals {base*100:.1f}% -> {(base+extra)*100:.1f}% "
+          f"(+{extra*100:.1f} points)")
+print(f"\nsaved: {args.out}")

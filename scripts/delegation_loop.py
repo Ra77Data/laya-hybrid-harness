@@ -34,7 +34,7 @@ if args.n:
     rnd.shuffle(recs)
     recs = recs[:args.n]
 
-print(f"consultando {len(recs)} textos…")
+print(f"querying {len(recs)} texts…")
 rows = []
 t0 = time.time()
 for r in recs:
@@ -57,27 +57,27 @@ def err(sub):
     return sum(1 for x in sub if x["pred"] != x["target"]) / len(sub) if sub else float("nan")
 
 
-print(f"\n{len(rows)} textos en {wall:.0f}s\n")
-print(f"  derivados           {len(dlg):4d}  ({len(dlg)/len(rows)*100:.1f} % del tráfico)")
-print(f"  error del modelo en lo DERIVADO     {err(dlg)*100:5.1f} %")
-print(f"  error del modelo en lo NO derivado  {err(loc)*100:5.1f} %")
+print(f"\n{len(rows)} texts in {wall:.0f}s\n")
+print(f"  delegated           {len(dlg):4d}  ({len(dlg)/len(rows)*100:.1f} % of traffic)")
+print(f"  model error on what was DELEGATED     {err(dlg)*100:5.1f} %")
+print(f"  model error on what was NOT delegated {err(loc)*100:5.1f} %")
 lift = (err(dlg) / err(loc)) if loc and err(loc) > 0 else float("nan")
-print(f"  cuántas veces más se equivoca en lo derivado: {lift:.2f}x")
-print(f"\n  accuracy si se responde TODO local     {(1-err(rows))*100:.2f} %")
-print(f"  accuracy local en lo que sí responde   {(1-err(loc))*100:.2f} %  (cobertura {len(loc)/len(rows)*100:.1f} %)")
+print(f"  how many times more it errs on what was delegated: {lift:.2f}x")
+print(f"\n  accuracy if EVERYTHING is answered locally {(1-err(rows))*100:.2f} %")
+print(f"  local accuracy on what it does answer     {(1-err(loc))*100:.2f} %  (coverage {len(loc)/len(rows)*100:.1f} %)")
 
-print("\n  errores por banda de confianza (todo el conjunto):")
+print("\n  errors by confidence band (whole set):")
 bandas = [(0, 0.60), (0.60, 0.75), (0.75, 0.90), (0.90, 1.01)]
 for lo, hi in bandas:
     sub = [x for x in rows if lo <= x["conf"] < hi]
     if sub:
-        print(f"    {lo:.2f}-{hi:.2f}: {len(sub):4d} casos | error {err(sub)*100:5.1f} % | "
-              f"derivados {sum(1 for x in sub if x['delegate'])/len(sub)*100:5.1f} %")
+        print(f"    {lo:.2f}-{hi:.2f}: {len(sub):4d} cases | error {err(sub)*100:5.1f} % | "
+              f"delegated {sum(1 for x in sub if x['delegate'])/len(sub)*100:5.1f} %")
 
 # listado a ciegas: sin etiqueta, para que el LLM etiquete sin ver la verdad
 rnd.shuffle(dlg)
 blind = [{"idx": i + 1, "id": x["id"], "lang": x["lang"], "text": x["text"],
-          "local_pred": "positivo" if x["pred"] else "negativo", "conf": x["conf"]}
+          "local_pred": "positive" if x["pred"] else "negative", "conf": x["conf"]}
          for i, x in enumerate(dlg[:args.blind])]
 Path(args.out).parent.mkdir(parents=True, exist_ok=True)
 Path(args.out).write_text(json.dumps(rows, indent=2, ensure_ascii=False))
@@ -85,8 +85,8 @@ Path(args.blind_out).write_text(json.dumps(
     {"blind": [{k: v for k, v in b.items() if k != "id"} for b in blind],
      "gold": {str(b["idx"]): next(x["target"] for x in dlg if x["id"] == b["id"]) for b in blind}},
     indent=2, ensure_ascii=False))
-print(f"\n  guardado: {args.out}")
-print(f"  listado a ciegas: {args.blind_out} ({len(blind)} derivados, sin etiqueta)")
-print("\n=== PARA ETIQUETAR A CIEGAS (el modelo local dijo lo que figura en 'local_pred') ===")
+print(f"\n  saved: {args.out}")
+print(f"  blind listing: {args.blind_out} ({len(blind)} delegated, unlabelled)")
+print("\n=== FOR BLIND LABELLING (the local model said what is in 'local_pred') ===")
 for b in blind:
     print(f"{b['idx']:3d} [{b['lang']}] {b['text'][:150]}")
