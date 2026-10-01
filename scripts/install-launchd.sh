@@ -9,7 +9,7 @@
 # the user's model cache. For a personal machine, the agent is the right choice.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-LABEL="com.cesarmg.laya-decide"
+LABEL="${LAYA_LABEL:-com.cesarmg.laya-decide}"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 DOMAIN="gui/$(id -u)"
 MODEL="${LAYA_ACTIVE_MODEL:-}"

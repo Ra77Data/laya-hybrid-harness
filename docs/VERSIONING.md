@@ -39,7 +39,7 @@ better with it.
 
 ## Status
 
-- Deployed at `~/Projects/ml/Hybrid_Harness_V7/`, port 8090.
+- Deployed in its own directory (the code in this repository), port 8090.
 - Replaces the V3 service. **V3 is archived, not deleted.**
 - V5 keeps the validated CoreML model, which V7 serves through the `coreml` adapter.
 
@@ -95,7 +95,7 @@ local error. Details in `results/SUMMARY_HARNESS_TEST.md`.
 ## Observability
 
 Every decision is logged to daily JSONL (`logs/decisions/`), with a configurable detail level
-(`off`/`metadata`/`excerpt`/`full`; default `excerpt`: first 160 characters). It records which model
+(`off`/`metadata`/`excerpt`/`full`; **default now `metadata`: no text**). It records which model
 answered, raw and calibrated confidence, the temperature applied, the neutral mass, whether the text
 was truncated and **why it was delegated**, with the reason grouped by kind.
 
@@ -170,7 +170,7 @@ funciona mejor con él.
 
 ## Estado
 
-- Desplegado en `~/Projects/ml/Hybrid_Harness_V7/`, puerto 8090.
+- Desplegado en su propio directorio (el código de este repositorio), puerto 8090.
 - Reemplaza al servicio de V3. **V3 queda archivado, no borrado.**
 - V5 conserva el modelo CoreML validado, que V7 sirve a través del adaptador `coreml`.
 
@@ -226,7 +226,7 @@ error local. Detalle en `results/SUMMARY_HARNESS_TEST.md`.
 ## Observabilidad
 
 Cada decisión se registra en JSONL por día (`logs/decisions/`), con nivel de detalle configurable
-(`off`/`metadata`/`excerpt`/`full`; por defecto `excerpt`: primeros 160 caracteres). Se guarda qué
+(`off`/`metadata`/`excerpt`/`full`; **ahora por defecto `metadata`: sin texto**). Se guarda qué
 modelo contestó, la confianza cruda y la calibrada, la temperatura aplicada, la masa neutral, si se
 truncó y **por qué se derivó**, con el motivo agrupado en su tipo.
 

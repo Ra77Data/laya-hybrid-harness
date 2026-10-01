@@ -130,7 +130,7 @@ models:
 observability:
   enabled: true
   # off: nothing | metadata: numbers and hashes only | excerpt: first characters | full: whole text
-  level: excerpt
+  level: metadata
   excerpt_chars: 160
   directory: logs/decisions
   window: 5000          # in-memory records, so /metrics does not read from disk

@@ -8,6 +8,7 @@ Usage: python scripts/probe_concurrency.py [--url ...] [--counts 1,2,4,8]
 """
 import argparse
 import json
+import os
 import subprocess
 import time
 import urllib.error
@@ -40,7 +41,8 @@ def agent_runs() -> tuple[str, str]:
     if f":{DEPLOYED_PORT}" not in args.url:
         return "n/a", "n/a"
     try:
-        out = subprocess.run(["launchctl", "print", f"gui/{__import__('os').getuid()}/com.cesarmg.laya-decide"],
+        label = os.environ.get("LAYA_LABEL", "com.cesarmg.laya-decide")
+        out = subprocess.run(["launchctl", "print", f"gui/{os.getuid()}/{label}"],
                              capture_output=True, text=True, timeout=10).stdout
         runs = next((l.split("=")[1].strip() for l in out.splitlines() if "runs =" in l), "?")
         pid = next((l.split("=")[1].strip() for l in out.splitlines() if l.strip().startswith("pid =")), "?")

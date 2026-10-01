@@ -428,8 +428,9 @@ tirado.
   Fase 5, no de las anteriores.
 - **R3 — `laya`/`laya-coreml` son paquetes de nicho** y el CoreML sólo corre en Apple Silicon. Por
   eso el demo por defecto no los usa.
-- **R4 — El log guarda texto de usuario**: el default `excerpt` mitiga, pero el `docs/OPERATIONS.md`
-  tiene que decir explícitamente qué se guarda y cómo apagarlo.
+- **R4 — El log guarda texto de usuario**: resuelto por defecto — el nivel ahora es `metadata`, que no
+guarda texto. El `docs/OPERATIONS.md` dice explícitamente qué se guarda y que medir precisión sobre
+tráfico real exige optar por `excerpt`.
 - **R5 — DSH no es público**: la parte de "tool dentro del agente" no es reproducible por terceros.
   Se muestra como transcripción y se dice claro.
 - **R6 — Sobreventa**: el modelo local pierde contra el baseline que se descarga con dos líneas

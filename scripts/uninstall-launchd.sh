@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Unloads the LaunchAgent and stops the service. It deletes nothing from the project.
 set -euo pipefail
-LABEL="com.cesarmg.laya-decide"
+LABEL="${LAYA_LABEL:-com.cesarmg.laya-decide}"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 DOMAIN="gui/$(id -u)"
 

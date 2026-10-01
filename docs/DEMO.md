@@ -52,11 +52,11 @@ confidence thresholds: {'noul': 0.75, 'choice': 0.75, 'score': 0.75} | neutral m
         reason: unsupported_by_model(cardiff-xlmr)
 
 === what was logged (observability)
-  requests 21 | answers 21 | delegated 15 (71.4 %)
-  reasons: {'raw_confidence_below_0.75': 6, 'high_neutral_mass': 3, 'input_truncated': 3, 'unsupported_by_model': 3}
-  models: {'cardiff-xlmr': 21}
-  latency: p50 100.09 ms | p95 312.0 ms
-  log at: logs/decisions (level excerpt, 7 written, 0 errors)
+  requests 40 | answers 57 | delegated 13 (22.8 %)
+  reasons: {'raw_confidence_below_0.75': 6, 'high_neutral_mass': 4, 'input_truncated': 2, 'unsupported_by_model': 1}
+  models: {'cardiff-xlmr': 40, 'laya-base': 17}
+  latency: p50 239.91 ms | p95 326.34 ms
+  log at: logs/decisions (level metadata, 7 written, 0 errors)
 
 === demo finished. To actually leave it running:  make serve
     (or 'bash scripts/demo.sh --keep' so it is not shut down at the end)
@@ -141,11 +141,11 @@ confidence thresholds: {'noul': 0.75, 'choice': 0.75, 'score': 0.75} | neutral m
         reason: unsupported_by_model(cardiff-xlmr)
 
 === what was logged (observability)
-  requests 21 | answers 21 | delegated 15 (71.4 %)
-  reasons: {'raw_confidence_below_0.75': 6, 'high_neutral_mass': 3, 'input_truncated': 3, 'unsupported_by_model': 3}
-  models: {'cardiff-xlmr': 21}
-  latency: p50 100.09 ms | p95 312.0 ms
-  log at: logs/decisions (level excerpt, 7 written, 0 errors)
+  requests 40 | answers 57 | delegated 13 (22.8 %)
+  reasons: {'raw_confidence_below_0.75': 6, 'high_neutral_mass': 4, 'input_truncated': 2, 'unsupported_by_model': 1}
+  models: {'cardiff-xlmr': 40, 'laya-base': 17}
+  latency: p50 239.91 ms | p95 326.34 ms
+  log at: logs/decisions (level metadata, 7 written, 0 errors)
 
 === demo finished. To actually leave it running:  make serve
     (or 'bash scripts/demo.sh --keep' so it is not shut down at the end)

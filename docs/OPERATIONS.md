@@ -33,7 +33,8 @@ The variables that matter (see `.env.example`):
 ```bash
 scripts/install-launchd.sh       # starts at login and restarts if it crashes
 scripts/uninstall-launchd.sh
-launchctl print gui/$(id -u)/com.cesarmg.laya-decide | grep -E 'state|pid|runs'
+LABEL="${LAYA_LABEL:-com.cesarmg.laya-decide}"   # the default; export LAYA_LABEL to change it
+launchctl print gui/$(id -u)/$LABEL | grep -E 'state|pid|runs'
 ```
 
 `KeepAlive` with `SuccessfulExit: false` and `ThrottleInterval: 30`: if the process dies, launchd
@@ -71,7 +72,7 @@ grouped by kind, model mix, latency p50/p90/p95/p99, and confidence and neutral-
 | how much text is kept in the log | `observability.level` | restart the service |
 | add a model | an entry under `models:` | restart the service |
 
-With launchd: `launchctl kickstart -k gui/$(id -u)/com.cesarmg.laya-decide`.
+With launchd: `launchctl kickstart -k gui/$(id -u)/$LABEL` (see the label above).
 
 **Every policy change is measured before it is fixed in place.** The delegation and neutral-mass
 curves are in `results/SUMMARY_HARNESS_TEST.md`, and `scripts/neutral_gate.py` recomputes the second
@@ -85,12 +86,15 @@ files older than `retain_days` at startup.
 | `observability.level` | What it keeps of the text |
 |---|---|
 | `off` | nothing |
-| `metadata` | numbers, hash and length only |
-| `excerpt` (default) | the first `excerpt_chars` characters |
+| **`metadata`** (default) | numbers, hash and length only |
+| `excerpt` | the first `excerpt_chars` characters |
 | `full` | the whole text |
 
-By default the full text is **not** kept. If the service will process third-party data, `metadata`
-is the appropriate level.
+By default **no text is kept**: the level is `metadata`. That is the right default if the service
+will process third-party data — and it has a price: with `metadata` there is nothing to label, so
+`scripts/export_eval.py` cannot build an evaluation set from real traffic. Measuring accuracy on
+your own traffic requires opting into `excerpt` (or `full`) and accepting that text is written to
+disk.
 
 To measure accuracy on your own traffic:
 
@@ -126,12 +130,44 @@ The service takes `STATE["infer_lock"]` around every model call, in `/decide` an
 Verified up to 16 concurrent requests: 16/16 completed and the agent did not restart. **If a new
 adapter is added, the model call goes inside the lock.**
 
+## Daily use
+
+Point `LAYA_LABEL` at the launchd label if you changed it; the examples below use the default.
+`REPO` is simply the directory you cloned this into.
+
+```bash
+# 1. (optional) check that the service is up and with which model
+curl -s http://127.0.0.1:8090/health | python3 -m json.tool
+
+# 2. bring up the DSH interface with the Laya tool registered
+bash scripts/start-dsh.sh
+```
+
+If something does not answer:
+
+```bash
+LABEL="${LAYA_LABEL:-com.cesarmg.laya-decide}"
+launchctl print gui/$(id -u)/$LABEL | grep -E 'state|pid|runs'
+launchctl kickstart -k gui/$(id -u)/$LABEL   # force a restart
+tail -50 logs/launchd.err.log
+```
+
+> **If direnv warns `.envrc is blocked`, run `direnv allow` in this directory.** The `.envrc` only
+> sets `LAYA_SERVICE_URL` and the timeout; the plugin carries the same defaults, so the warning
+> breaks nothing, but approving it makes the environment explicit.
+
+> **Do not run an older service's start script.** If port 8090 is held by this service, an old
+> launcher would fail on a busy port and, if it did start, it would leave the tool answering with
+> the wrong model. `make smoke` says which model is being served.
+
 ## Verification
+
 
 ```bash
 make test                        # self-test + edge cases + concurrency
 bash tests/quickstart_clean.sh   # the whole quickstart, in a clean directory
 make demo                        # the demonstration, with the expected output in docs/DEMO.md
+bash scripts/run_battery_all.sh  # the evaluation battery over every model in the registry
 ```
 
 ---
@@ -173,7 +209,8 @@ Variables que importan (ver `.env.example`):
 ```bash
 scripts/install-launchd.sh       # arranca al iniciar sesión y se reinicia si se cae
 scripts/uninstall-launchd.sh
-launchctl print gui/$(id -u)/com.cesarmg.laya-decide | grep -E 'state|pid|runs'
+LABEL="${LAYA_LABEL:-com.cesarmg.laya-decide}"   # el valor por defecto; export LAYA_LABEL lo cambia
+launchctl print gui/$(id -u)/$LABEL | grep -E 'state|pid|runs'
 ```
 
 `KeepAlive` con `SuccessfulExit: false` y `ThrottleInterval: 30`: si el proceso muere, launchd lo
@@ -210,7 +247,7 @@ por tipo, mezcla de modelos, latencias p50/p90/p95/p99, histogramas de confianza
 | cuánto texto se guarda en el registro | `observability.level` | reiniciar el servicio |
 | agregar un modelo | una entrada en `models:` | reiniciar el servicio |
 
-Con launchd: `launchctl kickstart -k gui/$(id -u)/com.cesarmg.laya-decide`.
+Con launchd: `launchctl kickstart -k gui/$(id -u)/$LABEL` (ver el label arriba).
 
 **Todo cambio de política se mide antes de fijarlo.** Las curvas de derivación y de masa neutral
 están en `results/SUMMARY_HARNESS_TEST.md`, y `scripts/neutral_gate.py` recalcula la segunda con
@@ -224,12 +261,15 @@ archivos más viejos que `retain_days` al arrancar.
 | `observability.level` | Qué guarda del texto |
 |---|---|
 | `off` | nada |
-| `metadata` | sólo números, hash y largo |
-| `excerpt` (por defecto) | los primeros `excerpt_chars` caracteres |
+| **`metadata`** (por defecto) | sólo números, hash y largo |
+| `excerpt` | los primeros `excerpt_chars` caracteres |
 | `full` | el texto completo |
 
-Por defecto **no** se guarda el texto completo. Si el servicio va a procesar datos de terceros,
-`metadata` es el nivel adecuado.
+Por defecto **no se guarda texto**: el nivel es `metadata`. Es el default correcto si el servicio va
+a procesar datos de terceros — y tiene un precio: con `metadata` no hay nada que etiquetar, así que
+`scripts/export_eval.py` no puede armar un conjunto de evaluación desde el tráfico real. Medir
+precisión sobre tráfico propio exige optar por `excerpt` (o `full`) y aceptar que el texto se
+escribe a disco.
 
 Para medir precisión sobre tráfico propio:
 
@@ -265,12 +305,44 @@ El servicio toma `STATE["infer_lock"]` alrededor de cada llamada al modelo, en `
 self-test. Verificado hasta 16 concurrentes: 16/16 completadas y el agente sin reiniciarse. **Si se
 agrega un adaptador nuevo, la llamada al modelo va dentro del candado.**
 
+## Uso diario
+
+`LAYA_LABEL` apunta al label de launchd si lo cambiaste; los ejemplos usan el valor por defecto.
+`REPO` es simplemente el directorio donde clonaste esto.
+
+```bash
+# 1. (opcional) comprobar que el servicio está arriba y con qué modelo
+curl -s http://127.0.0.1:8090/health | python3 -m json.tool
+
+# 2. levantar la interfaz de DSH con la tool de Laya registrada
+bash scripts/start-dsh.sh
+```
+
+Si algo no responde:
+
+```bash
+LABEL="${LAYA_LABEL:-com.cesarmg.laya-decide}"
+launchctl print gui/$(id -u)/$LABEL | grep -E 'state|pid|runs'
+launchctl kickstart -k gui/$(id -u)/$LABEL   # reiniciarlo a la fuerza
+tail -50 logs/launchd.err.log
+```
+
+> **Si direnv avisa `.envrc is blocked`, corré `direnv allow` en este directorio.** El `.envrc` sólo
+> fija `LAYA_SERVICE_URL` y el timeout; el plugin trae los mismos valores por defecto, así que el
+> aviso no rompe nada, pero aprobarlo deja el entorno explícito.
+
+> **No corras el script de arranque de una versión vieja.** Si el puerto 8090 lo ocupa este
+> servicio, un lanzador viejo fallaría por puerto ocupado y, si llegara a arrancar, dejaría la tool
+> respondiendo con el modelo equivocado. `make smoke` dice qué modelo se está sirviendo.
+
 ## Verificación
+
 
 ```bash
 make test                        # self-test + casos límite + concurrencia
 bash tests/quickstart_clean.sh   # el quickstart completo, en un directorio limpio
 make demo                        # la demostración, con la salida esperada en docs/DEMO.md
+bash scripts/run_battery_all.sh  # la batería de evaluación sobre cada modelo del registro
 ```
 
 </details>

@@ -32,6 +32,17 @@ decision is logged.
               └──────────────────────┘
 ```
 
+## Why it exists
+
+Auditing the deployed harness surfaced four problems that this service fixes by design:
+
+| Problem in V3/V5 | What this service does |
+|---|---|
+| The model was in the code; the V3 service was left running with the PoC model while the documentation said V5 | The adapter and the weights come from `config.yaml`; `/health` reports the **weights hash** and whether it matches the expected one |
+| `calibrated: true` meant "a calibration file exists", even when no temperature was applied | `calibrated` is true **only if a T was applied**, and the answer includes `temperature` and, when it could not be applied, `calibration_note` |
+| The delegation policy applied only to `choice`; `noul` (sentiment) never delegated | The policy applies to **every** primitive, with a per-type threshold and on calibrated confidence |
+| The service did not flag what it could not do | Every model declares `supports`; an unsupported primitive comes back as `unsupported_by_model`, not invented |
+
 ## Components
 
 | Module | Responsibility | What it guarantees |
@@ -71,6 +82,18 @@ Three primitives, taken from the decision engine this harness integrates:
 | `noul` | does this statement hold? | boolean + P(true) |
 | `choice` | which of these options? | option + distribution |
 | `score` | how much, on this scale? | level + distribution (+ raw numeric value) |
+
+
+## Adapters
+
+| Adapter | Serves | Requirements |
+|---|---|---|
+| `coreml` | Laya CoreML packages (`model.mlpackage` + `weight.bin`), ANE/GPU | `laya-coreml` |
+| `laya` | Laya checkpoints in safetensors, without CoreML (x86/Linux/CI) | `laya` + `torch` |
+| `transformers` | Hugging Face classifiers; for 3 classes it reduces to binary with `binary_reduction` (the neutral mass is discarded here, which is what the neutral-mass gate compensates for) | `torch` + `transformers` |
+
+Careful: `laya-coreml` and `laya` **do not share a question schema** (`type`/`instructions` against
+`t`/`ins`). The adapter translates; no common shape is assumed.
 
 ## Routing by primitive
 
@@ -163,6 +186,17 @@ decisión queda registrada.
               └───────────────────────┘
 ```
 
+## Por qué existe
+
+Auditando el harness desplegado aparecieron cuatro problemas que este servicio corrige por diseño:
+
+| Problema en V3/V5 | Qué hace este servicio |
+|---|---|
+| El modelo estaba en el código; el servicio de V3 quedó corriendo con el modelo del PoC mientras la documentación decía V5 | El adaptador y los pesos salen de `config.yaml`; `/health` reporta **hash de los pesos** y si coincide con el esperado |
+| `calibrated: true` significaba "hay un archivo de calibración", aunque no se aplicara ninguna temperatura | `calibrated` es verdadero **solo si se aplicó una T**, y la respuesta incluye `temperature` y, si no se pudo, `calibration_note` |
+| La política de derivación solo aplicaba a `choice`; `noul` (el sentimiento) nunca delegaba | La política aplica a **todas** las primitivas, con umbral por tipo y sobre la confianza calibrada |
+| El servicio no marcaba lo que no sabía hacer | Cada modelo declara `supports`; una primitiva no soportada vuelve como `unsupported_by_model`, no inventada |
+
 ## Componentes
 
 | Módulo | Responsabilidad | Qué garantiza |
@@ -202,6 +236,18 @@ Tres primitivas, tomadas del motor de decisión que este harness integra:
 | `noul` | ¿se cumple esta afirmación? | booleano + P(verdadero) |
 | `choice` | ¿cuál de estas opciones? | opción + distribución |
 | `score` | ¿cuánto, en esta escala? | nivel + distribución (+ valor numérico) |
+
+
+## Adaptadores
+
+| Adaptador | Sirve | Requisitos |
+|---|---|---|
+| `coreml` | Paquetes CoreML de Laya (`model.mlpackage` + `weight.bin`), ANE/GPU | `laya-coreml` |
+| `laya` | Checkpoints Laya en safetensors, sin CoreML (x86/Linux/CI) | `laya` + `torch` |
+| `transformers` | Clasificadores de Hugging Face; para 3 clases se reduce a binario con `binary_reduction` (ahí se descarta la masa neutral, que es lo que compensa la compuerta de masa neutral) | `torch` + `transformers` |
+
+Ojo: `laya-coreml` y `laya` **no comparten el esquema de pregunta** (`type`/`instructions` contra
+`t`/`ins`). El adaptador traduce; no se asume una forma común.
 
 ## Enrutamiento por primitiva
 

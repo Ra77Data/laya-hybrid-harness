@@ -45,7 +45,7 @@ models:
 
 observability:
   enabled: true
-  level: excerpt
+  level: metadata
   excerpt_chars: 160
   directory: logs/decisions
   window: 5000

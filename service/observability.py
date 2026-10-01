@@ -6,8 +6,9 @@ Principles, learned the hard way in this project:
     writing the log cannot become a service failure.
   * **It records what happened, not what should have happened**: calibration version, whether a
     temperature was applied, which model answered and why it delegated.
-  * **Privacy by default**: the `excerpt` level keeps the first characters, not the whole text.
-    `full` exists for debugging and has to be asked for explicitly.
+  * **Privacy by default**: the default level is `metadata`, which keeps numbers, hashes and
+    lengths but **not the text**. `excerpt` (first characters) and `full` have to be asked for
+    explicitly, and that is what you trade for the ability to label real traffic later.
   * **Daily rotation** and a bounded in-memory window so `/metrics` does not read from disk on
     every request.
 """
@@ -36,10 +37,10 @@ def _pct(sorted_vals: list[float], q: float) -> float | None:
 
 class DecisionLog:
     def __init__(self, enabled: bool = True, directory: str | Path = "logs/decisions",
-                 level: str = "excerpt", excerpt_chars: int = 160, window: int = 5000,
+                 level: str = "metadata", excerpt_chars: int = 160, window: int = 5000,
                  retain_days: int = 30):
         self.enabled = bool(enabled)
-        self.level = level if level in LEVELS else "excerpt"
+        self.level = level if level in LEVELS else "metadata"
         self.directory = Path(directory)
         self.excerpt_chars = int(excerpt_chars)
         self.retain_days = int(retain_days)

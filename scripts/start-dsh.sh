@@ -6,4 +6,6 @@
 set -euo pipefail
 DSH_DIR="${DSH_DIR:-$HOME/Projects/ml/Hybrid_Harness_V3/vendor/deepseek-harness}"
 cd "$DSH_DIR"
-exec pnpm dsh web --patch "$HOME/Projects/ml/Hybrid_Harness_V7/dsh-laya-plugin/laya.cordis.yml"
+# The plugin path comes from this script's own location, so the repo can live anywhere.
+REPO="$(cd "$(dirname "$0")/.." && pwd)"
+exec pnpm dsh web --patch "$REPO/dsh-laya-plugin/laya.cordis.yml"
