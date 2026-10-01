@@ -448,6 +448,115 @@ sin el script que lo reproduce.
 
 Mapa de la documentación:
 
+## Qué es esto y qué no
+
+Lo que sigue es el **patrón híbrido y su medición**, no un modelo ganador. En esta tarea el modelo
+local pierde contra un baseline que se descarga en dos líneas (86,0 % contra 89,7 %), y hasta un motor
+general zero-shot le gana al fine-tune del proyecto.
+
+Lo que sí está medido, y no es común tenerlo medido, es todo lo demás:
+
+| Hallazgo | Número |
+|---|---|
+| Cuánto más se equivoca el modelo en lo que deriva | **5,86×** (36,8 % contra 6,3 %) |
+| Accuracy de punta a punta del híbrido contra responder todo local | **+2,76 puntos** (92,5 % contra 89,7 %) |
+| Tráfico que va al cloud para lograrlo | **13 %** |
+| AUC de la compuerta de masa neutral como detector de textos neutros | **0,814** |
+
+Nada de esto se afirma sin el script que lo reproduce.
+
+## Qué muestra el demo
+
+Un comando, sin Apple Silicon y sin infraestructura extra. Cuenta una historia en vez de lucir al
+modelo:
+
+| Caso | Qué demuestra |
+|---|---|
+| positivo / negativo claro | el camino normal: se responde **local** con confianza alta |
+| sarcasmo | el modelo **se equivoca** (`value=True`) pero con 0,68 de confianza: el harness **deriva**. No acierta, pero sabe que no sabe |
+| neutro ("El pedido llegó el martes.") | `P(neutro)=0,81` supera la compuerta de 0,70: **deriva** en vez de inventar un sentimiento |
+| sin contenido | confianza 0,53 → **deriva** |
+| texto largo (2.400 caracteres) | 536 tokens contra una ventana de 512 → **deriva**, porque una respuesta segura sobre texto parcial no vale |
+| primitiva no soportada | el modelo declara soportar sólo `noul`; una pregunta `choice` vuelve como `unsupported_by_model` y **deriva** en vez de inventar una respuesta |
+
+La transcripción completa, copiada de una corrida real, está en `docs/DEMO.md`.
+
+## Cómo funciona
+
+```
+                 ┌──────────────────────────────────────────────┐
+   cliente ───►  │  POST /decide                                │
+   (agente,      │   1. enrutar por primitiva  (routing)        │
+    script,      │   2. llamar al modelo       (adaptador)      │
+    app)         │   3. calibrar               (temperatura)    │
+                 │   4. decidir                (política)       │
+                 │   5. registrar la decisión  (observabilidad) │
+                 └───────┬──────────────────────────┬───────────┘
+                         │                          │
+                 ┌───────▼────────┐        ┌────────▼─────────┐
+                 │  adaptadores   │        │  log JSONL       │
+                 │  coreml        │        │  + /metrics      │
+                 │  laya          │        └──────────────────┘
+                 │  transformers  │
+                 └───────┬────────┘
+                         │
+              ┌──────────▼───────────┐
+              │  registro de modelos │
+              │  (config.yaml)       │
+              └──────────────────────┘
+```
+
+**El hash manda.** Si el sha256 real de los pesos no coincide con `expect_sha256`, ese modelo no se
+carga. Salió de un incidente real: el servicio desplegado estaba sirviendo **otro modelo** del que
+decía la documentación.
+
+**`calibrated` no miente.** Es verdadero sólo si se aplicó una temperatura de verdad.
+
+**La inferencia está serializada.** MPS/Metal no es thread-safe: sin candado, **dos peticiones
+simultáneas abortaban el proceso**.
+
+**El registro nunca puede tumbar una decisión.** Va dentro de un `try/except` y cuenta sus propios
+errores.
+
+## Inicio rápido
+
+```bash
+make setup    # entorno virtual + dependencias (una vez)
+make demo     # arranca el servicio, muestra los casos y las métricas, y lo apaga
+```
+
+Funciona en cualquier sistema operativo con el camino por defecto (`transformers`). Los adaptadores de
+Laya y CoreML —el motor para el que se construyó esto— son la variante `make setup-full`, en macOS con
+Apple Silicon.
+
+Verificado desde un clon limpio, con las cachés de `uv` y de modelos vacías:
+
+| Paso | Tiempo | Qué implica |
+|---|---|---|
+| `git clone` | 0 s | 61 archivos; ningún venv ni log viaja en el repo |
+| `make setup` | 75 s | entorno de 766 MB |
+| `make demo` | 148 s | incluye la descarga de 1,1 GB del modelo |
+| `make test` | 25 s | self-test + casos límite + concurrencia |
+
+**De cero a un demo funcionando: ~4 minutos.** La prueba quedó en `tests/quickstart_clean.sh` para que
+cualquiera la repita.
+
+## Despliegue (macOS)
+
+```bash
+scripts/install-launchd.sh    # arranca al iniciar sesión y se reinicia si se cae
+scripts/uninstall-launchd.sh
+make smoke                     # ¿está arriba? ¿con qué modelo?
+make metrics                   # tasa de derivación, motivos, latencias, histogramas
+make report                    # informe legible del tráfico real
+```
+
+`KeepAlive` con `SuccessfulExit: false` y `ThrottleInterval: 30`: si el proceso muere, launchd lo
+levanta; si el servicio **se niega a arrancar** (por ejemplo porque el hash no coincide), reintenta
+como mucho cada 30 segundos en vez de entrar en un bucle cerrado.
+
+## Documentación
+
 | Documento | Para qué |
 |---|---|
 | `docs/DEMO.md` | la demostración, con su salida real |
@@ -732,5 +841,12 @@ El campo `neutral_mass` viaja en cada respuesta, y la razón de derivación lo d
 
 Todo lo demás que estaba acá —observabilidad, el camino `choice`/`score` en los adaptadores de Laya,
 los topics del repositorio— está hecho y verificado: ver `docs/VERSIONING.md`.
+
+## Licencia
+
+Apache-2.0 (ver `LICENSE`). El proyecto Laya —su repositorio en GitHub, los paquetes `laya` y
+`laya-coreml` y el modelo base— es **Apache-2.0**, y por eso este repositorio usa la misma licencia en
+vez de una copyleft: la FSF considera Apache-2.0 incompatible con GPL-2.0.
+
 
 </details>
