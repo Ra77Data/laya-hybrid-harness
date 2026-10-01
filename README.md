@@ -298,10 +298,9 @@ El campo `neutral_mass` viaja en cada respuesta, y la razón de derivación lo d
 
 ## Pendiente
 
-- **Topics del repositorio**: se agregan desde la interfaz de GitHub; la API necesita token.
 - **Batería con tráfico propio**: la herramienta existe (`scripts/export_eval.py` exporta las
   decisiones registradas para etiquetarlas y medir precisión real), falta acumular tráfico. El
   servicio ya lo registra desde el primer día.
 
-Todo lo demás que estaba acá —observabilidad, el camino `choice`/`score` en los adaptadores de Laya—
-está hecho y verificado: ver `docs/VERSIONADO.md`.
+Todo lo demás que estaba acá —observabilidad, el camino `choice`/`score` en los adaptadores de Laya,
+los topics del repositorio— está hecho y verificado: ver `docs/VERSIONADO.md`.
