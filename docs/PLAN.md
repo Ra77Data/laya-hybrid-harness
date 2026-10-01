@@ -1,3 +1,232 @@
+# Action plan — documenting and making the hybrid harness demonstrable
+
+## Status
+
+| Phase | Status |
+|---|---|
+| 0 Decisions | ✅ public repo, **Apache-2.0**, Cardiff in the demo, `excerpt` logging, plugin included |
+| 1 Packaging | ✅ git, `pyproject` with extras, `Makefile`, `LICENSE`, `docs/LICENSES.md`, `.env.example` |
+| 2 Quickstart and demo | ✅ `make demo` + `docs/DEMO.md` with the real output |
+| 3 Clean verification | ✅ passes end to end (see below); it found **two real failures** |
+| 4 Documentation | ✅ ARCHITECTURE, DECISIONS, OPERATIONS, LICENSES, DEMO, PLAN, VERSIONING |
+| 5 Publication | ✅ public repo, tag `v1.0.0`, Release with notes and 10 topics |
+| 6 Presentation (optional) | ⏳ not done (5-minute script and figures) |
+
+### What Phase 3 found
+
+The clean test (`tests/quickstart_clean.sh`) found **two failures that only appear in a fresh
+install** — which is exactly what this phase exists for:
+
+1. **`protobuf` was not declared in the `[demo]` extra.** The SentencePiece tokenizer extractor needs
+   it, and the error transformers raises (`tiktoken is required to read a tiktoken file`) names a
+   different package and misleads. In the author's environment it arrived as a transitive dependency
+   of `coremltools`, so it never showed up.
+2. **The self-test marked models as failed when their adapter was not installed.** In a `[demo]`
+   environment the four Laya models fail with `ModuleNotFoundError`, and `make test` reported
+   `passed: false`. That is not a model failure: it means `make setup-full` is missing. Three things
+   now have to be distinguished —the weights exist, the adapter is installed, the model is
+   servable— and skipped models are reported with an actionable reason.
+
+Numbers from the clean run, with **empty** uv and model caches:
+
+| Step | Time | What it implies |
+|---|---|---|
+| `git clone` | 0 s | 61 files; no venv or log travels in the repo |
+| `make setup` | 75 s | 766 MB environment |
+| `make demo` | 148 s | includes the 1.1 GB model download |
+| `make test` | 25 s | self-test + 19 edge cases + concurrency |
+
+**From zero to a working demo: ~4 minutes.** The test is in `tests/quickstart_clean.sh` so anyone can
+repeat it.
+
+A note on the license: the initial decision was GPL-2.0 "to follow Laya's path", but on verifying it
+**Laya turned out to be Apache-2.0** (its GitHub repo and the `laya`/`laya-coreml` packages), and the
+FSF considers Apache-2.0 incompatible with GPL-2.0. **Apache-2.0** was adopted.
+
+## Goal
+
+That **another person can try the harness in minutes**, understanding what it does, what it does not
+do and how it is verified, without depending on your machine or your project tree.
+
+## Starting point (what existed then)
+
+| | State |
+|---|---|
+| Service code | 8 modules under `service/`, ~1,200 lines, working and deployed |
+| Scripts | 15 (probes, batteries, report, exporter, launchd) |
+| Documentation | README + VERSIONING + 4 result summaries |
+| **Distribution** | **not a git repo**: nobody could clone it, no history, no tag |
+| Packaging | no `pyproject.toml`, no `.env.example`, no `LICENSE`, no `.gitignore` |
+| Tests | the probes existed but there was no `make test` to run them |
+| Demo | did not exist: the "demo" was me calling the tool from this session |
+
+**Diagnosis**: the technical value was there; what was missing is everything that turns a project that
+works on your machine into something another person can run.
+
+## The underlying decision: what can genuinely be demonstrated
+
+There are three layers and **they are not equally reproducible**:
+
+| Layer | Reproducible by a third party | Why |
+|---|---|---|
+| **Decision service** (`/decide`, policy, `/metrics`) | **Yes, on any OS** | it only needs Python + `transformers` + the Cardiff model |
+| Laya/CoreML path (ANE) | macOS Apple Silicon only | it needs `laya`, `laya-coreml` and the CoreML package |
+| DSH integration (the tool inside the agent) | **No** | DSH is not public: shown as a transcript |
+
+Consequence for the plan: **the default demo uses the `transformers` path** (works on Linux, Windows
+and macOS Intel), and the Laya/CoreML path is a documented "full" variant. The DSH integration is
+presented as a real transcript, not as something the reader can run.
+
+## Phases
+
+### Phase 0 — Decisions (30 min, yours)
+
+Nothing else can be closed without this:
+
+1. **Public or private repo?** And under which code license.
+2. **Is `data/test_extended.jsonl` published?** It comes from the UMSAB/TweetEval benchmark; its
+   license has to be checked first (see risk R2).
+3. **Default demo model**: Cardiff (light, any OS) or Laya v1 (the project's identity, but macOS only).
+4. **Default log level**: `excerpt` (160 characters) or `metadata` (no text).
+5. **Is the DSH plugin included in the repo?** (the code yes, stating that it needs DSH).
+
+### Phase 1 — Minimal packaging (0.5-1 day)
+
+- `git init`, `.gitignore` (venv, `logs/`, `.uvcache/`, heavy `results/*.json`), first commit.
+- `pyproject.toml` with two extras: `[demo]` (transformers, torch, fastapi) and `[full]` (+ laya,
+  laya-coreml).
+- `.env.example` with the variables that matter (`LAYA_SERVICE_URL`, `LAYA_ACTIVE_MODEL`).
+- `LICENSE` + `docs/LICENSES.md` covering third-party models, datasets and packages.
+- `Makefile` with: `setup`, `setup-full`, `serve`, `demo`, `test`, `metrics`, `report`.
+
+**Acceptance criterion**: `git clone` + `make setup` leaves a working environment without reading
+anything else.
+
+### Phase 2 — Quickstart and reproducible demo (1 day)
+
+- **`make demo`**: a single command that creates the environment if needed, starts the service on a
+  free port, runs 8-10 chosen cases, prints each decision with its confidence, neutral mass and
+  delegation reason, shows `/metrics` and shuts the service down.
+- The demo cases have to **tell a story**, not show off the model:
+  1. clear positive → local
+  2. clear negative → local
+  3. factual neutral → **delegates** on neutral mass
+  4. sarcasm → medium confidence, the gate decides
+  5. long text (2,500 characters) → **delegates** on truncation
+  6. primitive unsupported by the model in turn → **delegates** declaring it
+  7. empty / no content → **delegates**
+  8. a routing case: `choice` → answered by **another model** (`laya-base`), when available
+- `docs/DEMO.md`: the expected transcript, with the real output pasted in and an explanation of each
+  case. It serves twice: as a script for presenting and as a regression test (if the output changes,
+  it shows).
+- Path without Apple Silicon: `make demo` must not require `laya-coreml` or the CoreML package.
+
+**Acceptance criterion**: someone who has not cloned the project sees the full demo in under 10
+minutes, including the model download.
+
+### Phase 3 — Friction verification (0.5 day) — **the most important gate**
+
+Reproduce the quickstart **from clean**: new directory, no venv, no model cache, none of the project
+tree, and measure the real time until the demo output appears. It is the only way to know whether the
+friction is what we think it is.
+
+- Ideally as another system user or in a Linux container (proving the `transformers` path is
+  portable).
+- Record every stumble and fix it on the spot.
+- **If it does not run clean, it is not ready**: Phase 5 does not start without this.
+
+### Phase 4 — Documentation (1-1.5 days)
+
+One entry point and a set of reference documents, without duplicating evidence that already exists:
+
+| Document | Purpose |
+|---|---|
+| `README.md` | what it is, what it is **not**, a 3-command quickstart, honest results, documentation map |
+| `docs/ARCHITECTURE.md` | components, flow, routing by primitive, the delegation policy |
+| `docs/DECISIONS.md` | the decisions with their evidence: why Cardiff, the threshold curve, the neutral-mass threshold, why the inference lock |
+| `docs/OPERATIONS.md` | launchd, logs, `/metrics`, changing models, troubleshooting, the two failures we found |
+| `docs/LICENSES.md` | third parties and what it implies for redistribution |
+| `results/SUMMARY_*.md` | **evidence annex** (they already exist, they are linked, not rewritten) |
+
+Rule: every numeric claim in the README has to point at a `SUMMARY_*.md` or at the script that
+reproduces it. No numbers without a source.
+
+### Phase 5 — Publication (0.5 day)
+
+**One concrete step was needed before publishing.** The `config.yaml` that was versioned and the one
+the deployment uses are **the same file**, and it holds several absolute paths from the author's
+machine for the Laya models. Publishing it that way leaks the directory structure and helps nobody.
+The step was: version a `config.example.yaml` with documented placeholders, take `config.yaml` out of
+version control, and adjust the deployment sync so it keeps its own real one. `config.demo.yaml` (the
+one `make demo` uses) has no absolute paths and was publishable as it stood.
+
+The rest of the phase is mechanical: create the remote, `git remote add`, push, tag and links from
+the model card on Hugging Face.
+
+- Repo with tag/release, `CITATION.cff` if it is going to be cited.
+- Links from where there is already an audience: the model card on Hugging Face
+  (`Ramg77/laya-sentiment-multilingual`), the report and the paper.
+- A "how do I try this in 5 minutes" paragraph on the card, which is the first place someone stumbles
+  into this.
+
+### Phase 6 — (optional) Presentable piece (0.5 day)
+
+- A 5-minute script: what is shown, in what order, what to say about each case.
+- One architecture figure and one delegation-curve figure (the table is already measured).
+- Screenshots or a GIF of the demo running.
+
+## Estimate
+
+| Phase | Effort | Depends on |
+|---|---|---|
+| 0 Decisions | 30 min of yours | — |
+| 1 Packaging | 0.5-1 day | Phase 0 |
+| 2 Quickstart + demo | 1 day | Phase 1 |
+| 3 Clean verification | 0.5 day | Phase 2 |
+| 4 Documentation | 1-1.5 days | Phases 2-3 |
+| 5 Publication | 0.5 day | Phase 3 |
+| 6 Presentation (optional) | 0.5 day | Phase 4 |
+
+**Total: 4-5 days of effective work.** Order matters: the demo (Phase 2) before the documentation
+(Phase 4), because documenting something that then changes when tested clean is wasted work.
+
+## Risks and known traps
+
+- **R1 — Heavy dependencies**: `torch` is ~2 GB and the Cardiff model 1.1 GB. The demo has to say how
+  long it takes and how much it downloads before it starts, not after.
+- **R2 — Data licenses**: the benchmark (UMSAB/TweetEval) has its own license, and
+  `tweet_sentiment_multilingual` is often **non-commercial**. It has to be verified before publishing
+  `data/test_extended.jsonl` and before anyone uses this in production. It blocked Phase 5, not the
+  earlier phases.
+- **R3 — `laya`/`laya-coreml` are niche packages** and CoreML only runs on Apple Silicon. That is why
+  the default demo does not use them.
+- **R4 — The log keeps user text**: the `excerpt` default mitigates it, but `docs/OPERATIONS.md` has
+  to state explicitly what is kept and how to turn it off.
+- **R5 — DSH is not public**: the "tool inside the agent" part is not reproducible by third parties.
+  It is shown as a transcript and said clearly.
+- **R6 — Overselling**: the local model loses to a baseline you download in two lines (89.7% against
+  86.0%), and on this task a zero-shot engine beats the project's fine-tune. The README has to say
+  this up front, not hide it at the end: **what is presented is the hybrid pattern and its
+  measurement, not a winning model.**
+
+## What this plan does NOT include
+
+- Retraining or improving the model (a closed phase).
+- Publishing the CoreML package again (it is already published).
+- Making the harness multi-tenant, database-backed or server-deployable: today it is a local service
+  for one person, and the plan keeps it that way.
+
+## Recommended first cut
+
+If a short path is needed to have something presentable as soon as possible:
+**Phase 0 → Phase 1 → Phase 2 → Phase 3**, and only then document. That already gives a clonable repo
+and a `make demo` that runs on any OS: that is what lets someone try it.
+
+---
+
+<details>
+<summary><h2>🇪🇸 Versión en Español — Haz clic aquí para desplegar</h2></summary>
+
 # Plan de acción — documentar y hacer demostrable el harness híbrido
 
 ## Estado
@@ -5,10 +234,10 @@
 | Fase | Estado |
 |---|---|
 | 0 Decisiones | ✅ repo público, **Apache-2.0**, Cardiff en el demo, log en `excerpt`, plugin incluido |
-| 1 Empaquetado | ✅ git, `pyproject` con extras, `Makefile`, `LICENSE`, `LICENCIAS.md`, `.env.example` |
+| 1 Empaquetado | ✅ git, `pyproject` con extras, `Makefile`, `LICENSE`, `docs/LICENSES.md`, `.env.example` |
 | 2 Quickstart y demo | ✅ `make demo` + `docs/DEMO.md` con la salida real |
 | 3 Verificación en limpio | ✅ pasa de punta a punta (ver abajo); encontró **dos fallos reales** |
-| 4 Documentación | ✅ `ARCHITECTURE`, `DECISIONS`, `OPERATIONS` |
+| 4 Documentación | ✅ ARCHITECTURE, DECISIONS, OPERATIONS, LICENSES, DEMO, PLAN, VERSIONING |
 | 5 Publicación | ✅ repo público, tag `v1.0.0`, Release con notas y 10 topics |
 | 6 Presentación (opcional) | ⏳ no hecha (guion de 5 minutos y figuras) |
 
@@ -31,7 +260,7 @@ Números de la corrida en limpio, con cachés de uv y de modelos **vacías**:
 
 | Paso | Tiempo | Qué implica |
 |---|---|---|
-| `git clone` | 0 s | 66 archivos; ningún venv ni log viaja en el repo |
+| `git clone` | 0 s | 61 archivos; ningún venv ni log viaja en el repo |
 | `make setup` | 75 s | entorno de 766 MB |
 | `make demo` | 148 s | incluye la descarga de 1,1 GB del modelo |
 | `make test` | 25 s | self-test + 19 casos límite + concurrencia |
@@ -53,7 +282,7 @@ y cómo se verifica, sin depender de tu máquina ni de tu árbol de proyecto.
 |---|---|
 | Código del servicio | 8 módulos en `service/`, ~1.200 líneas, funcionando y desplegado |
 | Scripts | 15 (sondas, baterías, informe, exportador, launchd) |
-| Documentación | README + VERSIONADO + 4 resúmenes de resultados |
+| Documentación | README + VERSIONING + 4 resúmenes de resultados |
 | **Distribución** | **no es un repo git**: nadie puede clonarlo, no hay historia ni tag |
 | Empaquetado | sin `pyproject.toml`, sin `.env.example`, sin `LICENSE`, sin `.gitignore` |
 | Tests | las sondas existen pero no hay un `make test` que las corra |
@@ -151,17 +380,15 @@ reproduce. Nada de números sin fuente.
 
 ### Fase 5 — Publicación (0,5 día)
 
-**Falta un paso concreto antes de publicar.** El `config.yaml` que se versiona y el que usa el
-despliegue son **el mismo archivo**, y tiene varias rutas absolutas a la máquina del autor
-para los modelos de Laya. Publicarlo así filtra la estructura de
-directorios y no le sirve a nadie. El paso es: versionar `config.example.yaml` con placeholders
-documentados, sacar `config.yaml` del control de versiones, y ajustar la sincronización del
-despliegue para que conserve el suyo real. `config.demo.yaml` (el del `make demo`) no tiene rutas
-absolutas y ya es publicable tal cual.
+**Hizo falta un paso concreto antes de publicar.** El `config.yaml` que se versionaba y el que usa el
+despliegue son **el mismo archivo**, y tiene varias rutas absolutas a la máquina del autor para los
+modelos de Laya. Publicarlo así filtra la estructura de directorios y no le sirve a nadie. El paso
+fue: versionar `config.example.yaml` con placeholders documentados, sacar `config.yaml` del control
+de versiones, y ajustar la sincronización del despliegue para que conserve el suyo real.
+`config.demo.yaml` (el del `make demo`) no tiene rutas absolutas y ya era publicable tal cual.
 
-Lo demás de la fase es mecánico: crear el remoto, `git remote add`, push, tag y enlaces desde la
+El resto de la fase es mecánico: crear el remoto, `git remote add`, push, tag y enlaces desde la
 tarjeta del modelo en Hugging Face.
-
 
 - Repo con tag/release, `CITATION.cff` si va a citarse.
 - Enlaces desde donde ya hay audiencia: la card del modelo en Hugging Face
@@ -222,3 +449,5 @@ tirado.
 Si hay que elegir un camino corto para tener algo presentable cuanto antes:
 **Fase 0 → Fase 1 → Fase 2 → Fase 3**, y recién después documentar. Con eso ya hay un repo clonable
 y un `make demo` que corre en cualquier SO: eso es lo que permite que alguien lo pruebe.
+
+</details>
