@@ -13,7 +13,19 @@ set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [ -z "${DSH_DIR:-}" ]; then
-  echo "start-dsh: DSH_DIR is not set. Point it at your deepseek-harness checkout:" >&2
+  # DSH_DIR is machine-specific and normally comes from the project's .envrc — but direnv blocks a
+  # file it has not been asked to approve, and a blocked .envrc should not stop you from starting
+  # DSH. So look in the obvious places first and say which one was picked.
+  for candidate in "$REPO/vendor/deepseek-harness" "$HOME/Projects/ml"/*/vendor/deepseek-harness; do
+    if [ -d "$candidate/apps/cli" ]; then
+      DSH_DIR="$candidate"
+      echo "start-dsh: DSH_DIR not set, using $DSH_DIR (export DSH_DIR to choose another)" >&2
+      break
+    fi
+  done
+fi
+if [ -z "${DSH_DIR:-}" ]; then
+  echo "start-dsh: DSH_DIR is not set and no deepseek-harness checkout was found." >&2
   echo "  export DSH_DIR=\$HOME/Projects/ml/Hybrid_Harness/vendor/deepseek-harness" >&2
   exit 2
 fi

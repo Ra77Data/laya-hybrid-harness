@@ -95,7 +95,15 @@ lifecycle:
 ```
 
 After that much idle time a model is dropped and the accelerator cache is released; the next call
-loads it again. **The price is on that first call**, so raise the client timeout when you turn it on:
+loads it again. **What that does and does not buy, measured:** on a service holding both models,
+unloading released ~1,030 MB of accelerator memory (2,331 -> 1,305 MB) and only ~50 MB of resident
+size. macOS does not take a process's pages back once it has touched them — the model objects are gone
+(verified: no tensors left alive, the accelerator counter drops) but the RSS stays, and
+`malloc_zone_pressure_relief` releases nothing. **Only the process exiting returns all of it.** So
+this setting is worth having — it gives back the scarce accelerator memory — but it is not a way to
+make an idle service small. For that, either load less (`max_length`/fp16, or serve fewer models) or
+run the models in a worker process that exits when idle. `/health` reports both numbers under
+`lifecycle.rss_mb` and `lifecycle.accelerator_mb`, so you can check instead of guessing. **The price is on that first call**, so raise the client timeout when you turn it on:
 the DSH plugin defaults to 2500 ms, and a warm reload measured **2.0 s** (a cold one, right after a
 reboot, takes 5-9 s). In the project's `.envrc`:
 
@@ -313,7 +321,16 @@ lifecycle:
 ```
 
 Tras ese tiempo de inactividad el modelo se descarga y se libera la caché del acelerador; la llamada
-siguiente lo vuelve a cargar. **El precio está en esa primera llamada**, así que subí el timeout del
+siguiente lo vuelve a cargar. **Qué compra y qué no, medido:** en un servicio con los dos modelos,
+descargarlos liberó ~1.030 MB de memoria del acelerador (2.331 -> 1.305 MB) y sólo ~50 MB de memoria
+residente. macOS no le devuelve las páginas a un proceso una vez que las tocó —los objetos del modelo
+se van (verificado: no queda ningún tensor vivo y el contador del acelerador baja) pero el RSS se
+queda— y `malloc_zone_pressure_relief` no libera nada. **Sólo la salida del proceso las devuelve
+todas.** Así que esta opción vale la pena —devuelve la memoria escasa, la del acelerador— pero no es
+una forma de que un servicio inactivo ocupe poco. Para eso, o se carga menos (fp16, o servir menos
+modelos) o se corren los modelos en un proceso trabajador que termina cuando está ocioso. `/health`
+informa los dos números en `lifecycle.rss_mb` y `lifecycle.accelerator_mb`, para que lo verifiques en
+vez de suponerlo. **El precio está en esa primera llamada**, así que subí el timeout del
 cliente al activarlo: el plugin de DSH usa 2500 ms por defecto y una recarga en caliente medida dio
 **2,0 s** (una fría, justo después de un reinicio, tarda 5-9 s). En el `.envrc` del proyecto:
 

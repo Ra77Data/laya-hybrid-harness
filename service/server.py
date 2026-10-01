@@ -185,6 +185,47 @@ def decide_with(state: str, questions: list[Question], pinned: str | None = None
     return sorted(answers, key=lambda a: order.get(a.id, 0))
 
 
+def _rss_mb() -> float | None:
+    """Resident size of this process, so the memory policy can be checked from /health.
+
+    Reading another process needs privileges, but a process can always ask about itself. macOS only
+    (mach task_info); elsewhere the field is simply absent rather than wrong.
+    """
+    try:
+        import ctypes
+        import ctypes.util
+
+        libc = ctypes.CDLL(ctypes.util.find_library("System"))
+        libc.mach_task_self.restype = ctypes.c_uint32
+
+        class _Info(ctypes.Structure):
+            _fields_ = [("virtual_size", ctypes.c_uint64), ("resident_size", ctypes.c_uint64),
+                        ("resident_size_max", ctypes.c_uint64), ("user_time", ctypes.c_uint64 * 2),
+                        ("system_time", ctypes.c_uint64 * 2), ("policy", ctypes.c_int),
+                        ("suspend_count", ctypes.c_int)]
+
+        info = _Info()
+        count = ctypes.c_uint32(ctypes.sizeof(info) // ctypes.sizeof(ctypes.c_int))
+        if libc.task_info(libc.mach_task_self(), 20, ctypes.byref(info), ctypes.byref(count)) != 0:
+            return None
+        return round(info.resident_size / 1048576, 1)
+    except Exception:  # noqa: BLE001 - a missing number is better than a wrong one
+        return None
+
+
+def _accelerator_mb() -> float | None:
+    """What the accelerator allocator is holding, if it exposes a counter (MPS and CUDA do)."""
+    try:
+        import torch
+        if getattr(torch.backends, "mps", None) is not None and torch.backends.mps.is_available():
+            return round(torch.mps.driver_allocated_memory() / 1048576, 1)
+        if torch.cuda.is_available():            # pragma: no cover
+            return round(torch.cuda.memory_reserved() / 1048576, 1)
+    except Exception:  # noqa: BLE001
+        pass
+    return None
+
+
 def _free_accelerator_cache() -> None:
     """Hand back what the accelerator allocator is holding, if it is there at all."""
     try:
@@ -372,7 +413,12 @@ def health():
         routing=CONFIG.routing, models=models,
         lifecycle={"idle_unload_seconds": CONFIG.idle_unload_seconds,
                    "check_interval_seconds": CONFIG.idle_check_seconds,
-                   "loaded_now": sorted(STATE["backends"])})
+                   "loaded_now": sorted(STATE["backends"]),
+                   # Two different numbers on purpose: `rss_mb` is what the OS keeps mapped to this
+                   # process, `accelerator_mb` is what the GPU allocator holds. Unloading frees the
+                   # second immediately; the first is only returned when the process exits.
+                   "rss_mb": _rss_mb(),
+                   "accelerator_mb": _accelerator_mb()})
 
 
 @app.get("/metrics")
