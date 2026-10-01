@@ -64,9 +64,9 @@ out.parent.mkdir(parents=True, exist_ok=True)
 with open(out, "w", encoding="utf-8") as f:
     for row in rows:
         f.write(json.dumps(row, ensure_ascii=False) + "\n")
-print(f"exportadas {len(rows)} decisiones de tráfico real ({args.hours} h) -> {out}")
+print(f"exported {len(rows)} real-traffic decisions ({args.hours} h) -> {out}")
 if rows:
     dlg = sum(1 for r in rows if r["delegate"])
-    print(f"  derivadas: {dlg} ({dlg/len(rows)*100:.1f} %)")
-    print(f"  idiomas: {dict(sorted((k, sum(1 for r in rows if r['lang_guess'] == k)) for k in {r['lang_guess'] for r in rows}))}")
-    print("  siguiente paso: completar el campo 'target' (1 positivo / 0 negativo) y medir precisión")
+    print(f"  delegated: {dlg} ({dlg/len(rows)*100:.1f} %)")
+    print(f"  languages: {dict(sorted((k, sum(1 for r in rows if r['lang_guess'] == k)) for k in {r['lang_guess'] for r in rows}))}")
+    print("  next step: fill in the 'target' field (1 positive / 0 negative) and measure accuracy")

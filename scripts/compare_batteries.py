@@ -10,7 +10,7 @@ if not files:
 
 rows = [json.loads(f.read_text(encoding="utf-8")) for f in files]
 w = 22
-print(f"{'modelo':{w}s} {'acc':>7s} {'deriva':>7s} {'acc local':>10s} {'conf media':>11s} "
+print(f"{'model':{w}s} {'acc':>7s} {'delegates':>10s} {'local acc':>10s} {'mean conf':>10s} "
       f"{'lat med':>8s} {'T':>5s} {'umbral':>7s}")
 for r in sorted(rows, key=lambda x: -x["accuracy"]):
     T = ",".join(str(v) for v in (r.get("types_with_temperature") or [])) or "-"
@@ -19,8 +19,8 @@ for r in sorted(rows, key=lambda x: -x["accuracy"]):
           f"{r['latency_ms_median']:7.1f}m {T:>5s} {str(r['threshold_noul']):>7s}")
 
 print()
-print("Por idioma (accuracy):")
+print("By language (accuracy):")
 langs = sorted({l for r in rows for l in r["accuracy_by_lang"]})
-print(f"{'modelo':{w}s} " + " ".join(f"{l:>7s}" for l in langs))
+print(f"{'model':{w}s} " + " ".join(f"{l:>7s}" for l in langs))
 for r in sorted(rows, key=lambda x: -x["accuracy"]):
     print(f"{r['model']:{w}s} " + " ".join(f"{r['accuracy_by_lang'].get(l, float('nan'))*100:6.1f}%" for l in langs))

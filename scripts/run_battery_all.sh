@@ -29,5 +29,5 @@ print(f\"  activo={d['model']} adaptador={d['adapter']} smoke_ok={d['smoke_ok']}
   wait $PID 2>/dev/null
   sleep 2
 done
-echo "############ resumen"
+echo "############ summary"
 .venv/bin/python scripts/compare_batteries.py

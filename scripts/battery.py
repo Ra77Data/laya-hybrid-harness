@@ -62,7 +62,7 @@ def post(path, payload, timeout=30):
 
 health = post("/health", {}) if False else json.load(urllib.request.urlopen(args.url + "/health", timeout=30))
 model = health["model"]
-print(f"modelo servido: {model} ({health['adapter']}) | muestra: {len(sample)} textos "
+print(f"model served: {model} ({health['adapter']}) | sample: {len(sample)} texts "
       f"({dict(Counter(r['lang'] for r in sample))})")
 
 rows = []
@@ -107,14 +107,14 @@ res = {
     "wall_seconds": round(wall, 1),
     "rows": rows,
 }
-print(f"  accuracy           {res['accuracy']*100:6.2f}%   (por idioma: "
+print(f"  accuracy           {res['accuracy']*100:6.2f}%   (by language: "
       + " ".join(f"{k} {v*100:.1f}" for k, v in per_lang.items()) + ")")
-print(f"  derivación         {res['delegation_rate']*100:6.2f}%   cobertura local {res['local_coverage']*100:.1f}%")
-print(f"  accuracy local     {res['local_only_accuracy']*100:6.2f}%   (en lo derivado: {res['delegated_accuracy']*100:.2f}%)")
-print(f"  confianza media    {res['mean_confidence']:.4f}   latencia mediana {res['latency_ms_median']} ms, p95 {res['latency_ms_p95']} ms")
-print(f"  calibración        T para: {res['types_with_temperature']} | umbral noul {res['threshold_noul']}")
+print(f"  delegation         {res['delegation_rate']*100:6.2f}%   local coverage {res['local_coverage']*100:.1f}%")
+print(f"  local accuracy     {res['local_only_accuracy']*100:6.2f}%   (on what was delegated: {res['delegated_accuracy']*100:.2f}%)")
+print(f"  mean confidence    {res['mean_confidence']:.4f}   median latency {res['latency_ms_median']} ms, p95 {res['latency_ms_p95']} ms")
+print(f"  calibration        T for: {res['types_with_temperature']} | noul threshold {res['threshold_noul']}")
 
 if args.out:
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps(res, indent=2))
-    print(f"  guardado: {args.out}")
+    print(f"  saved: {args.out}")

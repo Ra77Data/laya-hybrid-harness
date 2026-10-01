@@ -78,7 +78,7 @@ def post(path, payload, timeout=120):
 health = json.load(urllib.request.urlopen(args.url + "/health", timeout=30))
 print(f"routing noul={health['routing'].get('noul')} choice={health['routing'].get('choice')} "
       f"score={health['routing'].get('score')}")
-print(f"pregunta tipo={args.type} opciones={options} | muestra {len(sample)} textos")
+print(f"question type={args.type} options={options} | sample {len(sample)} texts")
 
 rows = []
 t0 = time.time()
@@ -123,13 +123,13 @@ res = {
     "wall_seconds": round(wall, 1),
     "rows": rows,
 }
-print(f"  modelo que contestó  {res['model_used']}")
-print(f"  accuracy             {res['accuracy']*100:6.2f}%  ({res['unmapped']} respuestas no mapeables a binario)")
-print(f"  por idioma           " + " ".join(f"{k} {v*100:.1f}" for k, v in res["accuracy_by_lang"].items()))
-print(f"  derivación           {res['delegation_rate']*100:6.2f}% | accuracy local {res['local_only_accuracy']*100:.2f}% "
-      f"sobre {res['local_coverage']*100:.0f}%")
-print(f"  confianza media      {res['mean_confidence']:.4f} | latencia mediana {res['latency_ms_median']} ms")
+print(f"  model that answered  {res['model_used']}")
+print(f"  accuracy             {res['accuracy']*100:6.2f}%  ({res['unmapped']} answers not mappable to binary)")
+print(f"  by language          " + " ".join(f"{k} {v*100:.1f}" for k, v in res["accuracy_by_lang"].items()))
+print(f"  delegation           {res['delegation_rate']*100:6.2f}% | local accuracy {res['local_only_accuracy']*100:.2f}% "
+      f"over {res['local_coverage']*100:.0f}%")
+print(f"  mean confidence      {res['mean_confidence']:.4f} | median latency {res['latency_ms_median']} ms")
 if args.out:
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps(res, indent=2))
-    print(f"  guardado: {args.out}")
+    print(f"  saved: {args.out}")

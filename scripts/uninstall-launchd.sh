@@ -6,12 +6,12 @@ PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 DOMAIN="gui/$(id -u)"
 
 if launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null; then
-  echo "agente descargado"
+  echo "agent unloaded"
 else
-  echo "(el agente no estaba cargado)"
+  echo "(the agent was not loaded)"
 fi
 if [ -f "$PLIST" ]; then
-  rm -f "$PLIST" && echo "plist eliminado: $PLIST"
+  rm -f "$PLIST" && echo "plist removed: $PLIST"
 fi
-pkill -f "uvicorn service.server:app" 2>/dev/null && echo "proceso restante detenido" || true
-echo "el servicio ya no arrancará solo ni se reiniciará."
+pkill -f "uvicorn service.server:app" 2>/dev/null && echo "remaining process stopped" || true
+echo "the service will no longer start on its own or restart."

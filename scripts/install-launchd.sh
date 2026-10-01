@@ -17,14 +17,14 @@ MODEL="${LAYA_ACTIVE_MODEL:-}"
 
 mkdir -p "$HOME/Library/LaunchAgents" "$ROOT/logs"
 
-echo "=== 1/4 bajar cualquier instancia previa (launchd o nohup)"
-launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null && echo "  agente previo descargado" || true
+echo "=== 1/4 stop any previous instance (launchd or nohup)"
+launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null && echo "  previous agent unloaded" || true
 if pkill -f "uvicorn service.server:app" 2>/dev/null; then
-  echo "  instancia manual detenida"
+  echo "  manual instance stopped"
   sleep 3
 fi
 
-echo "=== 2/4 escribir el plist"
+echo "=== 2/4 write the plist"
 if [ -n "$MODEL" ]; then
   MODEL_ENV="    <key>LAYA_ACTIVE_MODEL</key><string>$MODEL</string>"
 else
@@ -62,10 +62,10 @@ $MODEL_ENV
 EOF
 echo "  $PLIST"
 
-echo "=== 3/4 cargar el agente"
+echo "=== 3/4 load the agent"
 launchctl bootstrap "$DOMAIN" "$PLIST"
 
-echo "=== 4/4 esperar a que responda"
+echo "=== 4/4 wait for it to answer"
 PORT="$(cd "$ROOT" && .venv/bin/python -c "import yaml;print(yaml.safe_load(open('config.yaml'))['service']['port'])")"
 for _ in $(seq 1 40); do
   curl -s -m 2 "http://127.0.0.1:$PORT/health" >/dev/null 2>&1 && break
@@ -79,11 +79,11 @@ print(f\"  sirviendo: {d['model']} ({d['adapter']}) | smoke_ok={d['smoke_ok']} |
 print(f\"  T: {d['calibration'].get('types_with_temperature') or 'ninguna'} | umbrales: {d['delegation']['per_type']}\")
 "; then
   echo
-  echo "listo. Comandos útiles:"
+  echo "done. Useful commands:"
   echo "  launchctl print $DOMAIN/$LABEL | grep -E 'state|pid'"
   echo "  tail -f $ROOT/logs/launchd.err.log"
   echo "  scripts/uninstall-launchd.sh"
 else
-  echo "  el servicio no respondió; revisá $ROOT/logs/launchd.err.log" >&2
+  echo "  the service did not answer; check $ROOT/logs/launchd.err.log" >&2
   exit 1
 fi
