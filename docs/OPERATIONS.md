@@ -96,6 +96,12 @@ will process third-party data — and it has a price: with `metadata` there is n
 your own traffic requires opting into `excerpt` (or `full`) and accepting that text is written to
 disk.
 
+**No text by default, and what that costs.** The level is `metadata` in this repository: nothing a
+service processes is written to disk unless you ask for it. A deployment that only ever sees its own
+traffic —a personal machine, a lab, a benchmark run— can reasonably choose `excerpt`, because there is
+no third party to protect and it keeps the ability to label real traffic. Set it per deployment; it is
+one line in `config.yaml`.
+
 To measure accuracy on your own traffic:
 
 ```bash
@@ -270,6 +276,12 @@ a procesar datos de terceros — y tiene un precio: con `metadata` no hay nada q
 `scripts/export_eval.py` no puede armar un conjunto de evaluación desde el tráfico real. Medir
 precisión sobre tráfico propio exige optar por `excerpt` (o `full`) y aceptar que el texto se
 escribe a disco.
+
+**Sin texto por defecto, y lo que cuesta.** En este repositorio el nivel es `metadata`: nada de lo que
+el servicio procesa se escribe a disco salvo que lo pidas. Un despliegue que sólo ve su propio tráfico
+—una máquina personal, un laboratorio, una corrida de benchmark— puede elegir `excerpt` con criterio,
+porque no hay terceros que proteger y conserva la capacidad de etiquetar tráfico real. Se decide por
+despliegue; es una línea en `config.yaml`.
 
 Para medir precisión sobre tráfico propio:
 
