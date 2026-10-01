@@ -1,3 +1,172 @@
+# Hybrid Harness — local decision service with cloud delegation
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)](https://www.python.org/)
+[![Model](https://img.shields.io/badge/🤗%20Model-laya--sentiment--multilingual-yellow)](https://huggingface.co/Ramg77/laya-sentiment-multilingual)
+
+A decision service that runs **locally**, reports an **honest confidence**, and **delegates to the
+cloud when it is not sure**. The model it serves is configuration, not code.
+
+```bash
+make setup    # virtual environment + dependencies (once)
+make demo     # starts the service, shows the cases and the metrics, then shuts it down
+```
+
+Works on any operating system with the default path (`transformers`). The Laya/CoreML adapters —the
+engine this was built for— are the `make setup-full` variant, on macOS with Apple Silicon.
+
+## What this is, and what it is not
+
+What follows is the **hybrid pattern and its measurement**, not a winning model. On this task the
+local model loses to a baseline you can download in two lines (86.0% vs 89.7%), and even a zero-shot
+general engine beats the project's fine-tune.
+
+What *is* measured, and is not common to have measured, is everything else:
+
+| Finding | Number |
+|---|---|
+| How much more often the model errs on what it delegates | **5.86×** (36.8% vs 6.3%) |
+| End-to-end accuracy of the hybrid vs answering everything locally | **+2.76 points** (92.5% vs 89.7%) |
+| Traffic sent to the cloud to get that | **13%** |
+| AUC of the neutral-mass gate as a detector of neutral texts | **0.814** |
+
+Nothing here is asserted without the script that reproduces it.
+
+## What the demo shows
+
+One command, no Apple Silicon, no extra infrastructure. It tells a story rather than showing off:
+
+| Case | What it demonstrates |
+|---|---|
+| clear positive / negative | the normal path: answered **locally** with high confidence |
+| sarcasm | the model **gets it wrong** (`value=True`) but at 0.68 confidence: the harness **delegates**. It does not know the answer, but it knows it does not know |
+| neutral ("The order arrived on Tuesday.") | `P(neutral)=0.81` crosses the 0.70 gate: **delegates** instead of inventing a sentiment |
+| empty input | confidence 0.53 → **delegates** |
+| long text (2,400 chars) | 536 tokens against a 512 window → **delegates**, because a confident answer over partial text is worthless |
+| unsupported primitive | the model declares support for `noul` only; a `choice` question comes back as `unsupported_by_model` and **delegates** instead of making something up |
+
+The full transcript, copied from a real run, is in [`docs/DEMO.md`](docs/DEMO.md).
+
+## How it works
+
+```
+                 ┌──────────────────────────────────────────────┐
+   client  ───►  │  POST /decide                                │
+   (agent,       │   1. route by primitive   (routing)          │
+    script,      │   2. call the model       (adapter)          │
+    app)         │   3. calibrate            (temperature)      │
+                 │   4. decide               (policy)           │
+                 │   5. log the decision     (observability)    │
+                 └───────┬──────────────────────────┬───────────┘
+                         │                          │
+                 ┌───────▼────────┐        ┌────────▼─────────┐
+                 │   adapters     │        │  JSONL log       │
+                 │   coreml       │        │  + /metrics      │
+                 │   laya         │        └──────────────────┘
+                 │   transformers │
+                 └───────┬────────┘
+                         │
+              ┌──────────▼───────────┐
+              │  model registry      │
+              │  (config.yaml)       │
+              └──────────────────────┘
+```
+
+**Routing by primitive.** Each primitive (`noul` = yes/no, `choice` = pick one, `score` = ordinal)
+can be served by a different model, so a fine-tuned sentiment model and a general zero-shot decision
+engine live behind the same endpoint without the client knowing which is which. Every answer says
+which model produced it (`model_used`).
+
+**The delegation policy** fires if *any* of these holds, and the reason is written into the response:
+
+1. calibrated confidence below the per-primitive threshold;
+2. `P(neutral)` above the neutral-mass threshold (the text has no sentiment to classify);
+3. the text did not fit the model's window (it never saw all of it);
+4. the model does not implement that primitive.
+
+**Design guarantees**, all visible from `/health`:
+
+- **The hash is authoritative.** If the real sha256 of the weights does not match `expect_sha256`,
+  that model is not loaded. This came from a real incident: the deployed service was serving a
+  different model than the documentation claimed.
+- **`calibrated` does not lie.** It is true only if a temperature was actually applied.
+- **Inference is serialized.** MPS/Metal is not thread-safe: without a lock, *two* concurrent
+  requests aborted the process.
+- **Logging can never take down a decision.** It runs inside `try/except` and counts its own errors.
+
+## Quickstart
+
+```bash
+make setup    # environment + demo path (transformers). Any OS.
+make demo     # the full demonstration, then it shuts the service down
+make test     # model self-test + 19 edge cases + concurrency
+```
+
+Verified from a clean clone, with empty `uv` and model caches:
+
+| Step | Time | What it implies |
+|---|---|---|
+| `git clone` | 0 s | 61 files; no venv or log travels in the repo |
+| `make setup` | 75 s | 766 MB environment |
+| `make demo` | 148 s | includes the 1.1 GB model download |
+| `make test` | 25 s | self-test + edge cases + concurrency |
+
+**From zero to a working demo: ~4 minutes.** The test is in
+[`tests/quickstart_clean.sh`](tests/quickstart_clean.sh) so anyone can repeat it.
+
+## Deployment (macOS)
+
+```bash
+scripts/install-launchd.sh    # starts at login and restarts if it crashes
+scripts/uninstall-launchd.sh
+make smoke                     # is it up? which model?
+make metrics                   # delegation rate, reasons, latencies, histograms
+make report                    # human-readable report of real traffic
+```
+
+`KeepAlive` with `SuccessfulExit: false` and `ThrottleInterval: 30`: if the process dies, launchd
+brings it back; if the service **refuses to start** (e.g. a hash mismatch), it retries at most once
+every 30 seconds instead of hot-looping.
+
+## Observability
+
+Every decision is written to `logs/decisions/decisions-<date>.jsonl` with a configurable detail
+level (`off` / `metadata` / **`excerpt`** (default) / `full`). `/metrics` aggregates delegation rate
+by primitive, delegation reasons by kind, model mix, latency percentiles, and confidence and
+neutral-mass histograms.
+
+`scripts/export_eval.py` turns real traffic into a labelled evaluation set — that is how you measure
+accuracy on your own traffic instead of on the dataset's test split.
+
+## Documentation
+
+| Document | What it covers |
+|---|---|
+| [`docs/DEMO.md`](docs/DEMO.md) | the demonstration, with its real output |
+| [`docs/ARQUITECTURA.md`](docs/ARQUITECTURA.md) | components, contract, routing, guarantees |
+| [`docs/DECISIONES.md`](docs/DECISIONES.md) | every design decision with its evidence |
+| [`docs/OPERACION.md`](docs/OPERACION.md) | deploy, observe, change, troubleshoot |
+| [`docs/LICENCIAS.md`](docs/LICENCIAS.md) | third-party licenses, verified |
+| [`results/RESUMEN_*.md`](results/) | **the evidence**: every number with its method |
+
+> **Note:** the documents above are currently written in **Spanish**. The README is bilingual; the
+> detailed docs are not yet.
+
+## License
+
+Apache-2.0 (see [`LICENSE`](LICENSE)). The Laya project —its GitHub repository, the `laya` and
+`laya-coreml` packages and the base model— is **Apache-2.0**, which is why this repository uses the
+same license rather than a copyleft one: the FSF considers Apache-2.0 incompatible with GPL-2.0.
+
+---
+
+<details>
+<summary><h2>🇪🇸 Versión en Español — Haz clic aquí para desplegar</h2></summary>
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)](https://www.python.org/)
+[![Model](https://img.shields.io/badge/🤗%20Model-laya--sentiment--multilingual-yellow)](https://huggingface.co/Ramg77/laya-sentiment-multilingual)
+
 # Harness híbrido de decisión local
 
 Un servicio de decisión que corre **local**, responde con una confianza honesta y **deriva al cloud
@@ -304,3 +473,5 @@ El campo `neutral_mass` viaja en cada respuesta, y la razón de derivación lo d
 
 Todo lo demás que estaba acá —observabilidad, el camino `choice`/`score` en los adaptadores de Laya,
 los topics del repositorio— está hecho y verificado: ver `docs/VERSIONADO.md`.
+
+</details>
