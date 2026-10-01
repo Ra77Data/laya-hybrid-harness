@@ -1,9 +1,8 @@
-"""Temperatura por primitiva: se aplica de verdad y se reporta lo que pasó.
+"""Per-primitive temperature: it is really applied, and what happened is reported.
 
-Diferencia clave con V3/V5: `calibrated=True` ya no significa "hay un archivo de
-calibración cargado", significa "a esta respuesta se le aplicó una temperatura".
-Si la primitiva no tiene T ajustada, la respuesta viaja con `calibrated=False` y una
-nota que lo explica.
+Key difference from V3/V5: `calibrated=True` no longer means "a calibration file is
+loaded", it means "a temperature was applied to this answer". If the primitive has no
+fitted T, the answer travels with `calibrated=False` and a note explaining why.
 """
 import json
 import math
@@ -60,10 +59,10 @@ def load_calibration(path: str | Path | None) -> Calibration:
 
 
 def apply_temperature(probs: list[float], qtype: str, cal: Calibration, fallback: float | None = None):
-    """Devuelve (confianza, aplicada, T, nota).
+    """Returns (confidence, applied, T, note).
 
-    Binario (noul): se escala el logit de P(true) — que es como se ajustó la T publicada.
-    Multiclase (choice/score): softmax(log(p)/T).
+    Binary (noul): the logit of P(true) is scaled — which is how the published T was fitted.
+    Multiclass (choice/score): softmax(log(p)/T).
     """
     if not probs:
         if fallback is not None:
@@ -76,15 +75,15 @@ def apply_temperature(probs: list[float], qtype: str, cal: Calibration, fallback
     if T is None:
         return raw, False, None, (
             f"no temperature for '{qtype}'"
-            + (f" en {Path(cal.source).name}" if cal.source else " (no calibration file)")
+            + (f" in {Path(cal.source).name}" if cal.source else " (no calibration file)")
         )
     if T <= 0:
         return raw, False, None, f"invalid temperature ({T})"
     if len(probs) == 2:
-        # softmax(logits/T) con dos clases = sigma(logit(P(true))/T) para la clase positiva.
-        # La CONFIANZA es la probabilidad de la clase elegida, o sea el máximo del vector
-        # calibrado: devolver sigma(z/T) a secas invertía la confianza en las predicciones
-        # negativas (0,85 crudo -> 0,12 "confianza") y disparaba derivaciones falsas.
+        # softmax(logits/T) with two classes = sigma(logit(P(true))/T) for the positive class.
+        # CONFIDENCE is the probability of the chosen class, i.e. the max of the calibrated
+        # vector: returning plain sigma(z/T) inverted confidence on negative predictions
+        # (0.85 raw -> 0.12 "confidence") and triggered false delegations.
         p_true = _sigmoid(_logit(probs[1]) / T)
         return round(max(p_true, 1.0 - p_true), 4), True, T, None
     logp = [math.log(max(p, 1e-12)) / T for p in probs]

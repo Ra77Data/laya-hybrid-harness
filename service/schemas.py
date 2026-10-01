@@ -1,4 +1,4 @@
-"""Contrato HTTP del servicio. Compatible con el plugin de DSH: solo se agregan campos."""
+"""HTTP contract of the service. Compatible with the DSH plugin: fields are only ever added."""
 from pydantic import BaseModel, Field
 
 
@@ -13,8 +13,8 @@ class Question(BaseModel):
 class DecideRequest(BaseModel):
     state: str
     questions: list[Question]
-    # Fija el modelo para todas las preguntas, saltando el enrutamiento. Sirve para comparar
-    # modelos con la misma batería sin tocar la config ni reiniciar el servicio.
+    # Pins the model for every question, skipping routing. Useful to compare models
+    # on the same battery without touching the config or restarting the service.
     model: str | None = None
 
 
@@ -22,20 +22,20 @@ class Answer(BaseModel):
     id: str
     type: str
     value: object = None
-    model_used: str | None = None         # qué modelo contestó esta pregunta
+    model_used: str | None = None         # which model answered this question
     confidence: float = 0.0
     raw_confidence: float | None = None
     calibrated: bool = False
-    temperature: float | None = None      # la T realmente aplicada, no "hay archivo"
-    calibration_note: str | None = None   # por qué NO se calibró, cuando no se pudo
+    temperature: float | None = None      # the T actually applied, not "a file exists"
+    calibration_note: str | None = None   # why it was NOT calibrated, when it could not be
     probs: list[float] = Field(default_factory=list)
     options: list[str] = Field(default_factory=list)
     delegate_to_cloud: bool = False
     delegate_reason: str | None = None
-    threshold: float | None = None        # umbral aplicado a esta primitiva
-    supported: bool = True                # false si el modelo no sabe responder ese tipo
-    neutral_mass: float | None = None     # P(neutro) cuando el modelo la calcula
-    truncated: bool = False               # el modelo no vio el texto completo
+    threshold: float | None = None        # threshold applied to this primitive
+    supported: bool = True                # false if the model cannot answer that type
+    neutral_mass: float | None = None     # P(neutral) when the model computes it
+    truncated: bool = False               # the model did not see the whole text
     input_tokens: int | None = None
     max_length: int | None = None
 
@@ -59,4 +59,4 @@ class HealthResponse(BaseModel):
     delegation: dict = Field(default_factory=dict)
     smoke_ok: bool | None = None
     routing: dict = Field(default_factory=dict)
-    models: dict = Field(default_factory=dict)   # estado por modelo: cargado, pesos, self-test
+    models: dict = Field(default_factory=dict)   # per-model state: loaded, weights, self-test
