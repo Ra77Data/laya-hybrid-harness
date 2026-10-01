@@ -149,9 +149,6 @@ accuracy on your own traffic instead of on the dataset's test split.
 | [`docs/LICENSES.md`](docs/LICENSES.md) | third-party licenses, verified |
 | [`results/SUMMARY_*.md`](results/) | **the evidence**: every number with its method |
 
-> **Note:** the documents above are currently written in **Spanish**. The README is bilingual; the
-> detailed docs are not yet.
-
 ## License
 
 Apache-2.0 (see [`LICENSE`](LICENSE)). The Laya project —its GitHub repository, the `laya` and
