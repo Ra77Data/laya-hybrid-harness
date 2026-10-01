@@ -1,3 +1,134 @@
+# Versioning V7 — model-agnostic decision service
+
+## Date: 2026-09-30
+
+## Why it exists
+
+V7 does not add a model: it fixes the **deployment**. Auditing the harness that was running surfaced
+four problems that no earlier version detected:
+
+| Problem found | What V7 does |
+|---|---|
+| Port 8090 was held by the **V3** service (the PoC model, `587e4ac8…`), while the documentation said V5 was deployed with the validated model | The model comes from `config.yaml`; `/health` reports the **sha256 of the weights** and whether it matches the expected one. If it does not match, it **does not start** |
+| `calibrated: true` meant "a calibration file exists", not "a temperature was applied" | `calibrated` is true only if a T was applied; the answer carries `temperature` and, when it could not be applied, `calibration_note` |
+| The delegation policy only applied to `choice`: sentiment (`noul`) never delegated | It applies to every primitive, with per-type thresholds, on calibrated confidence |
+| The service did not distinguish what it cannot do | Every model declares `supports`; anything else comes back as `unsupported_by_model` |
+
+## Architecture
+
+```
+DSH Cordis plugin  ->  POST /decide  ->  V7 service  ->  adapter  ->  model
+   (unchanged)         127.0.0.1:8090    config.yaml    coreml | laya | transformers
+```
+
+The DSH plugin **is not touched**: it points at `http://127.0.0.1:8090` by default, so replacing the
+service behind the port is the entire change.
+
+## Models in the registry
+
+| id | adapter | measured accuracy (240 texts) | local accuracy | median latency |
+|---|---|---|---|---|
+| `cardiff-xlmr` | transformers | **91.67%** | **95.28%** over 88% of traffic | **10 ms** |
+| `laya-sentiment-v1` | coreml | 84.58% | 89.35% over 90% | 55 ms |
+| `laya-sentiment-v2` | laya | 83.75% | 85.17% over 98% | 19 ms |
+
+**Active: `cardiff-xlmr`.** The measurement shows it wins on accuracy, on the quality of what it
+answers locally and on latency, without needing calibration. On the sarcasm case it gets it wrong at
+0.68 confidence and **delegates**, while v1 got it wrong at 0.91 and answered locally: the gate works
+better with it.
+
+## Status
+
+- Deployed at `~/Projects/ml/Hybrid_Harness_V7/`, port 8090.
+- Replaces the V3 service. **V3 is archived, not deleted.**
+- V5 keeps the validated CoreML model, which V7 serves through the `coreml` adapter.
+
+## Routing by primitive (general engine restored)
+
+After switching to serving a sentiment model, the DSH tool had been left with **only** `noul`: a
+`choice` or `score` question came back as `unsupported_by_model`. The general decision engine was
+restored without going back to a hardcoded model: `routing` in `config.yaml` decides which model
+handles each primitive, and the service loads models lazily.
+
+- `noul` -> `cardiff-xlmr` (sentiment, 91.67% on 240 texts)
+- `choice` / `score` -> `laya-base` (general zero-shot engine)
+
+Full registry: 5 models (`cardiff-xlmr`, `laya-base`, `laya-sentiment-v1`, `laya-sentiment-v2`,
+`laya-poc`), all with a verified real sha256 and their own self-test case. `/selftest` runs the 7
+cases and passes.
+
+Two honesty fixes that came out of this:
+
+- A Hugging Face cache **blob name is not** the sha256 of the content (verified on two models). The
+  service was reporting the former as `sha256`; it now hashes the real file.
+- The adapter **fabricated** a probability vector when the backend exposed no distribution. It now
+  returns an empty `probs` and the model's own confidence, marked as uncalibrated.
+
+And a behavioural finding: the **formulation** (primitive and phrasing) matters more than the model.
+`laya-base` scores 87.5% asking for sentiment as `choice` and 53.3% as `noul`.
+
+## Testing the harness (edge cases and concurrency)
+
+Two real failures, found by testing the deployed service, and fixed:
+
+1. **MPS is not thread-safe**: two concurrent requests aborted the process with a Metal assertion
+   (`MTLCommandBufferStatusCommitted`). Fixed with a global inference lock; verified up to 16
+   concurrent requests (16/16, no restarts).
+2. **Silent truncation**: the Hugging Face adapter cut at 128 tokens (a hardcoded value), so a
+   2,489-character text was classified the wrong way at 0.908 confidence and not delegated. Now
+   `max_length` is configurable (512), the answer reports truncation and **truncating forces
+   delegation**.
+
+Also: the evaluation scripts now carry their own `data/test_extended.jsonl` instead of depending on
+the workspace path.
+
+## Neutral-mass policy
+
+A neutral text came back positive at 0.768 and did not delegate: Cardiff's binary reduction cannot say
+"neutral". The policy now delegates when `P(neutral)` exceeds `delegation.neutral_mass_threshold`.
+
+The threshold (0.70) was chosen with data: 600 real neutral texts from class 1 of the original dataset
+against the 1,740 non-neutral ones. AUC 0.81; at 0.70 it detects 49% of neutrals for +1.5 points of
+traffic. 0.50 was rejected: it detects more neutrals but costs four times the traffic at the same
+local error. Details in `results/SUMMARY_HARNESS_TEST.md`.
+
+## Observability
+
+Every decision is logged to daily JSONL (`logs/decisions/`), with a configurable detail level
+(`off`/`metadata`/`excerpt`/`full`; default `excerpt`: first 160 characters). It records which model
+answered, raw and calibrated confidence, the temperature applied, the neutral mass, whether the text
+was truncated and **why it was delegated**, with the reason grouped by kind.
+
+Two tools: `scripts/report_decisions.py` (readable report) and `scripts/export_eval.py` (exports real
+traffic for labelling, so accuracy can be measured on your own traffic).
+
+Logging runs inside a `try/except`: **it cannot take down a decision**. Verified with 83 records and
+0 errors.
+
+Along the way, the log path was fixed to resolve against the config's directory rather than the
+current one, which used to make the scripts return zero records when called from elsewhere.
+
+## Pending
+
+- [x] ~~Observability~~: daily JSONL logging with a configurable detail level, `/metrics` with
+      delegation by primitive and by reason, a CLI report and an exporter for labelling real traffic.
+      83 records written, 0 errors.
+- [x] ~~Persistent startup (launchd) instead of `nohup`~~: LaunchAgent installed, with automatic
+      restart verified (`kill -9` → `runs` 1→2) and a cold start verified.
+- [x] ~~`choice`/`score` on the CoreML/Laya adapters~~: tested on both adapters, with
+      `probabilities`/`legend` read correctly.
+- [x] ~~Re-measure CoreML latency~~: measured **with the same method V5 used** (timing `/decide` on
+      the server, which is what its `server.py` does). It gives **55 ms** median end to end and
+      **50 ms** of direct inference without HTTP over 30 calls, so HTTP overhead is ~5 ms and the
+      "16 ms steady" **does not reproduce**: it is the model, not the network. There is no record of
+      how that number was obtained, so the discrepancy is documented rather than resolved.
+      See `results/SUMMARY_BATTERY.md`.
+
+---
+
+<details>
+<summary><h2>🇪🇸 Versión en Español — Haz clic aquí para desplegar</h2></summary>
+
 # Versionado V7 — Servicio de decisión agnóstico del modelo
 
 ## Fecha: 2026-09-30
@@ -123,3 +254,5 @@ del config, así que los scripts devolvían cero registros si se los llamaba des
       HTTP son ~5 ms y el "16 ms steady" **no se reproduce**: es el modelo, no la red. No queda registro
       de cómo se obtuvo aquel número, así que la discrepancia se documenta en vez de resolverse.
       Ver `results/SUMMARY_BATTERY.md`.
+
+</details>
