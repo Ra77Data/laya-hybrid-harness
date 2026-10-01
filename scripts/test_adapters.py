@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-"""Prueba cada adaptador del registro: carga, identidad de pesos y una predicción.
+"""Tests each adapter in the registry: loading, weight identity and one prediction.
 
-Uso: HF_HUB_CACHE=<cache> .venv/bin/python scripts/test_adapters.py [modelo ...]
+Usage: HF_HUB_CACHE=<cache> .venv/bin/python scripts/test_adapters.py [model ...]
 """
 import sys
 from pathlib import Path
@@ -38,8 +38,8 @@ for mid in targets:
         try:
             item = backend.predict(text, q)["s"]
             p = item["probs"][1] if item.get("probs") else float("nan")
-            trato = "POSITIVE" if item.get("value") else "NEGATIVE"
-            print(f"  {label:9s} -> {trato:8s} P(positive)={p:.4f}")
+            verdict = "POSITIVE" if item.get("value") else "NEGATIVE"
+            print(f"  {label:9s} -> {verdict:8s} P(positive)={p:.4f}")
         except Exception as exc:  # noqa: BLE001
             print(f"  {label:9s} -> ERROR {type(exc).__name__}: {exc}")
     print()

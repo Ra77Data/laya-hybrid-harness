@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-"""Los casos del demo, contados como una historia.
+"""The demo cases, told as a story.
 
-No busca lucir al modelo: muestra las cuatro decisiones que el harness puede tomar —responder
-local, derivar por baja confianza, derivar por masa neutral y derivar por truncación— más lo que
-hace cuando la primitiva no está soportada.
+It does not try to show the model off: it shows the four decisions the harness can make —answer
+locally, delegate on low confidence, delegate on neutral mass and delegate on truncation— plus
+what it does when the primitive is not supported.
 
-Uso: python scripts/demo.py [--url http://127.0.0.1:8090]
+Usage: python scripts/demo.py [--url http://127.0.0.1:8090]
 """
 import argparse
 import json
@@ -15,13 +15,14 @@ import urllib.request
 
 SENT = "Does this text express positive sentiment?"
 
-CASOS = [
+CASES = [
     ("local", "clear positive", "I love this product, it changed my life!",
      [{"id": "s", "type": "noul", "instructions": SENT}]),
     ("local", "clear negative", "El producto llegó roto y nadie responde. Una estafa.",
      [{"id": "s", "type": "noul", "instructions": SENT}]),
-    # sin expectativa: el modelo acierta o falla según el texto, y lo que importa es que si duda,
-    # derive. Afirmarlo haría que el demo dependiera de la confianza de un caso puntual.
+    # no expectation: the model may get it right or wrong depending on the text, and what
+    # matters is that when it is unsure it delegates. Asserting it would make the demo depend on
+    # the confidence of one specific case.
     ("", "sarcasm", "Great, another product that broke in a week. Just what I needed.",
      [{"id": "s", "type": "noul", "instructions": SENT}]),
     ("delegate", "neutral (high neutral mass)", "El pedido llegó el martes.",
@@ -56,23 +57,23 @@ print(f"confidence thresholds: {health['delegation']['per_type']} | "
       f"neutral mass: {health['delegation'].get('neutral_mass_threshold', 'off')}")
 print()
 
-for esperado, etiqueta, texto, preguntas in CASOS:
+for expected, label, text, questions in CASES:
     try:
-        out, _ = post(args.url, {"state": texto, "questions": preguntas})
+        out, _ = post(args.url, {"state": text, "questions": questions})
     except urllib.error.HTTPError as e:
-        print(f"  {etiqueta:34s} ERROR HTTP {e.code}: {e.read().decode()[:90]}")
+        print(f"  {label:34s} ERROR HTTP {e.code}: {e.read().decode()[:90]}")
         continue
     a = out["answers"][0]
     decision = "DELEGATE" if a["delegate_to_cloud"] else "local   "
-    if esperado in ("local", "delegate"):
-        marca = "ok" if decision.strip().lower() == esperado else "  "
+    if expected in ("local", "delegate"):
+        mark = "ok" if decision.strip().lower() == expected else "  "
     else:
-        marca = "·"
+        mark = "·"
     conf = f"{a['confidence']:.3f}" if a.get("confidence") is not None else "  -  "
     nm = a.get("neutral_mass")
     extra = f"neutral={nm:.2f}" if nm is not None else "neutral=  - "
     cal = "calibrated" if a.get("calibrated") else "raw"
-    print(f"  [{marca}] {etiqueta:34s} {decision} value={str(a['value']):8s} conf={conf} ({cal}) "
+    print(f"  [{mark}] {label:34s} {decision} value={str(a['value']):8s} conf={conf} ({cal}) "
           f"{extra} model={a.get('model_used')}")
     if a["delegate_to_cloud"]:
         print(f"        reason: {a.get('delegate_reason')}")
@@ -87,7 +88,7 @@ print(f"  reasons: {m['delegate_kinds']}")
 print(f"  models: {m['models_seen']}")
 print(f"  latency: p50 {m['latency_ms']['p50']} ms | p95 {m['latency_ms']['p95']} ms")
 dir_log = m["log"]["directory"]
-try:  # mostrar la ruta relativa al repo: una absoluta publica la estructura de la máquina
+try:  # show the path relative to the repo: an absolute one leaks the machine layout
     dir_log = str(Path(dir_log).relative_to(Path(__file__).resolve().parent.parent))
 except ValueError:
     pass

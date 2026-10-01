@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Demostración completa en un comando: `make demo`.
+# The whole demonstration in one command: `make demo`.
 #
-# Arranca el servicio con el registro mínimo (config.demo.yaml, sólo Cardiff: corre en cualquier
-# sistema operativo), muestra los casos, imprime las métricas y apaga. Si ya hay un servicio
-# escuchando en el puerto, usa ese y no arranca otro.
+# It starts the service with the minimal registry (config.demo.yaml, Cardiff only: runs on any
+# operating system), shows the cases, prints the metrics and shuts it down. If a service is
+# already listening on the port, it uses that one and does not start another.
 set -uo pipefail
 KEEP=0
 [ "${1:-}" = "--keep" ] && KEEP=1

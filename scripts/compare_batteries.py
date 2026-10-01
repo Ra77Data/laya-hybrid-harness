@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Resumen comparativo de las baterías guardadas en results/battery_*.json."""
+"""Comparative summary of the batteries saved in results/battery_*.json."""
 import json
 from pathlib import Path
 

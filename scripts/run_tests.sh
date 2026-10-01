@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Self-test del servicio + sondas, contra una instancia temporal en un puerto libre.
-# Es lo que corre `make test`. No toca la instancia desplegada.
+# Service self-test + probes, against a temporary instance on a free port.
+# This is what `make test` runs. It does not touch the deployed instance.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 PORT="${LAYA_TEST_PORT:-8099}"
@@ -13,8 +13,8 @@ if [ ! -x "$PY" ]; then
   exit 2
 fi
 
-# Si quedó una instancia de prueba anterior, esperar a que libere el puerto: correr `make test`
-# dos veces seguidas fallaba de forma confusa (el servicio nuevo no podía enlazar).
+# If a previous test instance is still around, wait for it to release the port: running
+     # `make test` twice in a row used to fail in a confusing way (the new service could not bind).
 for _ in $(seq 1 15); do
   lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1 || break
   sleep 1
