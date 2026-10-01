@@ -12,8 +12,8 @@ export const name = 'laya-decide'
 export const inject = ['tools']
 
 const SERVICE_URL = process.env.LAYA_SERVICE_URL ?? 'http://127.0.0.1:8090'
-// 2500 ms, no 1500: el valor no debe depender de que direnv haya aprobado el .envrc del
-// proyecto. Con los modelos precargados las llamadas medidas van de 10 a 300 ms.
+// 2500 ms, not 1500: the value must not depend on direnv having approved the project's
+// .envrc. With the models preloaded, the measured calls run from 10 to 300 ms.
 const TIMEOUT_MS = Number(process.env.LAYA_SERVICE_TIMEOUT_MS ?? 2500)
 
 const DESCRIPTION = [

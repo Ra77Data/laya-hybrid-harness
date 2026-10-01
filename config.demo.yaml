@@ -1,8 +1,8 @@
-# Registro MÍNIMO para probar el harness en cualquier sistema operativo.
+# MINIMAL registry to try the harness on any operating system.
 #
-# Sólo Cardiff XLM-R, que viene del Hub de Hugging Face (~1,1 GB la primera vez) y corre en CPU.
-# No incluye los modelos de Laya: esos requieren las rutas locales o descargas más pesadas y, para
-# el adaptador CoreML, macOS con Apple Silicon. Para el registro completo, ver config.yaml.
+# Cardiff XLM-R only, which comes from the Hugging Face Hub (~1.1 GB the first time) and runs on
+# CPU. It does not include the Laya models: those need local paths or heavier downloads and, for
+# the CoreML adapter, macOS with Apple Silicon. For the full registry, see config.yaml.
 
 service:
   host: 127.0.0.1
@@ -26,7 +26,7 @@ models:
     supports: [noul]
     weights: cardiffnlp/twitter-xlm-roberta-base-sentiment
     revision: f2f1202b1bdeb07342385c3f807f9c07cd8f5cf8
-    max_length: 512          # XLM-R soporta 512; con 128 se perdía texto largo en silencio
+    max_length: 512          # XLM-R supports 512; with 128, long text was being lost silently
     expect_sha256: 93316a86051c359748c5d5453e7660c69a21a57cfb477892f95f539e3e171196
     calibration: null
     binary_reduction:

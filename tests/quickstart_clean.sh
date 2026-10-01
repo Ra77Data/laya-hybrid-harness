@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Verificación del quickstart en condiciones de primer uso: clon nuevo, sin entorno, sin caché
-# de uv y sin caché de modelos. Mide cada paso y falla si alguno se rompe.
+# Quickstart verification under first-use conditions: fresh clone, no environment, no uv
+# cache and no model cache. It times every step and fails if any of them breaks.
 #
-# Es la prueba que decide si el repo se puede publicar: si esto no funciona, nadie de afuera
-# va a poder probarlo.
+# It is the test that decides whether the repo can be published: if this does not work, nobody
+# from outside will be able to try it.
 #
-# Uso:  bash tests/quickstart_clean.sh [directorio]
+# Usage:  bash tests/quickstart_clean.sh [directory]
 set -uo pipefail
 
 AQUI="$(cd "$(dirname "$0")/.." && pwd)"
@@ -13,7 +13,7 @@ DESTINO="${1:-/tmp/quickstart-clean}"
 LOG="$AQUI/results/quickstart_clean.log"
 mkdir -p "$(dirname "$LOG")"
 
-paso() {  # paso <nombre> <comando...>
+paso() {  # step <name> <command...>
   local nombre="$1"; shift
   local t0 t1 estado
   t0=$(date +%s)

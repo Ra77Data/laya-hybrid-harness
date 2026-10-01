@@ -1,5 +1,5 @@
-# Plantilla del plugin de DSH. `make cordis` genera laya.cordis.yml con la ruta absoluta
-# de este repo (DSH necesita una ruta absoluta al archivo del plugin).
+# Template for the DSH plugin. `make cordis` generates laya.cordis.yml with this repo's
+# absolute path (DSH needs an absolute path to the plugin file).
 - insert:
     - id: laya-decide
       name: '__HARNESS_DIR__/dsh-laya-plugin/laya-decide.plugin.mjs'

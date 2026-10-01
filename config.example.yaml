@@ -1,44 +1,48 @@
-# Registro de modelos y enrutamiento del servicio de decisión.
+# Model registry and routing for the decision service.
 #
-# El servicio no sabe de modelos: sabe de adaptadores y de rutas por primitiva.
-#   * `routing` decide qué modelo sirve cada primitiva (noul / choice / score).
-#   * `preload` decide qué modelos se cargan al arrancar; el resto se carga en el primer uso.
-#   * `expect_sha256` se verifica con el sha256 REAL del archivo de pesos (no el nombre del blob
-#     de la caché de Hugging Face, que no es lo mismo). Si no coincide, ese modelo no se carga.
+# The service knows nothing about models: it knows about adapters and per-primitive routes.
+#   * `routing` decides which model serves each primitive (noul / choice / score).
+#   * `preload` decides which models load at startup; the rest load on first use.
+#   * `expect_sha256` is checked against the REAL sha256 of the weights file (not the blob name
+#     in the Hugging Face cache, which is not the same thing). If it does not match, that model
+#     is not loaded.
 
 service:
   host: 127.0.0.1
   port: 8090
 
 delegation:
-  # Umbral por primitiva, aplicado sobre la confianza CALIBRADA.
+  # Per-primitive threshold, applied to the CALIBRATED confidence.
   default_threshold: 0.75
   per_type:
     noul: 0.75
     choice: 0.70
     score: 0.70
-  # Además de la confianza: si el modelo cree que el texto es MÁS probablemente neutro que con
-  # sentimiento, se deriva. Medido sobre 600 neutros reales (clase 1 del dataset original) y los
-  # 1.740 no neutros: AUC 0,81. El umbral se eligió por coste/beneficio marginal:
+  # On top of confidence: if the model believes the text is MORE probably neutral than it is
+  # sentiment, it delegates. Measured over 600 genuinely neutral texts (class 1 of the original
+  # dataset) and the 1,740 non-neutral ones: AUC 0.81. The threshold was chosen on marginal
+  # cost/benefit, recomputed with the rule the service actually runs (neutral_mass > threshold):
   #
-  #   umbral   neutros derivados   tráfico extra   error local del extra
-  #   0,50          61,7 %             +6,0 %             9,6 %
-  #   0,70          48,7 %             +1,5 %            11,5 %
-  #   0,80          38,7 %             +0,5 %             0,0 %
+  #   threshold   neutrals delegated   extra traffic   local error of the extra
+  #   0.50            54.0 %              +12.1 %             19.9 %
+  #   0.70            32.7 %               +3.9 %             19.1 %
+  #   0.80            17.7 %               +1.1 %             10.5 %
   #
-  # 0,50 detecta más neutros pero cuesta cuatro veces más tráfico, y esos casos tienen el mismo
-  # error local que el promedio: no compran precisión. Con 0,70 el coste marginal es despreciable.
+  # Reference: the whole non-neutral set has a 10.3 % local error rate, so the extra traffic
+  # carries about twice the average error: delegating it is worth it. 0.50 detects more neutrals
+  # but costs three times the traffic for the same marginal error. At 0.70 the marginal cost is
+  # negligible.
   neutral_mass_threshold: 0.70
 
-# Qué modelo atiende cada primitiva. Sin entrada, cae al modelo `active`.
+# Which model handles each primitive. With no entry, it falls back to the `active` model.
 routing:
-  noul: cardiff-xlmr      # sentimiento: el mejor medido (91,7 % en 240 textos)
-  choice: laya-base       # motor de decisión general, zero-shot
+  noul: cardiff-xlmr      # sentiment: the best measured (91.7 % on 240 texts)
+  choice: laya-base       # general decision engine, zero-shot
   score: laya-base
 
-# Se precargan los dos modelos que sirven alguna primitiva: el resto del registro queda como
-# alternativa. La carga perezosa del modelo general tardaba ~3,7 s y el plugin de DSH corta a
-# 2,5 s, así que la primera pregunta de tipo choice habría fallado por timeout.
+# Both models that serve a primitive are preloaded: the rest of the registry stays as an
+# alternative. Lazy-loading the general model took ~3.7 s and the DSH plugin times out at
+# 2.5 s, so the first choice question would have failed on timeout.
 preload: [cardiff-xlmr, laya-base]
 
 models:
@@ -48,7 +52,7 @@ models:
     supports: [noul]
     weights: cardiffnlp/twitter-xlm-roberta-base-sentiment
     revision: f2f1202b1bdeb07342385c3f807f9c07cd8f5cf8
-    max_length: 512          # XLM-R soporta 512; con 128 se perdía texto largo en silencio
+    max_length: 512          # XLM-R supports 512; with 128, long text was being lost silently
     expect_sha256: 93316a86051c359748c5d5453e7660c69a21a57cfb477892f95f539e3e171196
     calibration: null
     binary_reduction:
@@ -125,11 +129,11 @@ models:
 
 observability:
   enabled: true
-  # off: nada | metadata: sólo números y hashes | excerpt: primeros caracteres | full: texto entero
+  # off: nothing | metadata: numbers and hashes only | excerpt: first characters | full: whole text
   level: excerpt
   excerpt_chars: 160
   directory: logs/decisions
-  window: 5000          # registros en memoria, para /metrics sin leer disco
-  retain_days: 30       # los archivos más viejos se borran al arrancar
+  window: 5000          # in-memory records, so /metrics does not read from disk
+  retain_days: 30       # the oldest files are deleted at startup
 
 active: cardiff-xlmr

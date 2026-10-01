@@ -16,7 +16,7 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 
-# Sólo lo imprescindible para el servicio en sí.
+# Only what the service itself needs.
 dependencies = [
   "fastapi>=0.110",
   "uvicorn>=0.27",
@@ -26,20 +26,20 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Camino del demo: funciona en cualquier SO (Linux, Windows, macOS Intel/ARM), sin CoreML.
+# Demo path: works on any OS (Linux, Windows, macOS Intel/ARM), without CoreML.
 demo = [
   "torch>=2.2",
   "transformers>=4.40",
   "safetensors>=0.4",
   "sentencepiece>=0.2",
-  # protobuf es necesario para que transformers pueda extraer el vocabulario de un tokenizer
-  # SentencePiece. En el entorno del autor llegaba como dependencia transitiva de coremltools,
-  # así que su ausencia sólo se notaba en una instalación limpia: el demo fallaba con
-  # "tiktoken is required to read a tiktoken file", que es un mensaje engañoso -- el problema
-  # no era tiktoken. Lo encontró la prueba de quickstart en limpio (tests/quickstart_clean.sh).
+  # protobuf is needed for transformers to extract the vocabulary of a SentencePiece
+  # tokenizer. In the author's environment it arrived as a transitive dependency of
+  # coremltools, so its absence only showed up in a clean install: the demo failed with
+  # "tiktoken is required to read a tiktoken file", a misleading message -- the problem was
+  # not tiktoken. It was found by the clean quickstart test (tests/quickstart_clean.sh).
   "protobuf>=4",
 ]
-# Camino completo: agrega los adaptadores de Laya (CoreML necesita macOS Apple Silicon).
+# Full path: adds the Laya adapters (CoreML needs macOS Apple Silicon).
 full = [
   "laya-hybrid-harness[demo]",
   "laya",
