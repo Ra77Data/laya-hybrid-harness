@@ -148,6 +148,7 @@ This page is the front door; the operative material lives in the docs, one click
 | see why each decision was made, with the data behind it | [`docs/DECISIONS.md`](docs/DECISIONS.md) |
 | reproduce a number | [`results/SUMMARY_*.md`](results/) |
 | check third-party licenses | [`docs/LICENSES.md`](docs/LICENSES.md) |
+| run Laya outside Apple Silicon (Linux, x86, CI) | [`docs/SERVING_LAYA.md`](docs/SERVING_LAYA.md) |
 
 ## Pending
 
@@ -315,6 +316,7 @@ Esta página es la puerta de entrada; el material operativo vive en los document
 | ver por qué se tomó cada decisión, con el dato que la sostiene | [`docs/DECISIONS.md`](docs/DECISIONS.md) |
 | reproducir un número | [`results/SUMMARY_*.md`](results/) |
 | revisar licencias de terceros | [`docs/LICENSES.md`](docs/LICENSES.md) |
+| correr Laya fuera de Apple Silicon (Linux, x86, CI) | [`docs/SERVING_LAYA.md`](docs/SERVING_LAYA.md) |
 
 ## Pendiente
 

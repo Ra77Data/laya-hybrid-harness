@@ -160,6 +160,7 @@ the field silently absent, `/health` reports
 
 - `docs/DECISIONS.md` — every decision with the evidence behind it.
 - `docs/OPERATIONS.md` — how it is deployed, observed and changed.
+- `docs/SERVING_LAYA.md` — running the Laya engine beyond Apple Silicon, with the raw answer shapes.
 - `results/SUMMARY_*.md` — the measurements, with their method.
 
 ---
@@ -327,6 +328,7 @@ modelo, y en vez de dejar el campo ausente en silencio, `/health` informa
 
 - `docs/DECISIONS.md` — cada decisión con la evidencia que la sostiene.
 - `docs/OPERATIONS.md` — cómo se despliega, se observa y se cambia.
+- `docs/SERVING_LAYA.md` — correr el motor de Laya fuera de Apple Silicon, con las formas crudas.
 - `results/SUMMARY_*.md` — las mediciones, con su método.
 
 </details>
