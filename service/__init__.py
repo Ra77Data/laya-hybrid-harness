@@ -1,1 +1,1 @@
-"""Servicio de decisión local agnóstico del modelo."""
+"""Model-agnostic local decision service."""
