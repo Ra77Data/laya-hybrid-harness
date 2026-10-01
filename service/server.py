@@ -235,7 +235,7 @@ async def lifespan(app: FastAPI):
         print(f"[startup]   sha256={str(w.get('sha256'))[:16]}… expected={str(w.get('expected'))[:16]}… "
               f"matches={w.get('match')} ({STATE['load_seconds'].get(mid)}s)", flush=True)
         print(f"[startup]   calibration: "
-              f"{STATE['calibrations'][mid].as_dict()['types_with_temperature'] or 'ninguna'}", flush=True)
+              f"{STATE['calibrations'][mid].as_dict()['types_with_temperature'] or 'none'}", flush=True)
     STATE["smoke"] = run_smoke_tests(verbose=True, only=CONFIG.preload)
     print(f"[startup] self-test: {STATE['smoke_ok']} | "
           f"lazy load pending: {[m for m in CONFIG.models if m not in STATE['backends']]}", flush=True)
