@@ -78,6 +78,11 @@ class Config:
     preload: list[str] = field(default_factory=list)
     neutral_mass_threshold: float | None = None   # derivar si P(neutro) supera esto
     observability: dict = field(default_factory=dict)
+    # Model lifecycle. 0 means "never unload": every routed model stays resident, which is what a
+    # shared instance wants. On a personal machine the models cost ~1.75 GB and can sit unused for
+    # days, so unloading them after an idle period trades memory for a slow first call.
+    idle_unload_seconds: int = 0
+    idle_check_seconds: int = 60
 
     def threshold_for(self, qtype: str) -> float:
         return float(self.per_type.get(qtype, self.default_threshold))
@@ -108,6 +113,7 @@ def load_config(path: str | Path | None = None) -> Config:
         obs["directory"] = str((p.parent / str(obs["directory"])).resolve())
 
     deleg = raw.get("delegation", {}) or {}
+    life = raw.get("lifecycle", {}) or {}
     active = os.environ.get("LAYA_ACTIVE_MODEL") or raw.get("active") or next(iter(models))
     if active not in models:
         raise KeyError(f"active model '{active}' is not in the registry")
@@ -149,4 +155,6 @@ def load_config(path: str | Path | None = None) -> Config:
         models=models, active=active, routing=routing, preload=preload,
         neutral_mass_threshold=(float(deleg["neutral_mass_threshold"])
                                 if deleg.get("neutral_mass_threshold") is not None else None),
-        observability=obs)
+        observability=obs,
+        idle_unload_seconds=max(0, int(life.get("unload_after_idle_seconds", 0) or 0)),
+        idle_check_seconds=max(1, int(life.get("check_interval_seconds", 60) or 60)))

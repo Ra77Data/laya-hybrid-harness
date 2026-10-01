@@ -52,3 +52,10 @@ observability:
   retain_days: 30
 
 active: cardiff-xlmr
+
+# Model lifecycle. 0 = never unload: every routed model stays resident, which is what a shared or
+# always-on instance wants. On a personal machine they add up to ~1.75 GB that can sit unused for
+# days, so unloading them after an idle period trades memory for one slow call afterwards.
+lifecycle:
+  unload_after_idle_seconds: 0        # e.g. 900 = a quarter of an hour
+  check_interval_seconds: 60

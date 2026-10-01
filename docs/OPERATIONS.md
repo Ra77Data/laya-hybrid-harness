@@ -81,6 +81,32 @@ With launchd: `launchctl kickstart -k gui/$(id -u)/$LABEL` (see the label above)
 curves are in `results/SUMMARY_HARNESS_TEST.md`, and `scripts/neutral_gate.py` recomputes the second
 one on your own traffic.
 
+## Model lifecycle
+
+Every model that serves a primitive is loaded at startup — the service refuses to start otherwise —
+and then stays resident. The two that serve primitives cost ~1.75 GB of weights (1.11 GB Cardiff,
+0.64 GB Laya), memory that on a personal machine can sit unused for days.
+`lifecycle.unload_after_idle_seconds` gives it back:
+
+```yaml
+lifecycle:
+  unload_after_idle_seconds: 900   # 0 = never unload, which is the default
+  check_interval_seconds: 60
+```
+
+After that much idle time a model is dropped and the accelerator cache is released; the next call
+loads it again. **The price is on that first call**, so raise the client timeout when you turn it on:
+the DSH plugin defaults to 2500 ms, and a warm reload measured **2.0 s** (a cold one, right after a
+reboot, takes 5-9 s). In the project's `.envrc`:
+
+```bash
+export LAYA_SERVICE_TIMEOUT_MS=15000
+```
+
+`/health` reports the policy and what is loaded at that moment under `lifecycle`, and each model
+carries its `idle_seconds`. Unloading never interrupts a request in flight: the reaper waits for the
+inference lock first.
+
 ## Logging and privacy
 
 Every decision goes to `logs/decisions/decisions-<date>.jsonl`, with daily rotation and deletion of
@@ -272,6 +298,32 @@ Con launchd: `launchctl kickstart -k gui/$(id -u)/$LABEL` (ver el label arriba).
 **Todo cambio de política se mide antes de fijarlo.** Las curvas de derivación y de masa neutral
 están en `results/SUMMARY_HARNESS_TEST.md`, y `scripts/neutral_gate.py` recalcula la segunda con
 tráfico propio.
+
+## Ciclo de vida de los modelos
+
+Todo modelo que sirve una primitiva se carga al arrancar —si no, el servicio se niega a arrancar— y
+después queda residente. Los dos que sirven primitivas cuestan ~1,75 GB de pesos (1,11 GB Cardiff,
+0,64 GB Laya), memoria que en una máquina personal puede estar días sin usarse.
+`lifecycle.unload_after_idle_seconds` la devuelve:
+
+```yaml
+lifecycle:
+  unload_after_idle_seconds: 900   # 0 = nunca descargar, que es el valor por defecto
+  check_interval_seconds: 60
+```
+
+Tras ese tiempo de inactividad el modelo se descarga y se libera la caché del acelerador; la llamada
+siguiente lo vuelve a cargar. **El precio está en esa primera llamada**, así que subí el timeout del
+cliente al activarlo: el plugin de DSH usa 2500 ms por defecto y una recarga en caliente medida dio
+**2,0 s** (una fría, justo después de un reinicio, tarda 5-9 s). En el `.envrc` del proyecto:
+
+```bash
+export LAYA_SERVICE_TIMEOUT_MS=15000
+```
+
+`/health` informa la política y qué está cargado en ese momento bajo `lifecycle`, y cada modelo lleva
+sus `idle_seconds`. La descarga nunca interrumpe una petición en curso: el reaper espera al candado de
+inferencia.
 
 ## Registro y privacidad
 

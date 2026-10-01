@@ -60,3 +60,4 @@ class HealthResponse(BaseModel):
     smoke_ok: bool | None = None
     routing: dict = Field(default_factory=dict)
     models: dict = Field(default_factory=dict)   # per-model state: loaded, weights, self-test
+    lifecycle: dict = Field(default_factory=dict)  # idle-unload policy and what is loaded right now

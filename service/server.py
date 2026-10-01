@@ -10,6 +10,9 @@ Guarantees, all verifiable from /health:
   * a primitive the model does not implement comes back as `unsupported_by_model`;
   * every answer says which model answered it (`model_used`).
 """
+import asyncio
+import contextlib
+import gc
 import threading
 import time
 from contextlib import asynccontextmanager
@@ -39,6 +42,7 @@ STATE: dict = {
     "errors": {},            # id -> why it could not be loaded
     "smoke_ok": {},          # id -> bool
     "load_seconds": {},      # id -> load seconds
+    "last_used": {},         # id -> monotonic time of the last call (for idle unloading)
     "lock": threading.Lock(),        # protects model loading
     # INFERENCE lock, separate and global. MPS/Metal is not thread-safe: two threads
     # sending commands to the same MTLCommandBuffer abort the process with
@@ -90,6 +94,7 @@ def get_backend(spec: ModelSpec):
         STATE["backends"][spec.id] = candidate
         STATE["calibrations"][spec.id] = load_calibration(spec.calibration)
         STATE["load_seconds"][spec.id] = round(time.time() - started, 2)
+        STATE["last_used"][spec.id] = time.monotonic()
         STATE["errors"].pop(spec.id, None)
         return candidate
 
@@ -147,6 +152,7 @@ def decide_with(state: str, questions: list[Question], pinned: str | None = None
         spec = CONFIG.spec(mid)
         try:
             backend = get_backend(spec)
+            STATE["last_used"][mid] = time.monotonic()
         except Exception as exc:  # noqa: BLE001
             for q in qs:
                 answers.append(Answer(
@@ -177,6 +183,55 @@ def decide_with(state: str, questions: list[Question], pinned: str | None = None
             delegate_reason=reason, calibration_note=note))
     order = {q.id: i for i, q in enumerate(questions)}
     return sorted(answers, key=lambda a: order.get(a.id, 0))
+
+
+def _free_accelerator_cache() -> None:
+    """Hand back what the accelerator allocator is holding, if it is there at all."""
+    try:
+        import torch
+        if getattr(torch.backends, "mps", None) is not None and torch.backends.mps.is_available():
+            torch.mps.empty_cache()
+        elif torch.cuda.is_available():            # pragma: no cover - no CUDA on this machine
+            torch.cuda.empty_cache()
+    except Exception:  # noqa: BLE001 - torch may not be installed, and that is fine
+        pass
+
+
+def unload_idle_models(now: float | None = None) -> list[str]:
+    """Drop the models nobody has asked for in `idle_unload_seconds`. Returns what it dropped.
+
+    The lock is taken per model so a request in flight is never interrupted: an inference holds
+    `infer_lock` for its whole duration, so the reaper waits for it. A request that already got a
+    backend reference keeps working even if the entry is removed underneath it — it is a local
+    variable — and the next request simply loads the model again.
+    """
+    ttl = CONFIG.idle_unload_seconds
+    if ttl <= 0:
+        return []
+    now = now if now is not None else time.monotonic()
+    dropped = []
+    for mid in list(STATE["backends"]):
+        idle = now - STATE["last_used"].get(mid, now)
+        if idle < ttl:
+            continue
+        with STATE["infer_lock"]:
+            backend = STATE["backends"].pop(mid, None)
+            STATE["last_used"].pop(mid, None)
+        if backend is None:
+            continue
+        del backend
+        gc.collect()
+        _free_accelerator_cache()
+        dropped.append(mid)
+        print(f"[lifecycle] unloaded '{mid}' after {idle:.0f}s idle "
+              f"(threshold {ttl}s); the next call will load it again", flush=True)
+    return dropped
+
+
+async def _idle_reaper() -> None:  # pragma: no cover - timing loop
+    while True:
+        await asyncio.sleep(CONFIG.idle_check_seconds)
+        unload_idle_models()
 
 
 def run_smoke_tests(verbose: bool = True, only: list[str] | None = None) -> dict[str, list[dict]]:
@@ -264,7 +319,18 @@ async def lifespan(app: FastAPI):
     borrados = LOG.prune()
     print(f"[startup] observability: level={LOG.level} dir={LOG.directory} "
           f"(old files deleted: {borrados})", flush=True)
+    if CONFIG.idle_unload_seconds > 0:
+        print(f"[startup] lifecycle: models unload after {CONFIG.idle_unload_seconds}s idle "
+              f"(checked every {CONFIG.idle_check_seconds}s) — the first call after that "
+              f"waits for a reload", flush=True)
+    else:
+        print("[startup] lifecycle: models stay loaded (no idle unload configured)", flush=True)
+    reaper = asyncio.create_task(_idle_reaper()) if CONFIG.idle_unload_seconds > 0 else None
     yield
+    if reaper is not None:
+        reaper.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await reaper
 
 
 app = FastAPI(title="Laya Decision Service", version="2.0.0", lifespan=lifespan)
@@ -285,6 +351,8 @@ def health():
                             else {"configured": bool(spec.calibration)}),
             "smoke_ok": STATE["smoke_ok"].get(mid),
             "error": STATE["errors"].get(mid),
+            "idle_seconds": (round(time.monotonic() - STATE["last_used"][mid], 1)
+                             if mid in STATE["last_used"] else None),
         }
     # Only models serving a primitive count: the rest are registry alternatives.
     any_error = any(m["error"] for m in models.values() if m["role"])
@@ -301,7 +369,10 @@ def health():
                     "neutral_mass_gate": neutral_mass_gate()},
         smoke_ok=(all(STATE["smoke_ok"].get(m) for m in CONFIG.preload
                       if STATE["smoke_ok"].get(m) is not None) if STATE["smoke_ok"] else None),
-        routing=CONFIG.routing, models=models)
+        routing=CONFIG.routing, models=models,
+        lifecycle={"idle_unload_seconds": CONFIG.idle_unload_seconds,
+                   "check_interval_seconds": CONFIG.idle_check_seconds,
+                   "loaded_now": sorted(STATE["backends"])})
 
 
 @app.get("/metrics")
