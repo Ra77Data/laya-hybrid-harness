@@ -1,3 +1,185 @@
+# Decisions and their evidence
+
+Every design decision in this harness, with the data that supports it. None of these is an aesthetic
+preference: each one came out of an incident or a measurement.
+
+## 1. The model is configuration, not code
+
+**Why.** The deployed harness was serving **a different model** than the documentation claimed: the
+port was held by an old version with a fine-tune for another task, and nothing in the system detected
+it. It was found by looking, not by an alert.
+
+**Evidence.** `results/SUMMARY_PLUGIN_VERIFICATION.md` documents the incident: `/health` answered
+`laya-multilingual-coreml` with a `choice` calibration when it was supposed to serve the sentiment
+model.
+
+**Consequence.** A model registry in `config.yaml`, interchangeable adapters, and **hash verification
+at startup**: if the real sha256 of the weights does not match the expected one, that model is not
+loaded.
+
+**Rejected alternative.** One service per model: it forces the client to know which one to call,
+which is exactly the mistake being avoided.
+
+## 2. Cardiff XLM-R as the default model
+
+**Evidence** (240 texts, same thresholds, see `results/SUMMARY_BATTERY.md`):
+
+| Model | Accuracy | Local accuracy | Median latency |
+|---|---|---|---|
+| Cardiff XLM-R | **91.67%** | **95.28%** | **10 ms** |
+| Laya sentiment v1 (fine-tune) | 84.58% | 89.35% | 55 ms |
+| Laya sentiment v2 (4.8x data) | 83.75% | 85.17% | 19 ms |
+
+And on the sarcasm case, which is where it matters for a hybrid pattern: Cardiff gets it wrong at
+0.68 confidence and **delegates**; v1 got it wrong at 0.91 and answered locally.
+
+**The uncomfortable part, said up front**: this project's fine-tune loses to a model you can download
+in two lines. The consequence is in `docs/PLAN.md`: what is presented here is the pattern and its
+measurement, not a winning model.
+
+## 3. A missing model does not prevent startup
+
+**Why.** The full registry points at models that live on the author's machine. Validation raised an
+exception when a path did not exist: **the service would not start on any other machine**.
+
+**Evidence.** Verified with a config pointing at a nonexistent path: it loads, marks the model as
+`available: false` and carries on. If someone routes to that model, the answer says so
+(`model_unavailable`) instead of failing silently.
+
+## 4. Routing by primitive, in a single service
+
+**Why.** Sentiment (`noul`) and general decision (`choice`/`score`) are served by different models,
+and the client should not have to know that.
+
+**Evidence.** A single HTTP call answered by two models, with `model_used` on every answer;
+`results/SUMMARY_GENERAL_ENGINE.md`.
+
+**What was measured along the way, unexpectedly**: **the formulation matters more than the model**.
+The same general engine scores 87.5% when sentiment is asked as `choice` and 53.3% as `noul` (in the
+`noul` formulation it answers "no" to clearly positive texts).
+
+## 5. The delegation policy, on calibrated confidence and per primitive
+
+**Evidence** (1,740 texts, `results/SUMMARY_HARNESS_TEST.md`):
+
+| | Cases | Model error |
+|---|---|---|
+| Delegated | 228 (13.1%) | **36.8%** |
+| Not delegated | 1,512 (86.9%) | **6.3%** |
+
+**5.86x more error on what is delegated**: the gate discriminates. And delegating genuinely helps:
+labelling 38 delegated cases blind, the local model scores 63.2% and the LLM 84.2%, which takes
+end-to-end accuracy from 89.71% to **92.47%**.
+
+**Why the 0.75 threshold was not changed.** The measured curve says 0.90 would give more accuracy
+(97.2% under the optimistic bound) at the cost of 15 more points of coverage. Choosing that point
+depends on the relative cost of a cloud call versus an error, which is an operations decision, not a
+technical one. It stays measured and configurable.
+
+## 6. Neutral-mass threshold at 0.70
+
+**The problem.** A neutral text ("The order arrived on Tuesday.") came back positive at 0.768 and
+**did not delegate**: the binary reduction of a 3-class model cannot say "neutral".
+
+**Evidence** (600 real neutral texts from class 1 of the original dataset, against the 1,740
+non-neutral ones):
+
+- Median `P(neutral)`: **0.528** on neutrals against **0.153** on non-neutrals. **AUC 0.814**.
+- Threshold 0.70: delegates **48.7%** of neutrals at a cost of **+1.5 points** of traffic on
+  non-neutrals. At 0.50 it detects 61.7% but costs four times the traffic (+6.0 points).
+
+**A correction that is on the record.** I picked 0.50 first, reading the F1 curve. That was the wrong
+frame: F1 treats a false positive and a false negative alike, but here a false positive costs money.
+The marginal table —the correct frame— moves the choice to 0.70. And I claimed the extra traffic had
+23.7% error (which would make delegating it free); that number belonged to another rule: with the
+implemented threshold it is **11.5%**, i.e. average. The policy is justified by the neutrals, not by
+benchmark accuracy.
+
+## 7. Truncation: configurable, reported, and it forces delegation
+
+**The incident.** A 2,489-character message whose real sentiment sat in its last sentence was
+classified **positive at 0.908 confidence and not delegated**. Cause: `max_length=128` hardcoded in
+the adapter, so the model read the first quarter of the text. And the service did not say so.
+
+**Decision.** `max_length` per model (512 for Cardiff, which is what XLM-R supports), truncation is
+reported (`truncated`, `input_tokens`, `max_length`) and it **forces delegation**, because a
+confident answer over partial text is worthless.
+
+**Evidence.** Going from 128 to 512 does not degrade anything: 91.67% before and after on the same
+sample. And long texts now delegate with the explicit reason `input_truncated(541 tokens > 512)`.
+
+## 8. Serializing inference
+
+**The incident.** With **two** concurrent requests the service died. Root cause in the log:
+
+```
+failed assertion _status < MTLCommandBufferStatusCommitted in -[IOGPUMetalCommandBuffer ...]
+```
+
+MPS/Metal is not thread-safe and FastAPI serves synchronous endpoints from a thread pool.
+
+**Decision.** A global lock (`STATE["infer_lock"]`) around every model call.
+
+**Evidence.** Before: 2 concurrent → crash (launchd restarting). After: **16/16 completed, the agent
+never restarted**, 542 ms wall time.
+
+## 9. Truthful `calibrated`
+
+**Why.** The old service reported `calibrated: true` when all it knew was that a calibration file
+existed. There was no temperature for `noul`, so confidence travelled **raw and labelled as
+calibrated**.
+
+**Decision.** `calibrated` is true only if a temperature was applied; otherwise the answer carries a
+`calibration_note` explaining why. Today Cardiff travels with `calibrated: false`, and that is correct.
+
+## 10. One canonical answer shape, with adapters
+
+**Why.** `laya` and `laya-coreml` —two packages from the same project— **do not share a question
+schema**: the high-level one uses `{type, instructions, criteria}` and the low-level one
+`{t, ins, crit}`. Mixing them broke `choice` with an `AttributeError` over `None`.
+
+**Decision.** One adapter per runtime, one canonical answer shape, and schema translation inside the
+adapter. `laya` also returns `usage` with truncation information that the service was discarding.
+
+## 11. Logging cannot take down a decision
+
+**Decision.** All log writing runs inside `try/except`, with its own error counter, and `/metrics`
+reports it. A logging failure is an observability problem, not a service outage.
+
+**Evidence.** 0 errors across every run; the counter is visible in `/metrics`.
+
+## 12. The demo uses the `transformers` path
+
+**Why.** The Laya adapters need niche packages and CoreML requires macOS with Apple Silicon. If the
+demo depended on that, half of anyone trying it would fall over at the first step.
+
+**Decision.** `make demo` uses `config.demo.yaml` with a single model (Cardiff) and works on any
+operating system. The Laya adapters are the documented `make setup-full` variant.
+
+## 13. Apache-2.0
+
+**Why.** The initial intent was GPL-2.0 "to follow Laya's path". On verifying it, Laya —its GitHub
+repository, the `laya`/`laya-coreml` packages and the base model— declares **Apache-2.0**, not GPL.
+And the FSF considers **Apache-2.0 incompatible with GPL-2.0**, though compatible with GPL-3.0.
+
+**Decision.** Apache-2.0: it is Laya's license and it is compatible with every dependency. The
+verified detail is in `docs/LICENSES.md`.
+
+## 14. Do not oversell the model
+
+**Evidence.** This project's fine-tune scores 86.0% and the baseline on the same benchmark 89.7%
+(p = 1.3e-05); given only our 900 examples, that baseline reaches 88.8%. On top of that, a zero-shot
+engine beats the fine-tune at its own task (87.5% against 84.6%).
+
+**Decision.** The README says this up front. What is presented is the **hybrid pattern and its
+measurement**: the delegation curve, the 5.86x error rate on what is delegated, the +2.76 end to end
+and the observability. That is what is not commonly measured, and it is what holds this repository up.
+
+---
+
+<details>
+<summary><h2>🇪🇸 Versión en Español — Haz clic aquí para desplegar</h2></summary>
+
 # Decisiones y su evidencia
 
 Cada decisión de diseño de este harness, con el dato que la sostiene. Nada acá es una preferencia
@@ -174,3 +356,5 @@ zero-shot supera al fine-tune en su propia tarea (87,5 % contra 84,6 %).
 **Decisión.** El README dice esto arriba. Lo que se presenta es el **patrón híbrido y su medición**:
 la curva de derivación, el 5,86× de error en lo derivado, el +2,76 de punta a punta y la
 observabilidad. Eso es lo que no es común tener medido, y es lo que sostiene el repo.
+
+</details>
