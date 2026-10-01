@@ -1,8 +1,8 @@
 #!/bin/bash
-# Levanta DSH web con el plugin de Laya apuntando al servicio de V7.
+# Brings up DSH web with the Laya plugin pointing at the V7 service.
 #
-# El servicio de decisión NO se arranca acá: lo mantiene launchd (ver README, "Arranque y
-# persistencia"). Este script sólo levanta la interfaz de DSH y registra la tool.
+# The decision service is NOT started here: launchd keeps it running (see the README,
+# "Startup and persistence"). This script only brings up the DSH interface and registers the tool.
 set -euo pipefail
 DSH_DIR="${DSH_DIR:-$HOME/Projects/ml/Hybrid_Harness_V3/vendor/deepseek-harness}"
 cd "$DSH_DIR"

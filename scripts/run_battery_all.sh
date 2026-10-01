@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Corre la batería sobre cada modelo del registro, cambiando SOLO LAYA_ACTIVE_MODEL.
-# Es la prueba de que el pipeline es agnóstico: no se toca código entre modelo y modelo.
+# Runs the battery over every model in the registry, changing ONLY LAYA_ACTIVE_MODEL.
+# It is the proof that the pipeline is model-agnostic: no code is touched between models.
 set -u
 cd "$(dirname "$0")/.."
 export HF_HUB_CACHE="${HF_HUB_CACHE:-$HOME/.cache/huggingface/hub}"

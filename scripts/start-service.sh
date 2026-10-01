@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# Arranca el servicio de decisión local (V7).
+# Starts the local decision service (V7).
 #
-#   scripts/start-service.sh                     # usa el modelo `active` de config.yaml
+#   scripts/start-service.sh                     # uses the `active` model of config.yaml
 #   LAYA_ACTIVE_MODEL=cardiff-xlmr scripts/start-service.sh
 #
-# El modelo servido, el puerto y los umbrales salen de config.yaml. No hay nada cableado.
+# The served model, the port and the thresholds come from config.yaml. Nothing is hardcoded.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 export PYTHONDONTWRITEBYTECODE=1
 export TOKENIZERS_PARALLELISM=false
 export USE_TF=0
-# Cardiff viene del Hub: se permite la descarga la primera vez (queda en la caché estándar).
+# Cardiff comes from the Hub: the download is allowed the first time (it stays in the standard cache).
 export HF_HUB_CACHE="${HF_HUB_CACHE:-$HOME/.cache/huggingface/hub}"   # la ruta estándar de HF
 export HF_HUB_OFFLINE="${HF_HUB_OFFLINE:-0}"
 

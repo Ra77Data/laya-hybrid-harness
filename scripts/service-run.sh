@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Ejecuta el servicio en primer plano. Es el punto de entrada que usa launchd.
+# Runs the service in the foreground. It is the entry point launchd uses.
 #
-# No redirige logs ni hace tee: de eso se encarga quien lo invoque (launchd con
-# StandardOutPath/StandardErrorPath, o start-service.sh con su log con marca de tiempo).
+# It does not redirect logs or tee: whoever invokes it takes care of that (launchd with
+# StandardOutPath/StandardErrorPath, or start-service.sh with its timestamped log).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -15,8 +15,8 @@ export HF_HUB_OFFLINE="${HF_HUB_OFFLINE:-0}"
 PORT="$(.venv/bin/python -c "import yaml;print(yaml.safe_load(open('config.yaml'))['service']['port'])")"
 HOST="$(.venv/bin/python -c "import yaml;print(yaml.safe_load(open('config.yaml'))['service']['host'])")"
 
-# Si el puerto ya está ocupado, mejor fallar rápido y con un mensaje claro que dejar
-# dos servicios peleando por el mismo socket.
+# If the port is already taken, better to fail fast with a clear message than to leave
+# two services fighting over the same socket.
 if lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; then
   echo "[service-run] el puerto $PORT ya está ocupado; hay otra instancia corriendo" >&2
   exit 2

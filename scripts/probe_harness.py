@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-"""Sonda de robustez del harness: casos límite que el dataset de test no cubre.
+"""Harness robustness probe: edge cases the test dataset does not cover.
 
-Cada caso se manda al servicio como una pregunta de sentimiento (`noul`) y, cuando tiene
-sentido, también como clasificación (`choice`) para ver el enrutamiento.
+Each case is sent to the service as a sentiment question (`noul`) and, where it makes sense,
+also as a classification (`choice`) to see the routing.
 
-Uso: python scripts/probe_harness.py [--url http://127.0.0.1:8090] [--out results/probe.json]
+Usage: python scripts/probe_harness.py [--url http://127.0.0.1:8090] [--out results/probe.json]
 """
 import argparse
 import json
@@ -24,10 +24,10 @@ SENT = "Does this text express positive sentiment?"
 ROUTE = "Which team should handle this ticket?"
 OPTIONS = ["sales", "support", "billing", "other"]
 
-LARGO = ("El pedido llegó con tres semanas de retraso y la caja venía aplastada. " * 90)
+LONG = ("El pedido llegó con tres semanas de retraso y la caja venía aplastada. " * 90)
 
-CASOS = [
-    # (etiqueta, texto, esperado_si_se_sabe, preguntar_choice)
+CASES = [
+    # (label, text, expected_if_known, ask_choice)
     ("empty", "", None, False),
     ("spaces only", "     ", None, False),
     ("punctuation only", "....", None, False),
@@ -47,7 +47,7 @@ CASOS = [
                   "El producto es malísimo y llegó roto.", False, False),
     ("chinese", "这个产品太棒了", None, False),
     ("arabic", "هذا المنتج رائع", None, False),
-    ("long (truncatable)", LARGO + "En resumen, pésima experiencia.", False, False),
+    ("long (truncatable)", LONG + "En resumen, pésima experiencia.", False, False),
 ]
 
 
@@ -58,46 +58,46 @@ def post(payload, timeout=120):
         return json.load(r), r.status
 
 
-print(f"service: {args.url} | {len(CASOS)} cases\n")
+print(f"service: {args.url} | {len(CASES)} cases\n")
 print(f"{'case':24s} {'chars':>6s} {'noul':>7s} {'conf':>7s} {'model':>13s} {'delegates':>9s} "
-      f"{'choice':>10s} {'ms':>7s}  estado")
+      f"{'choice':>10s} {'ms':>7s}  state")
 rows = []
-for etiqueta, texto, esperado, con_choice in CASOS:
+for label, text, expected, with_choice in CASES:
     qs = [{"id": "s", "type": "noul", "instructions": SENT}]
-    if con_choice:
+    if with_choice:
         qs.append({"id": "c", "type": "choice", "instructions": ROUTE, "options": OPTIONS})
     try:
-        out, status = post({"state": texto, "questions": qs})
+        out, status = post({"state": text, "questions": qs})
         by = {a["id"]: a for a in out["answers"]}
         s = by.get("s", {})
         c = by.get("c", {})
-        veredicto = "OK" if (esperado is None or s.get("value") == esperado) else "MAL"
+        verdict = "OK" if (expected is None or s.get("value") == expected) else "WRONG"
         if status != 200 or not s:
-            veredicto = f"RARO({status})"
-        print(f"{etiqueta:24s} {len(texto):6d} {str(s.get('value')):>7s} {s.get('confidence', 0):7.3f} "
+            verdict = f"ODD({status})"
+        print(f"{label:24s} {len(text):6d} {str(s.get('value')):>7s} {s.get('confidence', 0):7.3f} "
               f"{str(s.get('model_used')):>13s} {str(s.get('delegate_to_cloud')):>7s} "
-              f"{str(c.get('value')):>10s} {out['latency_ms']:7.1f}  {veredicto}")
-        rows.append({"caso": etiqueta, "chars": len(texto), "esperado": esperado, "veredicto": veredicto,
+              f"{str(c.get('value')):>10s} {out['latency_ms']:7.1f}  {verdict}")
+        rows.append({"case": label, "chars": len(text), "expected": expected, "verdict": verdict,
                      "noul": s.get("value"), "conf": s.get("confidence"),
-                     "modelo": s.get("model_used"), "deriva": s.get("delegate_to_cloud"),
+                     "model": s.get("model_used"), "delegates": s.get("delegate_to_cloud"),
                      "choice": c.get("value"), "ms": out["latency_ms"]})
     except urllib.error.HTTPError as e:
-        cuerpo = e.read().decode()[:160]
-        print(f"{etiqueta:24s} {len(texto):6d} {'--':>7s} {'--':>7s} {'--':>13s} {'--':>7s} {'--':>10s} "
-              f"{'--':>7s}  HTTP {e.code}: {cuerpo}")
-        rows.append({"caso": etiqueta, "chars": len(texto), "veredicto": f"HTTP {e.code}", "error": cuerpo})
+        body = e.read().decode()[:160]
+        print(f"{label:24s} {len(text):6d} {'--':>7s} {'--':>7s} {'--':>13s} {'--':>7s} {'--':>10s} "
+              f"{'--':>7s}  HTTP {e.code}: {body}")
+        rows.append({"case": label, "chars": len(text), "verdict": f"HTTP {e.code}", "error": body})
     except Exception as e:  # noqa: BLE001
-        print(f"{etiqueta:24s} {len(texto):6d} {'--':>7s} {'--':>7s} {'--':>13s} {'--':>7s} {'--':>10s} "
+        print(f"{label:24s} {len(text):6d} {'--':>7s} {'--':>7s} {'--':>13s} {'--':>7s} {'--':>10s} "
               f"{'--':>7s}  {type(e).__name__}: {str(e)[:80]}")
-        rows.append({"caso": etiqueta, "chars": len(texto), "veredicto": type(e).__name__, "error": str(e)[:200]})
+        rows.append({"case": label, "chars": len(text), "verdict": type(e).__name__, "error": str(e)[:200]})
 
-mal = [r for r in rows if str(r.get("veredicto", "")).startswith("MAL")]
-raros = [r for r in rows if r.get("veredicto") not in ("OK", "MAL")]
-print(f"\nWRONG: {len(mal)} | odd/errors: {len(raros)} | OK or no ground truth: {len(rows) - len(mal) - len(raros)}")
-for r in mal:
-    print(f"  WRONG {r['caso']}: expected={r['esperado']} got={r['noul']} (conf {r['conf']:.3f})")
-for r in raros:
-    print(f"  {r['veredicto']} {r['caso']}: {str(r.get('error'))[:100]}")
+wrong = [r for r in rows if str(r.get("verdict", "")).startswith("WRONG")]
+odd = [r for r in rows if r.get("verdict") not in ("OK", "WRONG")]
+print(f"\nWRONG: {len(wrong)} | odd/errors: {len(odd)} | OK or no ground truth: {len(rows) - len(wrong) - len(odd)}")
+for r in wrong:
+    print(f"  WRONG {r['case']}: expected={r['expected']} got={r['noul']} (conf {r['conf']:.3f})")
+for r in odd:
+    print(f"  {r['verdict']} {r['case']}: {str(r.get('error'))[:100]}")
 
 Path(args.out).parent.mkdir(parents=True, exist_ok=True)
 Path(args.out).write_text(json.dumps(rows, indent=2, ensure_ascii=False))

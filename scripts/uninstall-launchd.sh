@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Descarga el LaunchAgent y detiene el servicio. No borra nada del proyecto.
+# Unloads the LaunchAgent and stops the service. It deletes nothing from the project.
 set -euo pipefail
 LABEL="com.cesarmg.laya-decide"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"

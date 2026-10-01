@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""Batería de evaluación del PIPELINE (modelo + calibración + umbral), no solo del modelo.
+"""Pipeline evaluation battery (model + calibration + threshold), not just the model.
 
-Toma una muestra determinista de textos con etiqueta, pregunta por HTTP al servicio en
-marcha y reporta lo que importa para un despliegue híbrido:
+It takes a deterministic sample of labelled texts, asks the running service over HTTP and
+reports what matters for a hybrid deployment:
 
-  * accuracy global
-  * tasa de derivación al cloud
-  * **accuracy del subconjunto que se responde localmente** (lo que el usuario ve sin cloud)
-  * confianza media y latencia
+  * overall accuracy
+  * delegation rate to the cloud
+  * **accuracy of the subset answered locally** (what the user sees without the cloud)
+  * mean confidence and latency
 
-Uso:
-  python scripts/battery.py --url http://127.0.0.1:8091 --n 200 --out results/battery_<modelo>.json
+Usage:
+  python scripts/battery.py --url http://127.0.0.1:8091 --n 200 --out results/battery_<model>.json
 """
 import argparse
 import json
@@ -23,7 +23,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent.parent
 
 def _default_test() -> str:
-    """El conjunto de evaluación debe viajar con el harness, no depender de dónde esté el workspace."""
+    """The evaluation set has to travel with the harness, not depend on where the workspace is."""
     for c in (HERE / "data/test_extended.jsonl", HERE.parent / "etapa4/test_extended.jsonl"):
         if c.exists():
             return str(c)

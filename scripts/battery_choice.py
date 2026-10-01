@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-"""Mide el motor de decisión general en la misma tarea, formulada como `choice`.
+"""Measures the general decision engine on the same task, formulated as `choice`.
 
-Pregunta que responde: ¿un motor zero-shot al que se le pide elegir entre "positive" y
-"negative" rinde como los modelos fine-tuneados para sentimiento (`noul`)? Si rinde igual,
-el fine-tune no aportaba nada para esta tarea.
+The question it answers: does a zero-shot engine asked to choose between "positive" and
+"negative" perform like the models fine-tuned for sentiment (`noul`)? If it performs the same,
+the fine-tune was contributing nothing to this task.
 
-Uso:
+Usage:
   python scripts/battery_choice.py --url http://127.0.0.1:8090 --n 240 \
       --type choice --options positive,negative --out results/battery_choice_laya-base.json
 """
@@ -20,7 +20,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent.parent
 
 def _default_test() -> str:
-    """El conjunto de evaluación debe viajar con el harness, no depender de dónde esté el workspace."""
+    """The evaluation set has to travel with the harness, not depend on where the workspace is."""
     for c in (HERE / "data/test_extended.jsonl", HERE.parent / "etapa4/test_extended.jsonl"):
         if c.exists():
             return str(c)
@@ -37,7 +37,7 @@ ap.add_argument("--type", default="choice", choices=["choice", "noul", "score"])
 ap.add_argument("--options", default="positive,negative")
 ap.add_argument("--instructions", default="Does this text express positive sentiment?")
 ap.add_argument("--test", default=str(DEFAULT_TEST))
-ap.add_argument("--model", default=None, help="fija el modelo, saltando el enrutamiento")
+ap.add_argument("--model", default=None, help="pins the model, skipping routing")
 ap.add_argument("--out", default=None)
 args = ap.parse_args()
 
@@ -53,7 +53,9 @@ for lang, rows in sorted(by_lang.items()):
     sample.extend(rows[:per])
 
 options = [o for o in args.options.split(",") if o]
-# Cómo traducir la respuesta del modelo a la etiqueta binaria del test (1 = positivo).
+# How to map the model answer onto the test's binary label (1 = positive).
+# NOTE: the Spanish variants below are matching values, not prose: a model asked in Spanish
+# may answer "positivo"/"negativo" and that still has to map to a label.
 POSITIVE_VALUES = {"positive", "pos", "positivo", True, 1}
 NEGATIVE_VALUES = {"negative", "neg", "negativo", False, 0}
 
@@ -64,7 +66,7 @@ def to_binary(value):
     if value in NEGATIVE_VALUES:
         return 0
     if isinstance(value, (int, float)) and args.type == "score":
-        return None            # un score numérico no es una etiqueta binaria
+        return None            # a numeric score is not a binary label
     return None
 
 

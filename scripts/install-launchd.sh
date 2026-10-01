@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
-# Instala el servicio como LaunchAgent: arranca al iniciar sesión y se reinicia si se cae.
+# Installs the service as a LaunchAgent: it starts at login and restarts if it dies.
 #
-#   scripts/install-launchd.sh              # modelo `active` de config.yaml
+#   scripts/install-launchd.sh              # the `active` model of config.yaml
 #   LAYA_ACTIVE_MODEL=laya-sentiment-v1 scripts/install-launchd.sh
 #
-# Ojo con el alcance: un LaunchAgent arranca cuando el usuario inicia sesión, no antes.
-# Para que arranque en el boot sin login haría falta un LaunchDaemon (como root), que
-# además tendría que poder leer la caché de modelos del usuario. Para una máquina
-# personal, el agente es lo correcto.
+# Mind the scope: a LaunchAgent starts when the user logs in, not before. Starting at
+# boot without a login would need a LaunchDaemon (as root), which would also have to read
+# the user's model cache. For a personal machine, the agent is the right choice.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 LABEL="com.cesarmg.laya-decide"

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """Concurrency probe: sends N requests in parallel and reports whether the service survived.
 
-Registra el contador de arranques del agente antes y después, así la caída queda atribuida y
-no como una sospecha. Imprime el error real de cada petición fallida.
+It records the agent's start counter before and after, so a crash is attributed rather than
+suspected. It prints the real error of every failed request.
 
-Uso: python scripts/probe_concurrency.py [--url ...] [--counts 1,2,4,8]
+Usage: python scripts/probe_concurrency.py [--url ...] [--counts 1,2,4,8]
 """
 import argparse
 import json
@@ -31,12 +31,12 @@ PAYLOAD = {
 }
 
 
-DEPLOYED_PORT = 8090   # el agente de launchd sirve este puerto
+DEPLOYED_PORT = 8090   # the launchd agent serves this port
 
 
 def agent_runs() -> tuple[str, str]:
-    """(runs, pid) del agente de launchd. Devuelve ('n/a','n/a') si la URL probada no es la suya:
-    comparar el contador de OTRO servicio daría un 'SOBREVIVIÓ' que no significa nada."""
+    """(runs, pid) of the launchd agent. Returns ('n/a','n/a') if the URL under test is not its
+    own: comparing ANOTHER service's counter would yield a 'SURVIVED' that means nothing."""
     if f":{DEPLOYED_PORT}" not in args.url:
         return "n/a", "n/a"
     try:
